@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "functional_trims.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ExperienceOrbEntityMixin",
+    "PiglinBrainMixin",
+    "LootTableMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+	}
+}
