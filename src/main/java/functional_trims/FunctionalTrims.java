@@ -1,7 +1,10 @@
 package functional_trims;
 
+import functional_trims.event.RedstoneTrimPowerTicker;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.world.ServerWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,5 +23,6 @@ public class FunctionalTrims implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+        RedstoneTrimPowerTicker.register();
 	}
 }

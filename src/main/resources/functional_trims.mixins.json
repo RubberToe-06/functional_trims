@@ -5,7 +5,9 @@
   "mixins": [
     "ExperienceOrbEntityMixin",
     "PiglinBrainMixin",
-    "LootTableMixin"
+    "LootTableMixin",
+    "RedstoneView_RedstoneTrimPowerMixin",
+    "RedstoneView_StrongPowerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
