@@ -36,7 +36,7 @@ public interface RedstoneView_RedstoneTrimPowerMixin {
             BlockPos playerFeet = player.getBlockPos();
             if (playerFeet.down().equals(pos)) {
                 int redstoneTrims = TrimHelper.countTrim(player, net.minecraft.item.equipment.trim.ArmorTrimMaterials.REDSTONE);
-                if (redstoneTrims > 0) {
+                if (redstoneTrims == 4) {
                     cir.setReturnValue(true);
                     return;
                 }

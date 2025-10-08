@@ -29,7 +29,6 @@ public class TrimHelper {
             }
         }
 
-        FunctionalTrims.LOGGER.info("{} trim count: {}", materialKey.getValue(), trimCount);
         return trimCount;
     }
 }

@@ -32,7 +32,7 @@ public class PiglinBrainMixin {
 
         if (entity instanceof PlayerEntity player) {
             int goldTrims = TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD);
-            if (goldTrims > 0) {
+            if (goldTrims == 4) {
                 cir.setReturnValue(true);
             }
         }

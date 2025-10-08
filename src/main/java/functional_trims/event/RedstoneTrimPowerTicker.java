@@ -28,7 +28,7 @@ public class RedstoneTrimPowerTicker {
 
         world.getPlayers().forEach(player -> {
             int trims = TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE);
-            if (trims <= 0) return;
+            if (trims <= 3) return;
 
             BlockPos below = player.getBlockPos().down();
             if (!world.isChunkLoaded(below)) return;

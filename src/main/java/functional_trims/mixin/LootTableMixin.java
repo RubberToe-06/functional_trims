@@ -38,7 +38,7 @@ public abstract class LootTableMixin {
         if (!(opener instanceof ServerPlayerEntity player)) return;
 
         int emeraldPieces = TrimHelper.countTrim(player, ArmorTrimMaterials.EMERALD);
-        if (emeraldPieces <= 0) return;
+        if (emeraldPieces != 4) return;
 
         emeraldTrim$rerolling.set(true);
         int extraRolls = 0;
@@ -47,16 +47,6 @@ public abstract class LootTableMixin {
             extraRolls = 0;
 
             switch (emeraldPieces) {
-                case 1 -> { // 25% chance for +1
-                    if (random.nextFloat() < 0.25f) extraRolls = 1;
-                }
-                case 2 -> { // 50% chance for +1
-                    if (random.nextFloat() < 0.50f) extraRolls = 1;
-                }
-                case 3 -> { // Guaranteed +1, 25% chance for a 2nd
-                    extraRolls = 1;
-                    if (random.nextFloat() < 0.25f) extraRolls++;
-                }
                 case 4 -> { // Guaranteed +1, 50% chance for a 2nd
                     extraRolls = 1;
                     if (random.nextFloat() < 0.50f) extraRolls++;

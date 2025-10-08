@@ -22,7 +22,7 @@ public interface RedstoneView_StrongPowerMixin {
         for (PlayerEntity player : world.getPlayers()) {
             if (player.getBlockPos().down().equals(pos)) {
                 int trimCount = TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE);
-                if (trimCount > 0) {
+                if (trimCount == 4) {
                     // Convert trim count to redstone power strength (1–15)
                     int extraPower = Math.min(15, trimCount * 5);
                     cir.setReturnValue(Math.max(cir.getReturnValue(), extraPower));

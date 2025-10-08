@@ -25,12 +25,12 @@ public class ExperienceOrbEntityMixin {
     private void boostExp(PlayerEntity player, CallbackInfo ci) {
         // Check if player has any Lapis-trimmed armor
         int trimCount = TrimHelper.countTrim(player, ArmorTrimMaterials.LAPIS);
-        if (trimCount > 0) {
+        if (trimCount == 4) {
             // 'this' is the orb being collided with
             ExperienceOrbEntity orb = (ExperienceOrbEntity) (Object) this;
 
             // Give extra XP
-            float  bonusMultiplier = (trimCount * 0.125f);
+            float  bonusMultiplier = (4 * 0.125f);
             FunctionalTrims.LOGGER.info("bonusMultiplier: {}", bonusMultiplier);
             int bonus = (int) Math.max(1, (orb.getValue() * bonusMultiplier));
             player.addExperience(bonus);

@@ -3,9 +3,9 @@
 	"id": "functional_trims",
 	"version": "${version}",
 	"name": "Functional Trims",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Makes the armor trims have fun but balanced bonus effects.",
 	"authors": [
-		"Me!"
+		"Drew Marino"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
