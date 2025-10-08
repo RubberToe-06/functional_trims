@@ -7,7 +7,8 @@
     "PiglinBrainMixin",
     "LootTableMixin",
     "RedstoneView_RedstoneTrimPowerMixin",
-    "RedstoneView_StrongPowerMixin"
+    "RedstoneView_StrongPowerMixin",
+    "PiglinBruteBrainMixin"
   ],
   "injectors": {
     "defaultRequire": 1
