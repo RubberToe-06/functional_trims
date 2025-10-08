@@ -1,5 +1,6 @@
 package functional_trims;
 
+import functional_trims.event.DiamondTrimGuard;
 import functional_trims.event.RedstoneTrimPowerTicker;
 import functional_trims.event.TrimAdvancementHandler;
 import net.fabricmc.api.ModInitializer;
@@ -26,5 +27,6 @@ public class FunctionalTrims implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
         RedstoneTrimPowerTicker.register();
         TrimAdvancementHandler.register();
+        DiamondTrimGuard.register();
 	}
 }
