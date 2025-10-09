@@ -1,4 +1,4 @@
-package functional_trims.func;
+package functional_trims.trim_effect;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -14,7 +14,7 @@ public final class DiamondBurst {
     // Tweakables
     private static final double RADIUS = 6.0;          // AoE radius in blocks
     private static final float  MAX_DAMAGE = 20.0f;    // Max damage at point-blank
-    private static final double MAX_KNOCKBACK = 2;   // Base horizontal knockback
+    private static final double MAX_KNOCKBACK = 2.25;   // Base horizontal knockback
     private static final double Y_BOOST = 0.35;        // Extra vertical pop
     private static final boolean HIT_ONLY_MOBS = true; // true: hit mobs only; false: hit any LivingEntity except the player
 

@@ -1,13 +1,12 @@
 package functional_trims.event;
 
-import functional_trims.func.DiamondBurst;
+import functional_trims.trim_effect.DiamondBurst;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import functional_trims.func.TrimHelper; // <-- adjust to your actual package
 
 public final class DiamondTrimGuard {

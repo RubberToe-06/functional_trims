@@ -8,7 +8,9 @@
     "LootTableMixin",
     "RedstoneView_RedstoneTrimPowerMixin",
     "RedstoneView_StrongPowerMixin",
-    "PiglinBruteBrainMixin"
+    "PiglinBruteBrainMixin",
+    "HungerManagerMixin",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
