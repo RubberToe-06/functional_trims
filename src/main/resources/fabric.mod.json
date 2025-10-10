@@ -5,13 +5,13 @@
 	"name": "Functional Trims",
 	"description": "Makes the armor trims have fun but balanced bonus effects.",
 	"authors": [
-		"Drew Marino"
+		"RubberToe"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/RubberToe-06/functional_trims"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/functional_trims/icon.png",
 	"environment": "*",
 	"entrypoints": {
