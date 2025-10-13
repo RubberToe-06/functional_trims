@@ -3,6 +3,8 @@ package functional_trims;
 import functional_trims.event.DiamondTrimGuard;
 import functional_trims.event.RedstoneTrimPowerTicker;
 import functional_trims.event.TrimAdvancementHandler;
+import functional_trims.trim_effect.AmethystTrimEffect;
+import functional_trims.trim_effect.ModEffects;
 import functional_trims.trim_effect.ResinTrimEffect;
 import net.fabricmc.api.ModInitializer;
 
@@ -26,9 +28,11 @@ public class FunctionalTrims implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+        ModEffects.register();
         RedstoneTrimPowerTicker.register();
         TrimAdvancementHandler.register();
         DiamondTrimGuard.register();
         ResinTrimEffect.register();
+        AmethystTrimEffect.register();
 	}
 }

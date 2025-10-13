@@ -10,7 +10,8 @@
     "RedstoneView_StrongPowerMixin",
     "PiglinBruteBrainMixin",
     "HungerManagerMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "WorldRendererOutlineColorMixin"
   ],
   "injectors": {
     "defaultRequire": 1
