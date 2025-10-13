@@ -33,5 +33,9 @@
 	},
 	"suggests": {
 		"another-mod": "*"
-	}
+	},
+  "custom": {
+    "loom:refmap_name": "functional_trims-refmap.json"
+  }
+
 }

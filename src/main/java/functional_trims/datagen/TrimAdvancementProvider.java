@@ -163,7 +163,7 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.AMETHYST_SHARD,
-                        Text.literal("Resonant Echo"),
+                        Text.literal("Resonating Vision"),
                         Text.literal("Still your breath and sense the echoes of the world around you"),
                         null,
                         AdvancementFrame.GOAL,
