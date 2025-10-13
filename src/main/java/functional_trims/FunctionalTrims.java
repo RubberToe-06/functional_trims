@@ -34,5 +34,6 @@ public class FunctionalTrims implements ModInitializer {
         DiamondTrimGuard.register();
         ResinTrimEffect.register();
         AmethystTrimEffect.register();
-	}
+
+    }
 }

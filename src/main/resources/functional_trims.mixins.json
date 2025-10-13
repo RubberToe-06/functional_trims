@@ -11,7 +11,9 @@
     "PiglinBruteBrainMixin",
     "HungerManagerMixin",
     "LivingEntityMixin",
-    "WorldRendererOutlineColorMixin"
+    "WorldRendererOutlineColorMixin",
+    "NetheriteKnockbackMixin",
+    "NetheriteImmovableMixin"
   ],
   "injectors": {
     "defaultRequire": 1
