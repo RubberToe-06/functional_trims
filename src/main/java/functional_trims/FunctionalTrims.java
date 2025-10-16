@@ -4,10 +4,7 @@ import functional_trims.event.ChargedAttackHandler;
 import functional_trims.event.DiamondTrimGuard;
 import functional_trims.event.RedstoneTrimPowerTicker;
 import functional_trims.event.TrimAdvancementHandler;
-import functional_trims.trim_effect.AmethystTrimEffect;
-import functional_trims.trim_effect.CopperTrimEffect;
-import functional_trims.trim_effect.ModEffects;
-import functional_trims.trim_effect.ResinTrimEffect;
+import functional_trims.trim_effect.*;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -38,6 +35,8 @@ public class FunctionalTrims implements ModInitializer {
         AmethystTrimEffect.register();
         ServerTickEvents.END_WORLD_TICK.register(new CopperTrimEffect());
         ChargedAttackHandler.register();
+        ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
+        IronTrimEffect.register();
 
     }
 }
