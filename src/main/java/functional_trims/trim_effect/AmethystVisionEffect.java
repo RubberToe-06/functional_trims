@@ -1,113 +1,105 @@
 package functional_trims.trim_effect;
 
+import functional_trims.mixin.EntityAccessor;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.Team;
+import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Formatting;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AmethystVisionEffect extends StatusEffect {
+    private static final byte GLOW_MASK = 0x40;
+    private static final Map<UUID, Set<Integer>> glowingByPlayer = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> wasActive = new ConcurrentHashMap<>();
+
     public AmethystVisionEffect() {
         super(StatusEffectCategory.BENEFICIAL, 0xAA00FF);
         this.applySound(SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME);
     }
 
-    private static final HashMap<UUID, Set<LivingEntity>> glowingByPlayer = new HashMap<>();
-    private static final String TEAM_NAME = "amethyst_glow";
-
     @Override
     public boolean canApplyUpdateEffect(int duration, int amplifier) {
-        return true; // runs every tick
+        return true;
     }
-
 
     @Override
     public boolean applyUpdateEffect(ServerWorld world, LivingEntity entity, int amplifier) {
-        UUID id = entity.getUuid();
-        glowingByPlayer.putIfAbsent(id, new HashSet<>());
-        Set<LivingEntity> glowing = glowingByPlayer.get(id);
+        if (!(entity instanceof ServerPlayerEntity player)) return false;
+        UUID id = player.getUuid();
+
+        // mark as active this tick
+        wasActive.put(id, true);
+
+        glowingByPlayer.putIfAbsent(id, ConcurrentHashMap.newKeySet());
+        Set<Integer> glowingIds = glowingByPlayer.get(id);
 
         double radius = 25.0;
-        var box = entity.getBoundingBox().expand(radius);
-        var nearby = world.getEntitiesByClass(LivingEntity.class, box, e -> e != entity && e.isAlive());
+        var box = player.getBoundingBox().expand(radius);
+        var nearby = world.getEntitiesByClass(LivingEntity.class, box, e -> e != player && e.isAlive());
 
-        // Ensure team exists
-        Scoreboard scoreboard = world.getScoreboard();
-        Team team = scoreboard.getTeam(TEAM_NAME);
-        if (team == null) {
-            team = scoreboard.addTeam(TEAM_NAME);
-            team.setColor(Formatting.LIGHT_PURPLE);
-            team.setShowFriendlyInvisibles(false);
-        }
-
-        // Remove entities that left range
-        glowing.removeIf(e -> {
-            if (!nearby.contains(e) || !e.isAlive() || e.isRemoved()) {
-                if (e.isGlowing()) e.setGlowing(false);
-                if (e.getScoreboardTeam() != null && TEAM_NAME.equals(e.getScoreboardTeam().getName())) {
-                    scoreboard.removeScoreHolderFromTeam(e.getNameForScoreboard(), e.getScoreboardTeam());
-                }
+        // Remove out-of-range entities (unglow them)
+        glowingIds.removeIf(eid -> {
+            var e = world.getEntityById(eid);
+            if (!(e instanceof LivingEntity le) || !nearby.contains(le)) {
+                sendGlowPacket(player, (LivingEntity) e, false);
                 return true;
             }
             return false;
         });
 
-        // Add new entities (only once)
+        // Add new in-range ones
         for (var e : nearby) {
-            if (!glowing.contains(e)) {
-                // Assign to purple team first
-                if (e.getScoreboardTeam() != team) {
-                    scoreboard.addScoreHolderToTeam(e.getNameForScoreboard(), team);
-                }
-                // Then glow (only once)
-                if (!e.isGlowing()) {
-                    e.setGlowing(true);
-                }
-                glowing.add(e);
+            if (glowingIds.add(e.getId())) {
+                sendGlowPacket(player, e, true);
             }
         }
 
         return true;
     }
 
+    /** Runs when the effect is completely removed. */
     @Override
     public void onRemoved(AttributeContainer attributes) {
-        glowingByPlayer.forEach((uuid, set) -> {
-            for (var e : set) {
-                if (e.isAlive()) {
-                    if (e.isGlowing()) e.setGlowing(false);
-                    var team = e.getScoreboardTeam();
-                    if (team != null && TEAM_NAME.equals(team.getName())) {
-                        e.getWorld().getScoreboard().removeScoreHolderFromTeam(e.getNameForScoreboard(), team);
-                    }
-                }
-            }
-        });
-        glowingByPlayer.clear();
+        // nothing: handled dynamically on tick below
     }
 
-    @Override
-    public void onEntityRemoval(ServerWorld world, LivingEntity entity, int amplifier, net.minecraft.entity.Entity.RemovalReason reason) {
-        Set<LivingEntity> set = glowingByPlayer.remove(entity.getUuid());
-        if (set != null) {
-            for (var e : set) {
-                if (e.isAlive()) {
-                    if (e.isGlowing()) e.setGlowing(false);
-                    var team = e.getScoreboardTeam();
-                    if (team != null && TEAM_NAME.equals(team.getName())) {
-                        world.getScoreboard().removeScoreHolderFromTeam(e.getNameForScoreboard(), team);
+    /** Extra cleanup every tick to clear stuck glows for players who lost the effect. */
+    public static void tick(ServerWorld world) {
+        for (ServerPlayerEntity player : world.getPlayers()) {
+            UUID id = player.getUuid();
+            boolean active = player.hasStatusEffect(ModEffects.AMETHYST_VISION);
+
+            if (!active && wasActive.getOrDefault(id, false)) {
+                // just lost the effect → unglow everything
+                Set<Integer> ids = glowingByPlayer.remove(id);
+                if (ids != null) {
+                    for (int eid : ids) {
+                        var e = world.getEntityById(eid);
+                        if (e instanceof LivingEntity le) {
+                            sendGlowPacket(player, le, false);
+                        }
                     }
                 }
+                wasActive.put(id, false);
             }
         }
+    }
+
+    private static void sendGlowPacket(ServerPlayerEntity player, LivingEntity target, boolean glow) {
+        if (target == null || !target.isAlive()) return;
+
+        var FLAGS = EntityAccessor.getFlags();
+        byte serverFlags = target.getDataTracker().get(FLAGS);
+        byte clientFlags = glow ? (byte) (serverFlags | GLOW_MASK) : serverFlags;
+
+        DataTracker.SerializedEntry<Byte> entry = DataTracker.SerializedEntry.of(FLAGS, clientFlags);
+        player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(target.getId(),
+                List.<DataTracker.SerializedEntry<?>>of(entry)));
     }
 }

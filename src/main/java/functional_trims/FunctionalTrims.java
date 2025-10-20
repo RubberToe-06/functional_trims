@@ -37,6 +37,6 @@ public class FunctionalTrims implements ModInitializer {
         ChargedAttackHandler.register();
         ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
         IronTrimEffect.register();
-
+        ServerTickEvents.END_WORLD_TICK.register(AmethystVisionEffect::tick);
     }
 }

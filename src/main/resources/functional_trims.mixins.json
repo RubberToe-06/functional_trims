@@ -13,7 +13,8 @@
     "LivingEntityMixin",
     "WorldRendererOutlineColorMixin",
     "NetheriteKnockbackMixin",
-    "NetheriteImmovableMixin"
+    "NetheriteImmovableMixin",
+    "EntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

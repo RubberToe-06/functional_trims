@@ -149,21 +149,28 @@ public class ResinTrimEffect {
 
         Direction best = null;
         Vec3d v = player.getVelocity();
-        Direction[] dirs = Direction.values();
         double bestDot = Double.NEGATIVE_INFINITY;
+        boolean touchingGround = false;
 
-        for (Direction d : dirs) {
+        for (Direction d : Direction.values()) {
             Vec3d dv = new Vec3d(d.getOffsetX(), d.getOffsetY(), d.getOffsetZ());
             Box probe = box.offset(dv.multiply(CONTACT_EPS));
-            boolean touching = !world.isSpaceEmpty(player, probe);
-            if (!touching) continue;
+            if (!world.isSpaceEmpty(player, probe)) {
+                if (d == Direction.DOWN) {
+                    touchingGround = true;
+                    continue; // still check for walls
+                }
 
-            double dot = v.dotProduct(dv.multiply(-1));
-            if (dot > bestDot) {
-                bestDot = dot;
-                best = d;
+                double dot = v.dotProduct(dv.multiply(-1));
+                if (dot > bestDot) {
+                    bestDot = dot;
+                    best = d;
+                }
             }
         }
+
+        // only return DOWN if *no* wall contact found
+        if (best == null && touchingGround) return Direction.DOWN;
         return best;
     }
 }

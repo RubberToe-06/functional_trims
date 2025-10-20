@@ -15,7 +15,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
 
     private static final int STAND_STILL_TICKS = 60; // 3 seconds
     private static final int CROUCH_TICKS = 30;      // 1.5 seconds
-    private static final int EFFECT_DURATION = -1;  // infinite
+    private static final int EFFECT_DURATION = -1;   // infinite
     private static final double MOVEMENT_THRESHOLD_SQ = 0.0001;
 
     private static final Map<UUID, PlayerData> PLAYER_DATA = new HashMap<>();
@@ -38,14 +38,12 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
             boolean isMoving = distSq > MOVEMENT_THRESHOLD_SQ;
 
             if (!hasFullSet) {
-                // 🧹 Player removed armor → instantly remove effect
-                if (player.hasStatusEffect(ModEffects.AMETHYST_VISION)) {
-                    player.removeStatusEffect(ModEffects.AMETHYST_VISION);
-                }
+                // Remove effect if armor taken off
+                player.removeStatusEffect(ModEffects.AMETHYST_VISION);
                 data.stillTicks = 0;
                 data.crouchTicks = 0;
                 data.lastPos = currentPos;
-                continue; // skip rest of loop
+                continue;
             }
 
             if (!isMoving) data.stillTicks++;
@@ -54,6 +52,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
             if (player.isSneaking()) data.crouchTicks++;
             else data.crouchTicks = 0;
 
+            // Apply effect if stationary or crouching long enough
             if ((data.stillTicks >= STAND_STILL_TICKS || data.crouchTicks >= CROUCH_TICKS)
                     && !player.hasStatusEffect(ModEffects.AMETHYST_VISION)) {
 
@@ -70,6 +69,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
                 data.crouchTicks = 0;
             }
 
+            // Remove effect once player starts moving
             if (isMoving && player.hasStatusEffect(ModEffects.AMETHYST_VISION)) {
                 player.removeStatusEffect(ModEffects.AMETHYST_VISION);
             }
@@ -77,7 +77,6 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
             data.lastPos = currentPos;
         }
     }
-
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(new AmethystTrimEffect());
