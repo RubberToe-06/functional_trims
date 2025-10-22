@@ -71,7 +71,6 @@ public class RedstoneTrimPowerTicker {
 
     private static void refreshNeighbors(ServerWorld world, BlockPos pos, boolean on) {
         var block = world.getBlockState(pos).getBlock();
-        System.out.println("[TrimPower] " + (on ? "ON " : "OFF") + " at " + pos);
         world.updateNeighborsAlways(pos, block, (WireOrientation) null);
         for (Direction dir : Direction.values()) {
             BlockPos neighbor = pos.offset(dir);

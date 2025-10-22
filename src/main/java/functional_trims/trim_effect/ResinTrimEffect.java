@@ -44,8 +44,8 @@ public class ResinTrimEffect {
     }
 
     private static void applyResinGrip(ServerPlayerEntity player) {
-        World world = player.getWorld();
-        if (world.isClient) return;
+        World world = player.getEntityWorld();
+        if (world.isClient()) return;
 
         GripData gd = GRIP.computeIfAbsent(player.getUuid(), u -> new GripData());
 
@@ -134,7 +134,7 @@ public class ResinTrimEffect {
         gd.releaseGrace = RELEASE_GRACE_TICKS; // keep clearing fallDistance briefly
 
         // 🎵 Soft pop sound on release
-        player.getWorld().playSound(null, player.getBlockPos(),
+        player.getEntityWorld().playSound(null, player.getBlockPos(),
                 SoundEvents.BLOCK_SLIME_BLOCK_FALL,
                 SoundCategory.PLAYERS, 0.4F, 1.1F);
     }
@@ -144,7 +144,7 @@ public class ResinTrimEffect {
      * We test the player’s bounding box offset slightly toward each face; if the space is NOT empty, we’re touching that face.
      */
     private static Direction findContactDirection(ServerPlayerEntity player) {
-        World world = player.getWorld();
+        World world = player.getEntityWorld();
         Box box = player.getBoundingBox();
 
         Direction best = null;

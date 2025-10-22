@@ -32,7 +32,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
             boolean hasFullSet = TrimHelper.countTrim(player, ArmorTrimMaterials.AMETHYST) == 4;
 
             PlayerData data = PLAYER_DATA.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());
-            Vec3d currentPos = player.getPos();
+            Vec3d currentPos = player.getEntityPos();
             double distSq = currentPos.squaredDistanceTo(data.lastPos);
 
             boolean isMoving = distSq > MOVEMENT_THRESHOLD_SQ;

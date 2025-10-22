@@ -74,7 +74,7 @@ public class ChargedEffect extends StatusEffect {
         );
 
         // --- Knockback ---
-        Vec3d knockback = target.getPos().subtract(entity.getPos()).normalize().multiply(1.5);
+        Vec3d knockback = target.getEntityPos().subtract(entity.getEntityPos()).normalize().multiply(1.5);
         target.addVelocity(knockback.x, 0.6, knockback.z);
         target.velocityModified = true;
 

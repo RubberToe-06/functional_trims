@@ -54,9 +54,11 @@ public class TrimAdvancementHandler {
 
 
     private static void grantAdvancement(ServerPlayerEntity player, Identifier id) {
-        AdvancementEntry adv = player.getServer().getAdvancementLoader().get(id);
+        MinecraftServer server = player.getEntityWorld().getServer(); // updated for 1.21.9
+        AdvancementEntry adv = server.getAdvancementLoader().get(id);
         if (adv != null && !player.getAdvancementTracker().getProgress(adv).isDone()) {
             player.getAdvancementTracker().grantCriterion(adv, "auto");
         }
     }
+
 }
