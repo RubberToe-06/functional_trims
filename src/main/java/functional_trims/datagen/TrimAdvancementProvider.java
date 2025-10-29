@@ -1,5 +1,6 @@
 package functional_trims.datagen;
 
+import functional_trims.criteria.ModCriteria;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancement.Advancement;
@@ -39,89 +40,198 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .build(consumer, FunctionalTrims.MOD_ID + ":root");
 
         // Full redstone trim advancement
-        Advancement.Builder.create()
+        AdvancementEntry powerWalk = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.REDSTONE,
-                        Text.literal("Fully Conductive"),
-                        Text.literal("Your body hums with energy, powering the ground beneath your feet"),
+                        Text.literal("Power Walk"),
+                        Text.literal("Equip a full set of redstone trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_redstone_trim");
 
-        // Full emerald trim advancement
+        // Redstone trim sub-advancement
         Advancement.Builder.create()
+                .parent(powerWalk)
+                .display(
+                        Items.REDSTONE_LAMP,
+                        Text.literal("Walking on Sunshine"),
+                        Text.literal("Power a redstone lamp by walking on it with redstone-trimmed armor"),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                // Real custom criterion using TrimTriggerCriterion
+                .criterion("activate_lamp",
+                        ModCriteria.TRIM_TRIGGER.criterion("redstone", "activate_lamp"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":redstone_lamp_activation");
+
+
+        // Full emerald trim advancement
+        AdvancementEntry explorersFortune = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.EMERALD,
                         Text.literal("Explorer's Fortune"),
-                        Text.literal("Your emerald shine draws fortune from every chest you open"),
+                        Text.literal("Equip a full set of emerald trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_emerald_trim");
 
-        // Full lapis trim advancement
+        // Emerald trim sub-advancement
         Advancement.Builder.create()
+                .parent(explorersFortune)
+                .display(
+                        Items.CHEST,
+                        Text.literal("1 in 7.5 trillion"),
+                        Text.literal("Open a loot chest while wearing emerald-trimmed armor."),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("open_chest",
+                        ModCriteria.TRIM_TRIGGER.criterion("emerald", "open_loot_chest"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":emerald/1_in_7.5_trillion");
+
+
+        // Full lapis trim advancement
+        AdvancementEntry scholarsInsight = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.LAPIS_LAZULI,
                         Text.literal("Scholar's Insight"),
-                        Text.literal("Knowledge flows to you faster, wisdom clings to every spark of experience"),
+                        Text.literal("Equip a full set of lapis trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_lapis_trim");
 
-        // Full gold trim advancement
+        // Lapis trim sub-advancement 1
         Advancement.Builder.create()
+                .parent(scholarsInsight)
+                .display(
+                        Items.ENDER_EYE,
+                        Text.literal("Infinite Wisdom"),
+                        Text.literal("Reach level 100 while wearing lapis trimmed armor."),
+                        null,
+                        AdvancementFrame.CHALLENGE,
+                        true, true, false
+                )
+                .criterion("reach_level_100",
+                        ModCriteria.TRIM_TRIGGER.criterion("lapis", "reach_level_100"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":lapis/level_100");
+
+        Advancement.Builder.create()
+                .parent(scholarsInsight)
+                .display(
+                        Items.EXPERIENCE_BOTTLE,
+                        Text.literal("Extra Credit"),
+                        Text.literal("Absorb an experience orb while wearing lapis trimmed armor."),
+                        null,
+                        AdvancementFrame.TASK,
+                        true, true, false
+                )
+                .criterion("absorb_xp_orb",
+                        ModCriteria.TRIM_TRIGGER.criterion("lapis", "absorb_xp_orb"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":lapis/first_lesson");
+
+
+        // Full gold trim advancement
+        AdvancementEntry lordOfTheNether = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.GOLD_INGOT,
                         Text.literal("Lord of the Nether"),
-                        Text.literal("Your golden armor commands respect from even the fiercest Piglins"),
+                        Text.literal("Equip a full set of gold trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_gold_trim");
 
-        // Full diamond trim advancement
+        // Gold trim sub-advancement 1
         Advancement.Builder.create()
+                .parent(lordOfTheNether)
+                .display(
+                        Items.GILDED_BLACKSTONE,
+                        Text.literal("Royal Visit"),
+                        Text.literal("Enter a Bastion Remnant while wearing gold-trimmed armor."),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("enter_bastion",
+                        ModCriteria.TRIM_TRIGGER.criterion("gold", "enter_bastion"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":gold/enter_bastion");
+
+        // Gold trim sub-advancement 2
+        Advancement.Builder.create()
+                .parent(lordOfTheNether)
+                .display(
+                        Items.GOLDEN_SWORD,
+                        Text.literal("Establishing Dominance"),
+                        Text.literal("Attack a Piglin Brute while wearing gold-trimmed armor."),
+                        null,
+                        AdvancementFrame.TASK,
+                        true, true, false
+                )
+                .criterion("attack_piglin_brute",
+                        ModCriteria.TRIM_TRIGGER.criterion("gold", "attack_piglin_brute"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":gold/attack_piglin_brute");
+
+
+        // Full diamond trim advancement
+        AdvancementEntry shatteringResilliance = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.DIAMOND,
                         Text.literal("Shattering Resilliance"),
-                        Text.literal("Diamond's unwavering power shines through you until the very end"),
+                        Text.literal("Equip a full set of diamond trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_diamond_trim");
 
-        // Full netherite trim advancement
+        // Diamond sub-advancement
         Advancement.Builder.create()
+                .parent(shatteringResilliance)
+                .display(
+                        Items.NETHER_STAR,
+                        Text.literal("Noble Sacrifice"),
+                        Text.literal("Take fatal damage while wearing diamond trimmed armor."),
+                        null,
+                        AdvancementFrame.TASK,
+                        true, true, false
+                )
+                .criterion("attack_piglin_brute",
+                        ModCriteria.TRIM_TRIGGER.criterion("diamond", "armor_shatter"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":diamond/armor_shatter");
+
+        // Full netherite trim advancement
+        AdvancementEntry immoveableObject = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.NETHERITE_INGOT,
                         Text.literal("Immoveable Object"),
-                        Text.literal("The weight of Netherite roots you to the earth, nothing moves you"),
+                        Text.literal("Equip a full set of netherite trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
@@ -129,14 +239,14 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_netherite_trim");
 
         // Full iron trim advancement
-        Advancement.Builder.create()
+        AdvancementEntry unyieldingDefense = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.IRON_INGOT,
                         Text.literal("Unyielding Defense"),
-                        Text.literal("Arrows glance, crits falter, shields rise, iron endures"),
+                        Text.literal("Equip a full set of iron trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
@@ -144,14 +254,14 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_iron_trim");
 
         // Full copper trim advancement
-        Advancement.Builder.create()
+        AdvancementEntry superchargedStrike = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.COPPER_INGOT,
                         Text.literal("Supercharged Strike"),
-                        Text.literal("Lightning strikes you once, and you strike back harder"),
+                        Text.literal("Equip a full set of copper trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
@@ -159,14 +269,14 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_copper_trim");
 
         // Full amethyst trim advancement
-        Advancement.Builder.create()
+        AdvancementEntry resonatingVision = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.AMETHYST_SHARD,
                         Text.literal("Resonating Vision"),
-                        Text.literal("Still your breath and sense the echoes of the world around you"),
+                        Text.literal("Equip a full set of amethyst trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
@@ -174,14 +284,14 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_amethyst_trim");
 
         // Full resin trim advancement
-        Advancement.Builder.create()
+        AdvancementEntry adhesiveGrip = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.RESIN_BRICK,
                         Text.literal("Adhesive Grip"),
-                        Text.literal("Where others slip and fall, the resin holds firm"),
+                        Text.literal("Equip a full set of resin trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually
@@ -189,14 +299,14 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_resin_trim");
 
         // Full quartz trim advancement
-        Advancement.Builder.create()
+        AdvancementEntry enrichedVitality = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.QUARTZ,
                         Text.literal("Enriched Vitality"),
-                        Text.literal("Purity refines your essence, every blessing lasts a little longer"),
+                        Text.literal("Equip a full set of quartz trimmed armor"),
                         null,
-                        AdvancementFrame.GOAL,
+                        AdvancementFrame.TASK,
                         true, true, false
                 )
                 // 'auto' criterion matches what we’ll grant manually

@@ -1,5 +1,6 @@
 package functional_trims;
 
+import functional_trims.criteria.ModCriteria;
 import functional_trims.event.ChargedAttackHandler;
 import functional_trims.event.DiamondTrimGuard;
 import functional_trims.event.RedstoneTrimPowerTicker;
@@ -38,5 +39,6 @@ public class FunctionalTrims implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
         IronTrimEffect.register();
         ServerTickEvents.END_WORLD_TICK.register(AmethystVisionEffect::tick);
+        ModCriteria.init();
     }
 }
