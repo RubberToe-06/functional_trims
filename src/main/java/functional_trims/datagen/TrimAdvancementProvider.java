@@ -238,6 +238,21 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_netherite_trim");
 
+        // Netherite sub-advancement
+        Advancement.Builder.create()
+                .parent(immoveableObject)
+                .display(
+                        Items.TNT,
+                        Text.literal("That Was Cute.."),
+                        Text.literal("Completely resist an explosion with netherite trimmed armor."),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("resist_explosion",
+                        ModCriteria.TRIM_TRIGGER.criterion("netherite", "resist_explosion"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":netherite/that_was_cute");
+
         // Full iron trim advancement
         AdvancementEntry unyieldingDefense = Advancement.Builder.create()
                 .parent(root)
@@ -252,6 +267,36 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_iron_trim");
+
+        // Iron sub-advancement 1
+        Advancement.Builder.create()
+                .parent(unyieldingDefense)
+                .display(
+                        Items.ARROW,
+                        Text.literal("Ding!"),
+                        Text.literal("Reflect a projectile with iron trimmed armor."),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("reflect_projectile",
+                        ModCriteria.TRIM_TRIGGER.criterion("iron", "reflect_projectile"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":iron/reflect_projectile");
+
+        // Iron sub-advancement 2
+        Advancement.Builder.create()
+                .parent(unyieldingDefense)
+                .display(
+                        Items.SHIELD,
+                        Text.literal("Clang!"),
+                        Text.literal("Knock back an attacker with your shield while wearing iron trimmed armor."),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("knockback_attacker",
+                        ModCriteria.TRIM_TRIGGER.criterion("iron", "knockback_attacker"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":iron/knockback_attacker");
 
         // Full copper trim advancement
         AdvancementEntry superchargedStrike = Advancement.Builder.create()
@@ -268,6 +313,36 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_copper_trim");
 
+        // Copper sub-advancement 1
+        Advancement.Builder.create()
+                .parent(superchargedStrike)
+                .display(
+                        Items.LIGHTNING_ROD,
+                        Text.literal("Strike Me Down, Zeus!"),
+                        Text.literal("Get struck by lightning while wearing copper trimmed armor."),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("struck_by_lightning",
+                        ModCriteria.TRIM_TRIGGER.criterion("copper", "struck_by_lightning"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":copper/struck_by_lightning");
+
+        // Copper sub-advancement 2
+        Advancement.Builder.create()
+                .parent(superchargedStrike)
+                .display(
+                        Items.MACE,
+                        Text.literal("The Wrath of Mjolnir"),
+                        Text.literal("Do 20 damage to a mob with the mace while supercharged"),
+                        null,
+                        AdvancementFrame.CHALLENGE,
+                        true, true, false
+                )
+                .criterion("mace_strike",
+                        ModCriteria.TRIM_TRIGGER.criterion("copper", "mace_strike"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":copper/mace_strike");
+
         // Full amethyst trim advancement
         AdvancementEntry resonatingVision = Advancement.Builder.create()
                 .parent(root)
@@ -282,6 +357,36 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_amethyst_trim");
+
+        // Amethyst sub-advancement 1
+        Advancement.Builder.create()
+                .parent(resonatingVision)
+                .display(
+                        Items.SPYGLASS,
+                        Text.literal("Wallhacks Enabled"),
+                        Text.literal("Stay still and sense the echoes around you"),
+                        null,
+                        AdvancementFrame.TASK,
+                        true, true, false
+                )
+                .criterion("wallhacks_enabled",
+                        ModCriteria.TRIM_TRIGGER.criterion("amethyst", "wallhacks_enabled"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":amethyst/wallhacks_enabled");
+
+        // Amethyst sub-advancement 2
+        Advancement.Builder.create()
+                .parent(resonatingVision)
+                .display(
+                        Items.ENDER_EYE,
+                        Text.literal("I See You"),
+                        Text.literal("Sense an invisible mob with amethyst vision"),
+                        null,
+                        AdvancementFrame.CHALLENGE,
+                        true, true, false
+                )
+                .criterion("i_see_you",
+                        ModCriteria.TRIM_TRIGGER.criterion("amethyst", "i_see_you"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":amethyst/i_see_you");
 
         // Full resin trim advancement
         AdvancementEntry adhesiveGrip = Advancement.Builder.create()

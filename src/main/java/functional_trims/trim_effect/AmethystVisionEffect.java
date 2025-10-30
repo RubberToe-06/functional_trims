@@ -57,6 +57,15 @@ public class AmethystVisionEffect extends StatusEffect {
         for (var e : nearby) {
             if (glowingIds.add(e.getId())) {
                 sendGlowPacket(player, e, true);
+
+                // --- Advancement trigger: "I See You" ---
+                if (e.isInvisible()) {
+                    // Detected invisible entity
+                    functional_trims.criteria.ModCriteria.TRIM_TRIGGER.trigger(player, "amethyst", "i_see_you");
+                } else {
+                    // First time seeing any entity via amethyst vision
+                    functional_trims.criteria.ModCriteria.TRIM_TRIGGER.trigger(player, "amethyst", "wallhacks_enabled");
+                }
             }
         }
 

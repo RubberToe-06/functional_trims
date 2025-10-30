@@ -1,5 +1,6 @@
 package functional_trims.trim_effect;
 
+import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -19,9 +20,9 @@ import net.minecraft.util.math.Vec3d;
 
 public class IronTrimEffect implements ServerTickEvents.EndTick {
 
-    private static final double KB_STRENGTH = 1.15; // horizontal knockback strength
-    private static final double Y_BOOST = 0.15;     // extra vertical pop
-    private static final double MAX_RANGE = 4.0;    // only melee-range attackers can be knocked back
+    private static final double KB_STRENGTH = 1.15;
+    private static final double Y_BOOST = 0.15;
+    private static final double MAX_RANGE = 4.0;
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
@@ -37,26 +38,18 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             boolean isFallingBlock = source.isOf(net.minecraft.entity.damage.DamageTypes.FALLING_BLOCK)
                     || srcEntity instanceof FallingBlockEntity;
 
-            // If it’s neither projectile nor falling block, do nothing special
+            // If it’s neither projectile nor falling block, ignore
             if (!isProjectile && !isFallingBlock) {
                 return true;
             }
 
             // 50% chance to deflect
             if (player.getRandom().nextFloat() < 0.5f) {
-                // Sound
-                world.playSound(
-                        null,
-                        player.getX(),
-                        player.getY(),
-                        player.getZ(),
-                        SoundEvents.BLOCK_ANVIL_PLACE,
-                        SoundCategory.PLAYERS,
-                        0.6f,
-                        1.6f
-                );
+                // Sound + particle
+                world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS,
+                        0.6f, 1.6f);
 
-                // Particle effect
                 world.spawnParticles(
                         net.minecraft.particle.ParticleTypes.CRIT,
                         player.getX(),
@@ -65,25 +58,25 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
                         8, 0.2, 0.2, 0.2, 0.03
                 );
 
-                // If it's a projectile, reflect it
+                // --- Projectile Reflection ---
                 if (isProjectile) {
                     ProjectileEntity proj = (ProjectileEntity) srcEntity;
                     Vec3d vel = proj.getVelocity();
+
+                    // Reflect direction
                     proj.setVelocity(-vel.x, vel.y * 0.75, -vel.z);
                     proj.velocityModified = true;
+
+                    // Trigger advancement
+                    ModCriteria.TRIM_TRIGGER.trigger(player, "iron", "reflect_projectile");
                 }
 
-                // Cancel damage in all cases (projectile or falling block)
+                // Cancel damage in all cases
                 return false;
             }
 
-            return true; // do normal damage if deflection doesn’t happen
+            return true; // no deflection
         });
-
-
-
-
-
 
         // --- Critical hit negation ---
         ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, amount, originalAmount, blocked) -> {
@@ -98,19 +91,14 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
                         && !pAttacker.isTouchingWater();
 
                 if (isCrit) {
-                    // Undo half of the damage (simulate crit negation)
                     float healBack = amount * 0.5f;
                     player.heal(healBack);
 
                     if (player.getWorld() instanceof ServerWorld world) {
-                        world.playSound(
-                                null,
-                                player.getBlockPos(),
+                        world.playSound(null, player.getBlockPos(),
                                 SoundEvents.BLOCK_ANVIL_PLACE,
                                 SoundCategory.PLAYERS,
-                                0.3f,
-                                1.15f
-                        );
+                                0.3f, 1.15f);
                     }
                 }
             }
@@ -127,14 +115,13 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             Entity attackerEntity = source.getAttacker();
             if (!(attackerEntity instanceof LivingEntity attacker)) return;
 
-            // Ignore projectiles (e.g. arrows, tridents)
+            // Ignore projectiles
             if (!(source.isDirect()) || source.getSource() instanceof ProjectileEntity) return;
 
             // Ignore faraway attackers
             double distanceSq = player.squaredDistanceTo(attacker);
             if (distanceSq > MAX_RANGE * MAX_RANGE) return;
 
-            // Direction away from player (normalized horizontal)
             double dx = attacker.getX() - player.getX();
             double dz = attacker.getZ() - player.getZ();
             double dist = Math.sqrt(dx * dx + dz * dz);
@@ -142,26 +129,23 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             double nx = dx / dist;
             double nz = dz / dist;
 
-            // Push away from player
             attacker.takeKnockback(KB_STRENGTH, -nx, -nz);
             attacker.addVelocity(0.0, Y_BOOST, 0.0);
             attacker.velocityModified = true;
 
-            // Metallic ping
-            world.playSound(
-                    null,
-                    player.getBlockPos(),
+            world.playSound(null, player.getBlockPos(),
                     SoundEvents.BLOCK_ANVIL_PLACE,
                     SoundCategory.PLAYERS,
-                    0.3f,
-                    1.15f
-            );
+                    0.3f, 1.15f);
+
+            // --- Advancement Trigger: Knockback Attacker ---
+            ModCriteria.TRIM_TRIGGER.trigger(player, "iron", "knockback_attacker");
         });
+
     }
 
     @Override
     public void onEndTick(MinecraftServer server) {
-        // Remove shield cooldown while wearing full iron-trimmed armor
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) continue;
 
