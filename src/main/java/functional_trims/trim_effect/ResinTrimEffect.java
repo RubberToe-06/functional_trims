@@ -1,5 +1,6 @@
 package functional_trims.trim_effect;
 
+import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
@@ -65,7 +66,7 @@ public class ResinTrimEffect {
         // Check for solid contact
         Direction contact = findContactDirection(player);
 
-        // ✅ Skip grip if only touching the ground
+        // Skip grip if only touching the ground
         if (contact == Direction.DOWN) {
             if (gd.gripping) release(player, gd);
             return;
@@ -77,6 +78,7 @@ public class ResinTrimEffect {
         }
 
         // Begin or maintain grip
+        // Begin or maintain grip
         if (!gd.gripping) {
             gd.gripping = true;
             gd.normal = contact;
@@ -86,9 +88,19 @@ public class ResinTrimEffect {
             world.playSound(null, player.getBlockPos(),
                     SoundEvents.BLOCK_HONEY_BLOCK_SLIDE,
                     SoundCategory.PLAYERS, 0.6F, 1.0F);
-        } else if (contact != null) {
+
+            // --- Trigger advancements ---
+            ModCriteria.TRIM_TRIGGER.trigger(player, "resin", "stick_to_wall");
+
+            if (player.fallDistance >= 100.0F) {
+                ModCriteria.TRIM_TRIGGER.trigger(player, "resin", "long_fall");
+            }
+        }
+        else if (contact != null) {
             gd.normal = contact;
         }
+
+        ModCriteria.TRIM_TRIGGER.trigger(player, "resin", "stick_to_wall");
 
         // DECEL -> STUCK
         Vec3d vel = player.getVelocity();

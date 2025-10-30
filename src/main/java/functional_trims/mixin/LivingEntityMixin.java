@@ -1,6 +1,8 @@
 package functional_trims.mixin;
 
+import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
+import functional_trims.trim_effect.ModEffects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
@@ -34,6 +36,7 @@ public abstract class LivingEntityMixin {
         if (original.getEffectType().value().getCategory() != StatusEffectCategory.BENEFICIAL) return original;
 
         int boostedDur = Math.round(original.getDuration() * POTION_MULT);
+        ModCriteria.TRIM_TRIGGER.trigger(player, "quartz", "drink_potion");
         return new StatusEffectInstance(
                 original.getEffectType(),
                 boostedDur,
@@ -42,5 +45,6 @@ public abstract class LivingEntityMixin {
                 original.shouldShowParticles(),
                 original.shouldShowIcon()
         );
+
     }
 }

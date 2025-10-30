@@ -8,7 +8,11 @@ import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.ImpossibleCriterion;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potions;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
 import functional_trims.FunctionalTrims;
@@ -22,7 +26,11 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                                    CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, registriesFuture);
     }
-
+    private static ItemStack createPotionIcon() {
+        ItemStack potion = new ItemStack(Items.POTION);
+        potion.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(Potions.STRENGTH));
+        return potion;
+    }
     @Override
     public void generateAdvancement(RegistryWrapper.WrapperLookup registries,
                                     Consumer<AdvancementEntry> consumer) {
@@ -403,6 +411,36 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_resin_trim");
 
+        // resin sub-advancement 1
+        Advancement.Builder.create()
+                .parent(adhesiveGrip)
+                .display(
+                        Items.SLIME_BALL,
+                        Text.literal("Gettin' Sticky"),
+                        Text.literal("Stick to a wall by crouching with resin trimmed armor"),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("stick_to_wall",
+                        ModCriteria.TRIM_TRIGGER.criterion("resin", "stick_to_wall"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":resin/stick_to_wall");
+
+        // resin sub-advancement 2
+        Advancement.Builder.create()
+                .parent(adhesiveGrip)
+                .display(
+                        Items.FEATHER,
+                        Text.literal("Evel Kinievel"),
+                        Text.literal("Break a 100 block fall by sticking to a wall"),
+                        null,
+                        AdvancementFrame.CHALLENGE,
+                        true, true, false
+                )
+                .criterion("long_fall",
+                        ModCriteria.TRIM_TRIGGER.criterion("resin", "long_fall"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":resin/long_fall");
+
         // Full quartz trim advancement
         AdvancementEntry enrichedVitality = Advancement.Builder.create()
                 .parent(root)
@@ -418,6 +456,35 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_quartz_trim");
 
+        // Quartz sub-advancement 1
+        Advancement.Builder.create()
+                .parent(enrichedVitality)
+                .display(
+                        Items.GOLDEN_CARROT,
+                        Text.literal("Oversaturated"),
+                        Text.literal("Eat a golden carrot with quartz trimmed armor equipped"),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("eat_golden_carrot",
+                        ModCriteria.TRIM_TRIGGER.criterion("quartz", "eat_golden_carrot"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":quartz/eat_golden_carrot");
+
+        // Quartz sub-advancement 2
+        Advancement.Builder.create()
+                .parent(enrichedVitality)
+                .display(
+                        createPotionIcon(),
+                        Text.literal("Liquid Gains"),
+                        Text.literal("Consume a potion while wearing quartz trimmed armor"),
+                        null,
+                        AdvancementFrame.GOAL,
+                        true, true, false
+                )
+                .criterion("drink_potion",
+                        ModCriteria.TRIM_TRIGGER.criterion("quartz", "drink_potion"))
+                .build(consumer, FunctionalTrims.MOD_ID + ":quartz/drink_potion");
 
     }
 }
