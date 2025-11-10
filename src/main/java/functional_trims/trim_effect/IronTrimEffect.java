@@ -31,7 +31,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
             if (!(entity instanceof ServerPlayerEntity player)) return true;
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return true;
-            if (!(player.getWorld() instanceof ServerWorld world)) return true;
+            if (!(player.getEntityWorld() instanceof ServerWorld world)) return true;
 
             Entity srcEntity = source.getSource();
             boolean isProjectile = srcEntity instanceof ProjectileEntity;
@@ -94,7 +94,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
                     float healBack = amount * 0.5f;
                     player.heal(healBack);
 
-                    if (player.getWorld() instanceof ServerWorld world) {
+                    if (player.getEntityWorld() instanceof ServerWorld world) {
                         world.playSound(null, player.getBlockPos(),
                                 SoundEvents.BLOCK_ANVIL_PLACE,
                                 SoundCategory.PLAYERS,
@@ -110,7 +110,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             if (!blocked) return;
             if (!player.isBlocking()) return;
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return;
-            if (!(player.getWorld() instanceof ServerWorld world)) return;
+            if (!(player.getEntityWorld() instanceof ServerWorld world)) return;
 
             Entity attackerEntity = source.getAttacker();
             if (!(attackerEntity instanceof LivingEntity attacker)) return;

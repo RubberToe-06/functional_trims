@@ -54,7 +54,7 @@ public class TrimAdvancementHandler {
 
 
     private static void grantAdvancement(ServerPlayerEntity player, Identifier id) {
-        AdvancementEntry adv = player.getServer().getAdvancementLoader().get(id);
+        AdvancementEntry adv = player.getEntityWorld().getServer().getAdvancementLoader().get(id);
         if (adv != null && !player.getAdvancementTracker().getProgress(adv).isDone()) {
             player.getAdvancementTracker().grantCriterion(adv, "auto");
         }

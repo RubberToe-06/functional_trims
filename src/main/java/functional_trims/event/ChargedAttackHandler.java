@@ -39,7 +39,7 @@ public class ChargedAttackHandler {
             serverWorld.spawnEntity(lightning);
 
             // --- Knockback + Fire + Damage ---
-            Vec3d knockback = target.getPos().subtract(player.getPos()).normalize().multiply(1.5);
+            Vec3d knockback = target.getEntityPos().subtract(player.getEntityPos()).normalize().multiply(1.5);
             target.addVelocity(knockback.x, 0.6, knockback.z);
             target.velocityModified = true;
 

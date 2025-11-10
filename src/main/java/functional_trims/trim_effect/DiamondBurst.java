@@ -21,7 +21,7 @@ public final class DiamondBurst {
     private DiamondBurst() {}
 
     public static void doBurst(PlayerEntity player) {
-        if (!(player.getWorld() instanceof ServerWorld world)) return;
+        if (!(player.getEntityWorld() instanceof ServerWorld world)) return;
 
         final double px = player.getX();
         final double py = player.getY() + player.getStandingEyeHeight() * 0.5; // nice mid-body origin
@@ -65,7 +65,7 @@ public final class DiamondBurst {
             float damage = (float)(MAX_DAMAGE * falloff);
             if (damage > 0.0f) {
                 // Count as player-dealt damage so loot/xp/aggro behave naturally
-                if (e.getWorld() instanceof ServerWorld sw) {
+                if (e.getEntityWorld() instanceof ServerWorld sw) {
                     e.damage(sw, sources.playerAttack(player), damage);
                 }
             }

@@ -11,7 +11,7 @@ import net.minecraft.util.ActionResult;
 public class GoldTrimAttackListener {
     public static void register() {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (!world.isClient
+            if (!world.isClient()
                     && entity instanceof PiglinBruteEntity
                     && player instanceof ServerPlayerEntity serverPlayer
                     && TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) == 4) {

@@ -1,6 +1,8 @@
 package functional_trims.mixin;
 
 import functional_trims.FunctionalTrims;
+import functional_trims.criteria.ModCriteria;
+import functional_trims.event.TrimAdvancementHandler;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Inventory;
@@ -62,6 +64,7 @@ public abstract class LootTableMixin {
             emeraldTrim$rerolling.set(false);
             FunctionalTrims.LOGGER.info("Player {} with {} emerald trims got {} extra loot rolls",
                     player.getName().getString(), emeraldPieces, extraRolls);
+            ModCriteria.TRIM_TRIGGER.trigger(player, "emerald", "open_loot_chest");
         }
     }
 }

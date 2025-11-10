@@ -57,7 +57,7 @@ public abstract class NetheriteImmovableMixin {
             ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "netherite", "resist_explosion");
 
             // Optional: metallic "clunk" feedback
-            serverPlayer.getWorld().playSound(
+            serverPlayer.getEntityWorld().playSound(
                     null,
                     serverPlayer.getBlockPos(),
                     SoundEvents.BLOCK_NETHERITE_BLOCK_STEP,

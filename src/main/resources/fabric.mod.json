@@ -27,7 +27,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.17.2",
-		"minecraft": "~1.21.8",
+		"minecraft": "~1.21.9",
 		"java": ">=21",
 		"fabric-api": "*"
 	},
@@ -36,6 +36,6 @@
 	},
   "custom": {
     "loom:refmap_name": "functional_trims-refmap.json"
-  }
-
+  },
+  "accessWidener": "functional_trims.accesswidener"
 }

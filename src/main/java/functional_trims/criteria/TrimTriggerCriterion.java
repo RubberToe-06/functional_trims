@@ -41,14 +41,13 @@ public class TrimTriggerCriterion extends AbstractCriterion<TrimTriggerCriterion
      * Example: when redstone trim powers a block.
      */
     public void trigger(ServerPlayerEntity player, String material, String triggerType) {
-        // AbstractCriterion#trigger(ServerPlayerEntity, Predicate<T>)
-        // loops all listeners for that player and grants if the predicate returns true. :contentReference[oaicite:14]{index=14}
         Predicate<Conditions> check = cond ->
                 cond.material().equals(material) &&
                         cond.triggerType().equals(triggerType);
-
-        this.trigger(player, check);
+        super.trigger(player, check);
     }
+
+
 
     /**
      * Helper for datagen: build an AdvancementCriterion for
