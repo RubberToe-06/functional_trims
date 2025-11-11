@@ -1,9 +1,11 @@
 package functional_trims.mixin;
 
+import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EntityView;
 import net.minecraft.world.RedstoneView;
@@ -14,7 +16,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Makes blocks under trimmed players appear powered, even if vanilla logic says otherwise.
+ * Makes blocks under fully Redstone-trimmed players appear powered,
+ * and triggers an advancement when they stand on a Redstone Lamp.
  */
 @Mixin(RedstoneView.class)
 public interface RedstoneView_RedstoneTrimPowerMixin {
@@ -25,19 +28,29 @@ public interface RedstoneView_RedstoneTrimPowerMixin {
             cancellable = true
     )
     private void functionalTrims$powerUnderTrimmedPlayers(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        // Only override if vanilla logic found no power
         if (cir.getReturnValue()) return;
 
         Object self = this;
         if (!(self instanceof WorldView worldView)) return;
-        if (worldView.isClient()) return;
+        if (worldView.isClient()) return; // server only
         if (!(self instanceof EntityView entityView)) return;
 
         for (PlayerEntity player : entityView.getPlayers()) {
             BlockPos playerFeet = player.getBlockPos();
+
+            // Check if player is standing on this block
             if (playerFeet.down().equals(pos)) {
-                int redstoneTrims = TrimHelper.countTrim(player, net.minecraft.item.equipment.trim.ArmorTrimMaterials.REDSTONE);
+                int redstoneTrims = TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE);
                 if (redstoneTrims == 4) {
+                    // Force this block to appear powered
                     cir.setReturnValue(true);
+
+                    // Trigger advancement if it's a redstone lamp
+                    if (worldView.getBlockState(pos).isOf(Blocks.REDSTONE_LAMP) && player instanceof ServerPlayerEntity serverPlayer) {
+                        ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "redstone", "activate_lamp");
+                    }
+
                     return;
                 }
             }

@@ -38,10 +38,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             boolean isFallingBlock = source.isOf(net.minecraft.entity.damage.DamageTypes.FALLING_BLOCK)
                     || srcEntity instanceof FallingBlockEntity;
 
-            // If it’s neither projectile nor falling block, ignore
-            if (!isProjectile && !isFallingBlock) {
-                return true;
-            }
+            if (!isProjectile && !isFallingBlock) return true;
 
             // 50% chance to deflect
             if (player.getRandom().nextFloat() < 0.5f) {
@@ -62,20 +59,18 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
                 if (isProjectile) {
                     ProjectileEntity proj = (ProjectileEntity) srcEntity;
                     Vec3d vel = proj.getVelocity();
-
-                    // Reflect direction
                     proj.setVelocity(-vel.x, vel.y * 0.75, -vel.z);
                     proj.velocityModified = true;
 
-                    // Trigger advancement
+                    // Trigger advancement (Reflect Projectile)
                     ModCriteria.TRIM_TRIGGER.trigger(player, "iron", "reflect_projectile");
                 }
 
-                // Cancel damage in all cases
+                // Cancel damage
                 return false;
             }
 
-            return true; // no deflection
+            return true;
         });
 
         // --- Critical hit negation ---
@@ -118,7 +113,6 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             // Ignore projectiles
             if (!(source.isDirect()) || source.getSource() instanceof ProjectileEntity) return;
 
-            // Ignore faraway attackers
             double distanceSq = player.squaredDistanceTo(attacker);
             if (distanceSq > MAX_RANGE * MAX_RANGE) return;
 
@@ -141,7 +135,6 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             // --- Advancement Trigger: Knockback Attacker ---
             ModCriteria.TRIM_TRIGGER.trigger(player, "iron", "knockback_attacker");
         });
-
     }
 
     @Override
