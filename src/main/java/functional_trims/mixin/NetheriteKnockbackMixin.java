@@ -9,16 +9,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Cancels standard knockback from attacks/projectiles for Netherite-trimmed players.
+ *
+ * This does NOT cover explosions (explosions are handled via Entity#isImmuneToExplosion).
+ */
 @Mixin(LivingEntity.class)
 public class NetheriteKnockbackMixin {
 
     @Inject(method = "takeKnockback", at = @At("HEAD"), cancellable = true)
-    private void functionaltrims$cancelKnockback(double strength, double x, double z, CallbackInfo ci) {
-        LivingEntity entity = (LivingEntity)(Object)this;
+    private void functional_trims$cancelKnockback(double strength, double x, double z, CallbackInfo ci) {
+        LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (entity instanceof PlayerEntity player &&
-                TrimHelper.countTrim(player, ArmorTrimMaterials.NETHERITE) == 4) {
-            ci.cancel(); // No knockback from attacks or projectiles
+        if (entity instanceof PlayerEntity player
+                && TrimHelper.countTrim(player, ArmorTrimMaterials.NETHERITE) >= 4) {
+            ci.cancel();
         }
     }
 }
