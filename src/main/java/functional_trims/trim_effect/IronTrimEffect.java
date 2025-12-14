@@ -60,7 +60,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
                     ProjectileEntity proj = (ProjectileEntity) srcEntity;
                     Vec3d vel = proj.getVelocity();
                     proj.setVelocity(-vel.x, vel.y * 0.75, -vel.z);
-                    proj.velocityModified = true;
+                    proj.velocityDirty = true;
 
                     // Trigger advancement (Reflect Projectile)
                     ModCriteria.TRIM_TRIGGER.trigger(player, "iron", "reflect_projectile");
@@ -125,7 +125,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
 
             attacker.takeKnockback(KB_STRENGTH, -nx, -nz);
             attacker.addVelocity(0.0, Y_BOOST, 0.0);
-            attacker.velocityModified = true;
+            attacker.velocityDirty = true;
 
             world.playSound(null, player.getBlockPos(),
                     SoundEvents.BLOCK_ANVIL_PLACE,

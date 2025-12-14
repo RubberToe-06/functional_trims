@@ -75,7 +75,7 @@ public final class DiamondBurst {
 
             e.takeKnockback(kb, -nx, -nz);
             e.addVelocity(0.0, Y_BOOST * falloff, 0.0);
-            e.velocityModified = true;
+            e.velocityDirty = true;
         }
     }
 }

@@ -127,7 +127,7 @@ public class ResinTrimEffect {
             }
         }
 
-        player.velocityModified = true;
+        player.velocityDirty = true;
         gd.sinceGrip++;
 
         // Release if lost contact for a couple ticks

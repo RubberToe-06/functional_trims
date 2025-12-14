@@ -39,7 +39,6 @@ public class GoldTrimAdvancementTriggers {
                 Registry<Structure> structureRegistry =
                         world.getRegistryManager().getOrThrow(RegistryKeys.STRUCTURE);
 
-                // Correct 1.21.9 syntax: Identifier.of("minecraft", "bastion_remnant")
                 RegistryEntry<Structure> bastionEntry =
                         structureRegistry.getEntry(Identifier.of("minecraft", "bastion_remnant")).orElse(null);
                 if (bastionEntry == null) continue;

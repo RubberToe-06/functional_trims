@@ -41,7 +41,7 @@ public class ChargedAttackHandler {
             // --- Knockback + Fire + Damage ---
             Vec3d knockback = target.getEntityPos().subtract(player.getEntityPos()).normalize().multiply(1.5);
             target.addVelocity(knockback.x, 0.6, knockback.z);
-            target.velocityModified = true;
+            target.velocityDirty = true;
 
             target.damage(serverWorld, serverWorld.getDamageSources().playerAttack(player), boostedDamage);
             target.setOnFireFor(4);
