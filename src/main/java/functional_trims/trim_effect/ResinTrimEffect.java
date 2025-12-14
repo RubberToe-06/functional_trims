@@ -8,7 +8,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -20,157 +19,154 @@ import java.util.UUID;
 
 public class ResinTrimEffect {
 
-    private static final double STOP_THRESHOLD = 0.08;
-    private static final double DECAY_RATE = 0.7; // slide-to-stop factor
+    private static final double CONTACT_EPS = 0.06;
+    private static final double NUDGE = 0.002;
 
-    private static final double CONTACT_EPS = 0.06;   // how far to probe for nearby block collisions
-    private static final double NUDGE = 0.002;        // tiny nudge to keep the player “touching”
-    private static final int RELEASE_GRACE_TICKS = 6; // keep fallDistance=0 a few ticks after release
+    private static final double SLIDE_DECAY = 0.75;     // smooth slide → stop
+    private static final double STOP_Y_EPS = 0.03;
+
+    private static final int RELEASE_GRACE_TICKS = 6;
 
     private static final Map<UUID, GripData> GRIP = new HashMap<>();
 
     private static class GripData {
         boolean gripping = false;
+        boolean justStarted = false;
         Direction normal = null;
         int sinceGrip = 0;
         int releaseGrace = 0;
     }
 
     public static void register() {
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                applyResinGrip(player);
+        ServerTickEvents.START_WORLD_TICK.register((ServerWorld world) -> {
+            for (ServerPlayerEntity player : world.getPlayers()) {
+                apply(player);
             }
         });
     }
 
-    private static void applyResinGrip(ServerPlayerEntity player) {
+    private static void apply(ServerPlayerEntity player) {
         World world = player.getEntityWorld();
         if (world.isClient()) return;
 
         GripData gd = GRIP.computeIfAbsent(player.getUuid(), u -> new GripData());
 
-        // If they just released grip recently, keep clearing fall distance briefly to avoid a one-tick dump.
         if (gd.releaseGrace > 0) {
             player.fallDistance = 0;
             gd.releaseGrace--;
         }
 
-        // Require full resin-trimmed set and crouch
-        boolean fullResin = (TrimHelper.countTrim(player, ArmorTrimMaterials.RESIN) == 4);
+        boolean fullResin = TrimHelper.countTrim(player, ArmorTrimMaterials.RESIN) == 4;
         if (!fullResin || !player.isSneaking()) {
             if (gd.gripping) release(player, gd);
             return;
         }
 
-        // Check for solid contact
         Direction contact = findContactDirection(player);
-
-        // Skip grip if only touching the ground
         if (contact == Direction.DOWN) {
             if (gd.gripping) release(player, gd);
             return;
         }
 
-        if (!gd.gripping && contact == null) {
-            // Not yet gripping and no contact — do nothing.
-            return;
-        }
+        if (!gd.gripping && contact == null) return;
 
-        // Begin or maintain grip
-        // Begin or maintain grip
+        // BEGIN GRIP
         if (!gd.gripping) {
             gd.gripping = true;
+            gd.justStarted = true;
             gd.normal = contact;
             gd.sinceGrip = 0;
 
-            // 🎵 Sticky sound when grip starts
             world.playSound(null, player.getBlockPos(),
                     SoundEvents.BLOCK_HONEY_BLOCK_SLIDE,
                     SoundCategory.PLAYERS, 0.6F, 1.0F);
 
-            // --- Trigger advancements ---
             ModCriteria.TRIM_TRIGGER.trigger(player, "resin", "stick_to_wall");
-
-            if (player.fallDistance >= 100.0F) {
-                ModCriteria.TRIM_TRIGGER.trigger(player, "resin", "long_fall");
-            }
-        }
-        else if (contact != null) {
+        } else if (contact != null) {
             gd.normal = contact;
         }
 
-        ModCriteria.TRIM_TRIGGER.trigger(player, "resin", "stick_to_wall");
+        player.setNoGravity(true);
+        player.fallDistance = 0;
 
-        // DECEL -> STUCK
-        Vec3d vel = player.getVelocity();
-        double speed2 = vel.lengthSquared();
+        Vec3d v = player.getVelocity();
 
-        player.fallDistance = 0; // clear while gripping
-
-        if (speed2 > STOP_THRESHOLD * STOP_THRESHOLD) {
-            // Smooth slide-to-stop
-            player.setVelocity(vel.multiply(DECAY_RATE));
-            player.setNoGravity(true);
-        } else {
-            // Fully stuck
-            player.setVelocity(Vec3d.ZERO);
-            player.setNoGravity(true);
-
-            if (gd.normal != null) {
-                Vec3d n = new Vec3d(gd.normal.getOffsetX(), gd.normal.getOffsetY(), gd.normal.getOffsetZ());
-                player.setPosition(
-                        player.getX() - n.x * NUDGE,
-                        player.getY() - n.y * NUDGE,
-                        player.getZ() - n.z * NUDGE
-                );
-            }
+        // 🔑 One-time momentum kill (THIS fixes preserved velocity)
+        if (gd.justStarted) {
+            v = Vec3d.ZERO;
+            gd.justStarted = false;
         }
 
+        // Project velocity onto wall plane
+        Vec3d n = new Vec3d(
+                gd.normal.getOffsetX(),
+                gd.normal.getOffsetY(),
+                gd.normal.getOffsetZ()
+        );
+
+        double intoWall = v.dotProduct(n);
+        Vec3d vParallel = v.subtract(n.multiply(intoWall));
+
+        // Smooth vertical slide → stop
+        double newY = Math.abs(vParallel.y) < STOP_Y_EPS
+                ? 0.0
+                : vParallel.y * SLIDE_DECAY;
+
+        Vec3d newVel = new Vec3d(
+                vParallel.x,
+                newY,
+                vParallel.z
+        );
+
+        player.setVelocity(newVel);
         player.velocityDirty = true;
+
+        // Maintain wall contact without snapping
+        player.setPosition(
+                player.getX() - n.x * NUDGE,
+                player.getY() - n.y * NUDGE,
+                player.getZ() - n.z * NUDGE
+        );
+
         gd.sinceGrip++;
 
-        // Release if lost contact for a couple ticks
-        boolean lostContact = (findContactDirection(player) == null);
-        if (lostContact && gd.sinceGrip > 2) {
+        if (findContactDirection(player) == null && gd.sinceGrip > 2) {
             release(player, gd);
         }
     }
 
     private static void release(ServerPlayerEntity player, GripData gd) {
         player.setNoGravity(false);
-        player.fallDistance = 0; // safety: clear on release
+        player.fallDistance = 0;
+
         gd.gripping = false;
         gd.normal = null;
         gd.sinceGrip = 0;
-        gd.releaseGrace = RELEASE_GRACE_TICKS; // keep clearing fallDistance briefly
+        gd.releaseGrace = RELEASE_GRACE_TICKS;
 
-        // 🎵 Soft pop sound on release
         player.getEntityWorld().playSound(null, player.getBlockPos(),
                 SoundEvents.BLOCK_SLIME_BLOCK_FALL,
                 SoundCategory.PLAYERS, 0.4F, 1.1F);
     }
 
-    /**
-     * Returns a face direction we’re touching, or null if none.
-     * We test the player’s bounding box offset slightly toward each face; if the space is NOT empty, we’re touching that face.
-     */
     private static Direction findContactDirection(ServerPlayerEntity player) {
         World world = player.getEntityWorld();
         Box box = player.getBoundingBox();
 
         Direction best = null;
-        Vec3d v = player.getVelocity();
         double bestDot = Double.NEGATIVE_INFINITY;
         boolean touchingGround = false;
+
+        Vec3d v = player.getVelocity();
 
         for (Direction d : Direction.values()) {
             Vec3d dv = new Vec3d(d.getOffsetX(), d.getOffsetY(), d.getOffsetZ());
             Box probe = box.offset(dv.multiply(CONTACT_EPS));
+
             if (!world.isSpaceEmpty(player, probe)) {
                 if (d == Direction.DOWN) {
                     touchingGround = true;
-                    continue; // still check for walls
+                    continue;
                 }
 
                 double dot = v.dotProduct(dv.multiply(-1));
@@ -181,7 +177,6 @@ public class ResinTrimEffect {
             }
         }
 
-        // only return DOWN if *no* wall contact found
         if (best == null && touchingGround) return Direction.DOWN;
         return best;
     }
