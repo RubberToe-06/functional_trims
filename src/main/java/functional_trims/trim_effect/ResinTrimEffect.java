@@ -4,6 +4,7 @@ import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -22,8 +23,8 @@ public class ResinTrimEffect {
     private static final double CONTACT_EPS = 0.06;
     private static final double NUDGE = 0.002;
 
-    private static final double SLIDE_DECAY = 0.75;     // smooth slide → stop
-    private static final double STOP_Y_EPS = 0.03;
+    private static final double DECAY_RATE = 0.75;
+    private static final double STOP_THRESHOLD = 0.08;
 
     private static final int RELEASE_GRACE_TICKS = 6;
 
@@ -31,13 +32,13 @@ public class ResinTrimEffect {
 
     private static class GripData {
         boolean gripping = false;
-        boolean justStarted = false;
         Direction normal = null;
         int sinceGrip = 0;
         int releaseGrace = 0;
     }
 
     public static void register() {
+        // MUST be START_WORLD_TICK so velocity is applied before movement integration
         ServerTickEvents.START_WORLD_TICK.register((ServerWorld world) -> {
             for (ServerPlayerEntity player : world.getPlayers()) {
                 apply(player);
@@ -73,60 +74,71 @@ public class ResinTrimEffect {
         // BEGIN GRIP
         if (!gd.gripping) {
             gd.gripping = true;
-            gd.justStarted = true;
             gd.normal = contact;
             gd.sinceGrip = 0;
 
-            world.playSound(null, player.getBlockPos(),
+            world.playSound(
+                    null,
+                    player.getBlockPos(),
                     SoundEvents.BLOCK_HONEY_BLOCK_SLIDE,
-                    SoundCategory.PLAYERS, 0.6F, 1.0F);
+                    SoundCategory.PLAYERS,
+                    0.6F,
+                    1.0F
+            );
 
             ModCriteria.TRIM_TRIGGER.trigger(player, "resin", "stick_to_wall");
         } else if (contact != null) {
             gd.normal = contact;
         }
 
-        player.setNoGravity(true);
+        // ============================
+        // DECEL -> STUCK (1.21.11 FIXED)
+        // ============================
+
+        Vec3d vel = player.getVelocity();
         player.fallDistance = 0;
+        player.setNoGravity(true);
 
-        Vec3d v = player.getVelocity();
-
-        // 🔑 One-time momentum kill (THIS fixes preserved velocity)
-        if (gd.justStarted) {
-            v = Vec3d.ZERO;
-            gd.justStarted = false;
-        }
-
-        // Project velocity onto wall plane
-        Vec3d n = new Vec3d(
+        // Wall normal
+        Vec3d n = gd.normal == null
+                ? Vec3d.ZERO
+                : new Vec3d(
                 gd.normal.getOffsetX(),
                 gd.normal.getOffsetY(),
                 gd.normal.getOffsetZ()
         );
 
-        double intoWall = v.dotProduct(n);
-        Vec3d vParallel = v.subtract(n.multiply(intoWall));
+        // Remove velocity INTO the wall
+        double intoWall = vel.dotProduct(n);
+        if (intoWall < 0) {
+            vel = vel.subtract(n.multiply(intoWall));
+        }
 
-        // Smooth vertical slide → stop
-        double newY = Math.abs(vParallel.y) < STOP_Y_EPS
-                ? 0.0
-                : vParallel.y * SLIDE_DECAY;
+        // Strong friction toward zero (keeps subtle slide)
+        Vec3d newVel = vel.multiply(DECAY_RATE);
 
-        Vec3d newVel = new Vec3d(
-                vParallel.x,
-                newY,
-                vParallel.z
-        );
+        // Fully stick when slow
+        if (newVel.lengthSquared() < STOP_THRESHOLD * STOP_THRESHOLD) {
+            newVel = Vec3d.ZERO;
+        }
 
+        // Apply authoritative velocity (server)
         player.setVelocity(newVel);
         player.velocityDirty = true;
 
-        // Maintain wall contact without snapping
-        player.setPosition(
-                player.getX() - n.x * NUDGE,
-                player.getY() - n.y * NUDGE,
-                player.getZ() - n.z * NUDGE
+        // 🔴 CRITICAL: force client to accept new velocity
+        player.networkHandler.sendPacket(
+                new EntityVelocityUpdateS2CPacket(player.getId(), newVel)
         );
+
+        // Maintain wall contact without snapping
+        if (gd.normal != null) {
+            player.setPosition(
+                    player.getX() - n.x * NUDGE,
+                    player.getY() - n.y * NUDGE,
+                    player.getZ() - n.z * NUDGE
+            );
+        }
 
         gd.sinceGrip++;
 
@@ -144,9 +156,14 @@ public class ResinTrimEffect {
         gd.sinceGrip = 0;
         gd.releaseGrace = RELEASE_GRACE_TICKS;
 
-        player.getEntityWorld().playSound(null, player.getBlockPos(),
+        player.getEntityWorld().playSound(
+                null,
+                player.getBlockPos(),
                 SoundEvents.BLOCK_SLIME_BLOCK_FALL,
-                SoundCategory.PLAYERS, 0.4F, 1.1F);
+                SoundCategory.PLAYERS,
+                0.4F,
+                1.1F
+        );
     }
 
     private static Direction findContactDirection(ServerPlayerEntity player) {
