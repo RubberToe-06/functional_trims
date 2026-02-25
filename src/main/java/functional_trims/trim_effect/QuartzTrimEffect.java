@@ -23,6 +23,5 @@ public class QuartzTrimEffect {
     public static void register() {
         // No event callbacks needed — behavior handled in mixins.
         // This method remains for consistency in your mod init pipeline.
-        System.out.println("[Functional Trims] Quartz Trim (Pure Vitality) registered.");
     }
 }

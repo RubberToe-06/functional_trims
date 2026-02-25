@@ -1,5 +1,6 @@
 package functional_trims.mixin;
 
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.ExperienceOrbEntity;
@@ -19,11 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ExperienceOrbEntityMixin {
     @Inject(method = "onPlayerCollision", at = @At("HEAD"))
     private void functional_trims$boostExp(PlayerEntity player, CallbackInfo ci) {
-        // Skip client-side execution to avoid casting ClientPlayerEntity
-        if (player.getEntityWorld().isClient()) return;
 
-        // Ensure we’re working with a server-side player
+        if (player.getEntityWorld().isClient()) return;
         if (!(player instanceof ServerPlayerEntity serverPlayer)) return;
+        if (!FTConfig.isTrimEnabled("lapis")) return;
 
         // Count how many pieces of Lapis-trimmed armor the player has
         int trimCount = TrimHelper.countTrim(serverPlayer, ArmorTrimMaterials.LAPIS);
@@ -33,7 +33,7 @@ public class ExperienceOrbEntityMixin {
         ExperienceOrbEntity orb = (ExperienceOrbEntity) (Object) this;
 
         // Calculate and apply bonus XP
-        float bonusMultiplier = 4 * 0.125f;
+        float bonusMultiplier = 0.5f;
         int bonus = Math.max(1, (int) (orb.getValue() * bonusMultiplier));
         serverPlayer.addExperience(bonus);
 

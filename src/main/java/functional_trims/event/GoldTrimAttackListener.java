@@ -1,5 +1,6 @@
 package functional_trims.event;
 
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -10,6 +11,7 @@ import net.minecraft.util.ActionResult;
 
 public class GoldTrimAttackListener {
     public static void register() {
+        if (FTConfig.isTrimEnabled("gold")) return;
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (!world.isClient()
                     && entity instanceof PiglinBruteEntity

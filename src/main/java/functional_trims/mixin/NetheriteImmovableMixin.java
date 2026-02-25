@@ -1,5 +1,6 @@
 package functional_trims.mixin;
 
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.Entity;
@@ -30,6 +31,7 @@ public abstract class NetheriteImmovableMixin {
 
         if (!(self instanceof ServerPlayerEntity player)) return;
         if (TrimHelper.countTrim(player, ArmorTrimMaterials.NETHERITE) < 4) return;
+        if (!FTConfig.isTrimEnabled("netherite")) return;
 
         // Trigger advancement + feedback when an explosion tries to affect the player
         ModCriteria.TRIM_TRIGGER.trigger(player, "netherite", "resist_explosion");

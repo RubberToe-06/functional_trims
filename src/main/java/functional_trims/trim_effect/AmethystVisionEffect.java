@@ -1,5 +1,6 @@
 package functional_trims.trim_effect;
 
+import functional_trims.config.ConfigManager;
 import functional_trims.mixin.EntityAccessor;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -17,6 +18,7 @@ public class AmethystVisionEffect extends StatusEffect {
     private static final byte GLOW_MASK = 0x40;
     private static final Map<UUID, Set<Integer>> glowingByPlayer = new ConcurrentHashMap<>();
     private static final Map<UUID, Boolean> wasActive = new ConcurrentHashMap<>();
+    private static final float RANGE_MULTIPLIER = ConfigManager.get().effectRangeMultiplier;
 
     public AmethystVisionEffect() {
         super(StatusEffectCategory.BENEFICIAL, 0xAA00FF);
@@ -39,7 +41,7 @@ public class AmethystVisionEffect extends StatusEffect {
         glowingByPlayer.putIfAbsent(id, ConcurrentHashMap.newKeySet());
         Set<Integer> glowingIds = glowingByPlayer.get(id);
 
-        double radius = 25.0;
+        double radius = 25.0 * RANGE_MULTIPLIER;
         var box = player.getBoundingBox().expand(radius);
         var nearby = world.getEntitiesByClass(LivingEntity.class, box, e -> e != player && e.isAlive());
 

@@ -1,8 +1,10 @@
 package functional_trims.trim_effect;
 
+import functional_trims.config.ConfigManager;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import functional_trims.trim_effect.ModEffects;
+import functional_trims.config.FTConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,11 +17,13 @@ import java.util.WeakHashMap;
 public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
 
     private static final int LIGHTNING_COOLDOWN_TICKS = 200; // 10s between possible strikes
+    private static final float LIGHTNING_COOLDOWN_MULT = ConfigManager.get().lightningStrikeChanceMultiplier;
     private final WeakHashMap<UUID, Integer> cooldowns = new WeakHashMap<>();
 
     @Override
     public void onEndTick(ServerWorld world) {
         if (!world.isThundering()) return;
+        if (!FTConfig.isTrimEnabled("copper")) return;
 
         for (ServerPlayerEntity player : world.getPlayers()) {
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.COPPER)) continue;
@@ -34,7 +38,7 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
             }
 
             // small random chance each tick (≈ once every 10s average)
-            if (world.getRandom().nextInt(200) == 0) {
+            if (world.getRandom().nextInt((int)(200 / LIGHTNING_COOLDOWN_MULT) ) == 0) {
                 summonLightning(world, player);
                 cooldowns.put(id, LIGHTNING_COOLDOWN_TICKS);
             }
@@ -42,6 +46,7 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
     }
 
     private void summonLightning(ServerWorld world, ServerPlayerEntity player) {
+        if (!FTConfig.isTrimEnabled("copper")) return;
         LightningEntity lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, world);
         lightning.refreshPositionAfterTeleport(player.getX(), player.getY(), player.getZ());
         lightning.setCosmetic(true);

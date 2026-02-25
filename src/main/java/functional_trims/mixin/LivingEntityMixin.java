@@ -1,5 +1,7 @@
 package functional_trims.mixin;
 
+import functional_trims.config.ConfigManager;
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import functional_trims.trim_effect.ModEffects;
@@ -15,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    private static final float POTION_MULT = 1.25f;
+    private static final float POTION_MULT = ConfigManager.get().potionEffectDurationMultiplier;
 
     /**
      * Scale duration for beneficial effects as they're applied.
@@ -31,6 +33,7 @@ public abstract class LivingEntityMixin {
 
         if (!(self instanceof ServerPlayerEntity player)) return original;
         if (!(TrimHelper.countTrim(  player, ArmorTrimMaterials.QUARTZ) == 4)) return original;
+        if (!FTConfig.isTrimEnabled("quartz")) return original;
 
         // Only buff beneficial effects
         if (original.getEffectType().value().getCategory() != StatusEffectCategory.BENEFICIAL) return original;

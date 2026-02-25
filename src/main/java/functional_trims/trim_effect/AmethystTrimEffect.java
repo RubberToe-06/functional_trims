@@ -1,5 +1,6 @@
 package functional_trims.trim_effect;
 
+import functional_trims.config.ConfigManager;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -13,8 +14,8 @@ import java.util.UUID;
 
 public class AmethystTrimEffect implements ServerTickEvents.EndTick {
 
-    private static final int STAND_STILL_TICKS = 60; // 3 seconds
-    private static final int CROUCH_TICKS = 30;      // 1.5 seconds
+    private static final int STAND_STILL_TICKS = (int)(ConfigManager.get().motionlessSecondsBeforeEffectStanding * 20.0f); // 3 seconds
+    private static final int CROUCH_TICKS = (int)(ConfigManager.get().motionlessSecondsBeforeEffectSneaking * 20.0f);      // 1.5 seconds
     private static final int EFFECT_DURATION = -1;   // infinite
     private static final double MOVEMENT_THRESHOLD_SQ = 0.0001;
 
@@ -29,6 +30,17 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
     @Override
     public void onEndTick(net.minecraft.server.MinecraftServer server) {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            if (!ConfigManager.get().enableAll || !ConfigManager.get().amethystEnabled) {
+                // If disabled, remove effect from player
+                player.removeStatusEffect(ModEffects.AMETHYST_VISION);
+                // Reset tracking data
+                PlayerData data = PLAYER_DATA.get(player.getUuid());
+                if (data != null) {
+                    data.stillTicks = 0;
+                    data.crouchTicks = 0;
+                }
+                continue;
+            }
             boolean hasFullSet = TrimHelper.countTrim(player, ArmorTrimMaterials.AMETHYST) == 4;
 
             PlayerData data = PLAYER_DATA.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());

@@ -1,5 +1,8 @@
 package functional_trims.trim_effect;
 
+import functional_trims.config.ConfigManager;
+import functional_trims.config.FTConfig;
+import functional_trims.config.FunctionalTrimsConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -20,9 +23,11 @@ import net.minecraft.util.math.Vec3d;
 
 public class IronTrimEffect implements ServerTickEvents.EndTick {
 
-    private static final double KB_STRENGTH = 1.15;
+    private static final double KB_STRENGTH = ConfigManager.get().shieldKnockbackStrengthMultiplier;
+    private static final double CHANCE_TO_DEFLECT = ConfigManager.get().projectileReflectChance;
     private static final double Y_BOOST = 0.15;
     private static final double MAX_RANGE = 4.0;
+    private static final boolean COOLDOWN_NEGATION_ENABLED = ConfigManager.get().axeAttackResistanceEnabled;
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
@@ -32,6 +37,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             if (!(entity instanceof ServerPlayerEntity player)) return true;
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return true;
             if (!(player.getEntityWorld() instanceof ServerWorld world)) return true;
+            if (!FTConfig.isTrimEnabled("iron")) return true;
 
             Entity srcEntity = source.getSource();
             boolean isProjectile = srcEntity instanceof ProjectileEntity;
@@ -77,6 +83,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, amount, originalAmount, blocked) -> {
             if (!(entity instanceof ServerPlayerEntity player)) return;
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return;
+            if (!FTConfig.isTrimEnabled("iron")) return;
 
             Entity attacker = source.getAttacker();
             if (attacker instanceof ServerPlayerEntity pAttacker) {
@@ -106,6 +113,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             if (!player.isBlocking()) return;
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return;
             if (!(player.getEntityWorld() instanceof ServerWorld world)) return;
+            if (!FTConfig.isTrimEnabled("iron")) return;
 
             Entity attackerEntity = source.getAttacker();
             if (!(attackerEntity instanceof LivingEntity attacker)) return;
@@ -141,6 +149,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
     public void onEndTick(MinecraftServer server) {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) continue;
+            if (!FTConfig.isTrimEnabled("iron")) return;
 
             var cooldowns = player.getItemCooldownManager();
 

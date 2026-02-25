@@ -1,5 +1,7 @@
 package functional_trims.mixin;
 
+import functional_trims.config.ConfigManager;
+import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AbstractPiglinEntity;
@@ -19,6 +21,7 @@ import java.util.Optional;
  */
 @Mixin(PiglinBruteBrain.class)
 public class PiglinBruteBrainMixin {
+    public static boolean PIGLINS_DISTRACTIBLE = ConfigManager.get().distractPiglinBrutesEnabled;
 
     @Inject(
             method = "getTarget(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/mob/AbstractPiglinEntity;)Ljava/util/Optional;",
@@ -27,6 +30,8 @@ public class PiglinBruteBrainMixin {
     )
     private static void functional_trims$pacifyGoldTrimmedPlayers(ServerWorld world, AbstractPiglinEntity piglin,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
+        if (!FTConfig.isTrimEnabled("gold")) return;
+        if (!PIGLINS_DISTRACTIBLE) return;
         piglin.getBrain()
                 .getOptionalRegisteredMemory(net.minecraft.entity.ai.brain.MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER)
                 .filter(target -> target instanceof PlayerEntity player &&

@@ -1,5 +1,7 @@
 package functional_trims.mixin;
 
+import functional_trims.config.ConfigManager;
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.minecraft.component.type.FoodComponent;
@@ -20,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(HungerManager.class)
 public abstract class HungerManagerMixin {
-    private static final float FOOD_HUNGER_MULT = 1.25f; // +25% hunger (nutrition)
-    private static final float FOOD_SAT_MULT    = 1.25f; // +25% saturation
+    private static final float FOOD_HUNGER_MULT = ConfigManager.get().hungerRestoredMultiplier; // +25% hunger (nutrition)
+    private static final float FOOD_SAT_MULT    = ConfigManager.get().saturationRestoredMultiplier; // +25% saturation
 
     @Unique private @Nullable ServerPlayerEntity functionalTrims$owner;
 
-    /** Cache the owning player each tick (valid in 1.21.8). */
+    /** Cache the owning player each tick. */
     @Inject(method = "update", at = @At("HEAD"))
     private void functionalTrims$setOwner(ServerPlayerEntity player, CallbackInfo ci) {
         this.functionalTrims$owner = player;
@@ -42,6 +44,7 @@ public abstract class HungerManagerMixin {
     private void functionalTrims$quartz_boostFood(Args args) {
         if (functionalTrims$owner == null) return;
         if (!(TrimHelper.countTrim(functionalTrims$owner, ArmorTrimMaterials.QUARTZ) == 4)) return;
+        if (!FTConfig.isTrimEnabled("quartz")) return;
 
         // Check what item the player is eating
         ItemStack using = functionalTrims$owner.isUsingItem()

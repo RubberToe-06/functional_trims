@@ -1,5 +1,6 @@
 package functional_trims.mixin;
 
+import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PiglinBrain;
@@ -60,6 +61,7 @@ public class PiglinBrainMixin {
             cancellable = true
     )
     private static void functional_trims$preventAngerOnGoldTrim(ServerWorld world, PlayerEntity player, boolean blockOpen, CallbackInfo ci) {
+        if (!FTConfig.isTrimEnabled("gold")) return;
         if (TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) == 4) {
             ci.cancel();
         }
@@ -75,6 +77,7 @@ public class PiglinBrainMixin {
     )
     private static void functional_trims$goldTrimCountsAsSafe(LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValue()) return;
+        if (!FTConfig.isTrimEnabled("gold")) return;
 
         if (entity instanceof PlayerEntity player) {
             int goldTrims = TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD);

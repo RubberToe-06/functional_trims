@@ -14,6 +14,8 @@ import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 
 import java.util.Map;
 
+import static functional_trims.config.FTConfig.isTrimEnabled;
+
 public class TrimAdvancementHandler {
     public static void register() {
         // Runs once every server tick
@@ -45,12 +47,32 @@ public class TrimAdvancementHandler {
             RegistryKey<ArmorTrimMaterial> materialKey = entry.getKey();
             String advancementId = entry.getValue();
 
-            if (TrimHelper.countTrim(player, materialKey) == 4) {
+            if (TrimHelper.countTrim(player, materialKey) == 4
+                    && isTrimEnabled(materialKey)) {
                 grantAdvancement(player, Identifier.of(FunctionalTrims.MOD_ID, advancementId));
             }
         }
     }
 
+    private static boolean isTrimEnabled(RegistryKey<ArmorTrimMaterial> key) {
+        var cfg = functional_trims.config.ConfigManager.get();
+
+        if (!cfg.enableAll) return false;
+
+        if (key == ArmorTrimMaterials.AMETHYST) return cfg.amethystEnabled;
+        if (key == ArmorTrimMaterials.IRON) return cfg.ironEnabled;
+        if (key == ArmorTrimMaterials.GOLD) return cfg.goldEnabled;
+        if (key == ArmorTrimMaterials.DIAMOND) return cfg.diamondEnabled;
+        if (key == ArmorTrimMaterials.NETHERITE) return cfg.netheriteEnabled;
+        if (key == ArmorTrimMaterials.REDSTONE) return cfg.redstoneEnabled;
+        if (key == ArmorTrimMaterials.EMERALD) return cfg.emeraldEnabled;
+        if (key == ArmorTrimMaterials.LAPIS) return cfg.lapisEnabled;
+        if (key == ArmorTrimMaterials.COPPER) return cfg.copperEnabled;
+        if (key == ArmorTrimMaterials.QUARTZ) return cfg.quartzEnabled;
+        if (key == ArmorTrimMaterials.RESIN) return cfg.resinEnabled;
+
+        return true;
+    }
 
 
     private static void grantAdvancement(ServerPlayerEntity player, Identifier id) {

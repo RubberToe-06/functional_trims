@@ -1,5 +1,6 @@
 package functional_trims;
 
+import functional_trims.config.ConfigManager;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.event.ChargedAttackHandler;
 import functional_trims.event.DiamondTrimGuard;
@@ -40,5 +41,6 @@ public class FunctionalTrims implements ModInitializer {
         IronTrimEffect.register();
         ServerTickEvents.END_WORLD_TICK.register(AmethystVisionEffect::tick);
         ModCriteria.init();
+        ConfigManager.load();
     }
 }

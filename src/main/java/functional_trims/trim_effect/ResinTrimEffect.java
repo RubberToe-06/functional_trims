@@ -1,5 +1,6 @@
 package functional_trims.trim_effect;
 
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -37,9 +38,15 @@ public class ResinTrimEffect {
         int releaseGrace = 0;
     }
 
+    private static double GRIP_STRENGTH() {
+        // safety clamp so people can't set something insane
+        return Math.max(0.1, Math.min(3.0, functional_trims.config.ConfigManager.get().gripStrengthMultiplier));
+    }
+
     public static void register() {
         // MUST be START_WORLD_TICK so velocity is applied before movement integration
         ServerTickEvents.START_WORLD_TICK.register((ServerWorld world) -> {
+            if (!FTConfig.isTrimEnabled("resin")) return;
             for (ServerPlayerEntity player : world.getPlayers()) {
                 apply(player);
             }
@@ -114,8 +121,9 @@ public class ResinTrimEffect {
             vel = vel.subtract(n.multiply(intoWall));
         }
 
-        // Strong friction toward zero (keeps subtle slide)
-        Vec3d newVel = vel.multiply(DECAY_RATE);
+        double grip = GRIP_STRENGTH();
+        double effectiveDecay = Math.pow(DECAY_RATE, grip);
+        Vec3d newVel = vel.multiply(effectiveDecay);
 
         // Fully stick when slow
         if (newVel.lengthSquared() < STOP_THRESHOLD * STOP_THRESHOLD) {
@@ -126,7 +134,7 @@ public class ResinTrimEffect {
         player.setVelocity(newVel);
         player.velocityDirty = true;
 
-        // 🔴 CRITICAL: force client to accept new velocity
+        // force client to accept new velocity
         player.networkHandler.sendPacket(
                 new EntityVelocityUpdateS2CPacket(player.getId(), newVel)
         );

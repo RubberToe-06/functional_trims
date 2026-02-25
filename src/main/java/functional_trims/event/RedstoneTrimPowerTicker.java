@@ -1,5 +1,6 @@
 package functional_trims.event;
 
+import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
@@ -23,6 +24,7 @@ public class RedstoneTrimPowerTicker {
     }
 
     private static void onWorldTick(ServerWorld world) {
+        if (!FTConfig.isTrimEnabled("redstone")) return;
         // Mark blocks that should remain powered this tick
         Set<BlockPos> activeThisTick = new HashSet<>();
 

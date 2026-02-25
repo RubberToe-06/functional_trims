@@ -1,5 +1,6 @@
 package functional_trims.mixin;
 
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.minecraft.block.Blocks;
@@ -28,13 +29,13 @@ public interface RedstoneView_RedstoneTrimPowerMixin {
             cancellable = true
     )
     private void functionalTrims$powerUnderTrimmedPlayers(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        Object self = this;
         // Only override if vanilla logic found no power
         if (cir.getReturnValue()) return;
-
-        Object self = this;
         if (!(self instanceof WorldView worldView)) return;
         if (worldView.isClient()) return; // server only
         if (!(self instanceof EntityView entityView)) return;
+        if (!FTConfig.isTrimEnabled("redstone")) return;
 
         for (PlayerEntity player : entityView.getPlayers()) {
             BlockPos playerFeet = player.getBlockPos();

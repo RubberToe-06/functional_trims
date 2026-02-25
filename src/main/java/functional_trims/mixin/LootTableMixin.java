@@ -1,6 +1,8 @@
 package functional_trims.mixin;
 
 import functional_trims.FunctionalTrims;
+import functional_trims.config.ConfigManager;
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.event.TrimAdvancementHandler;
 import functional_trims.func.TrimHelper;
@@ -28,6 +30,8 @@ import java.util.List;
 @Mixin(LootTable.class)
 public abstract class LootTableMixin {
     private static final ThreadLocal<Boolean> emeraldTrim$rerolling = ThreadLocal.withInitial(() -> false);
+    private static final float CHANCE_FOR_FIRST_REROLL = ConfigManager.get().percentChanceForExtraRoll1;
+    private static final float CHANCE_FOR_SECOND_REROLL = ConfigManager.get().percentChanceForExtraRoll2;
 
     @Inject(
             method = "supplyInventory(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/loot/context/LootWorldContext;J)V",
@@ -38,6 +42,7 @@ public abstract class LootTableMixin {
 
         Entity opener = ctx.getParameters().getNullable(LootContextParameters.THIS_ENTITY);
         if (!(opener instanceof ServerPlayerEntity player)) return;
+        if (!FTConfig.isTrimEnabled("emerald")) return;
 
         int emeraldPieces = TrimHelper.countTrim(player, ArmorTrimMaterials.EMERALD);
         if (emeraldPieces != 4) return;
@@ -49,9 +54,9 @@ public abstract class LootTableMixin {
             extraRolls = 0;
 
             switch (emeraldPieces) {
-                case 4 -> { // Guaranteed +1, 50% chance for a 2nd
-                    extraRolls = 1;
-                    if (random.nextFloat() < 0.50f) extraRolls++;
+                case 4 -> {
+                    if (random.nextFloat() < CHANCE_FOR_FIRST_REROLL) extraRolls++;
+                    if (random.nextFloat() < CHANCE_FOR_SECOND_REROLL) extraRolls++;
                 }
             }
 

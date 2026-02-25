@@ -1,5 +1,7 @@
 package functional_trims.event;
 
+import functional_trims.config.ConfigManager;
+import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.trim_effect.ModEffects;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -14,6 +16,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Vec3d;
 
 public class ChargedAttackHandler {
+    private static final float BOOSTED_ATTACK_MULTIPLIER = ConfigManager.get().chargedStrikeDamageMultiplier;
 
     public static void register() {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
@@ -22,11 +25,11 @@ public class ChargedAttackHandler {
             if (!(world instanceof ServerWorld serverWorld)) return ActionResult.PASS;
             if (!player.hasStatusEffect(ModEffects.CHARGED)) return ActionResult.PASS;
             if (!(entity instanceof LivingEntity target)) return ActionResult.PASS;
+            if (!FTConfig.isTrimEnabled("copper")) return ActionResult.PASS;
 
             // --- Base damage model ---
             double fall = Math.abs(player.fallDistance);
             float boostedDamage = (float)(7.5F + fall * 0.5F); // +0.5 per block fallen
-            System.out.println("Effective Mace Smash Damage: " + boostedDamage);
 
             // --- Lightning strike ---
             LightningEntity lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, serverWorld);
@@ -43,7 +46,7 @@ public class ChargedAttackHandler {
             target.addVelocity(knockback.x, 0.6, knockback.z);
             target.velocityDirty = true;
 
-            target.damage(serverWorld, serverWorld.getDamageSources().playerAttack(player), boostedDamage);
+            target.damage(serverWorld, serverWorld.getDamageSources().playerAttack(player), boostedDamage * BOOSTED_ATTACK_MULTIPLIER);
             target.setOnFireFor(4);
 
             // ✅ Advancement trigger

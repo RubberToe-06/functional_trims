@@ -1,5 +1,6 @@
 package functional_trims.mixin;
 
+import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,6 +21,7 @@ public class NetheriteKnockbackMixin {
     @Inject(method = "takeKnockback", at = @At("HEAD"), cancellable = true)
     private void functional_trims$cancelKnockback(double strength, double x, double z, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
+        if (!FTConfig.isTrimEnabled("netherite")) return;
 
         if (entity instanceof PlayerEntity player
                 && TrimHelper.countTrim(player, ArmorTrimMaterials.NETHERITE) >= 4) {
