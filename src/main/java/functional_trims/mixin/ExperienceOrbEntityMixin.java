@@ -5,9 +5,10 @@ import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -18,6 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(ExperienceOrbEntity.class)
 public class ExperienceOrbEntityMixin {
+
+    @Shadow
+    private int amount; // shadowing private field
+
     @Inject(method = "onPlayerCollision", at = @At("HEAD"))
     private void functional_trims$boostExp(PlayerEntity player, CallbackInfo ci) {
 
@@ -25,16 +30,10 @@ public class ExperienceOrbEntityMixin {
         if (!(player instanceof ServerPlayerEntity serverPlayer)) return;
         if (!FTConfig.isTrimEnabled("lapis")) return;
 
-        // Count how many pieces of Lapis-trimmed armor the player has
-        int trimCount = TrimHelper.countTrim(serverPlayer, ArmorTrimMaterials.LAPIS);
-        if (trimCount < 4) return; // Require full set
+        if (TrimHelper.countTrim(serverPlayer, ArmorTrimMaterials.LAPIS) < 4) return;
 
-        // Reference to the orb being picked up
-        ExperienceOrbEntity orb = (ExperienceOrbEntity) (Object) this;
-
-        // Calculate and apply bonus XP
         float bonusMultiplier = 0.5f;
-        int bonus = Math.max(1, (int) (orb.getValue() * bonusMultiplier));
+        int bonus = Math.max(1, (int)(this.amount * bonusMultiplier));
         serverPlayer.addExperience(bonus);
 
         // Trigger criteria for advancements

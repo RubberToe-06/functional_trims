@@ -33,7 +33,6 @@ public class FunctionalTrims implements ModInitializer {
         RedstoneTrimPowerTicker.register();
         TrimAdvancementHandler.register();
         DiamondTrimGuard.register();
-        ResinTrimEffect.register();
         AmethystTrimEffect.register();
         ServerTickEvents.END_WORLD_TICK.register(new CopperTrimEffect());
         ChargedAttackHandler.register();
