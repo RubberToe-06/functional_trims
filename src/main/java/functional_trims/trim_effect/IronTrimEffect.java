@@ -2,7 +2,6 @@ package functional_trims.trim_effect;
 
 import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
-import functional_trims.config.FunctionalTrimsConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -36,7 +35,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
             if (!(entity instanceof ServerPlayerEntity player)) return true;
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return true;
-            if (!(player.getEntityWorld() instanceof ServerWorld world)) return true;
+            if (!(player.getWorld() instanceof ServerWorld world)) return true;
             if (!FTConfig.isTrimEnabled("iron")) return true;
 
             Entity srcEntity = source.getSource();
@@ -96,7 +95,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
                     float healBack = amount * 0.5f;
                     player.heal(healBack);
 
-                    if (player.getEntityWorld() instanceof ServerWorld world) {
+                    if (player.getWorld() instanceof ServerWorld world) {
                         world.playSound(null, player.getBlockPos(),
                                 SoundEvents.BLOCK_ANVIL_PLACE,
                                 SoundCategory.PLAYERS,
@@ -112,7 +111,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             if (!blocked) return;
             if (!player.isBlocking()) return;
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return;
-            if (!(player.getEntityWorld() instanceof ServerWorld world)) return;
+            if (!(player.getWorld() instanceof ServerWorld world)) return;
             if (!FTConfig.isTrimEnabled("iron")) return;
 
             Entity attackerEntity = source.getAttacker();

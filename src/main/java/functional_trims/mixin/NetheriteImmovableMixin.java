@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Handles explosion knockback for Netherite-trimmed players safely.
- *
  * NOTE:
  * - Explosion knockback does NOT use LivingEntity#takeKnockback.
  * - The explosion pipeline checks Entity#isImmuneToExplosion(Explosion).
@@ -36,7 +35,7 @@ public abstract class NetheriteImmovableMixin {
         // Trigger advancement + feedback when an explosion tries to affect the player
         ModCriteria.TRIM_TRIGGER.trigger(player, "netherite", "resist_explosion");
 
-        player.getEntityWorld().playSound(
+        player.getWorld().playSound(
                 null,
                 player.getBlockPos(),
                 SoundEvents.BLOCK_NETHERITE_BLOCK_STEP,

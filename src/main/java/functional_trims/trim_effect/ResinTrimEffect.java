@@ -54,7 +54,7 @@ public class ResinTrimEffect {
     }
 
     private static void apply(ServerPlayerEntity player) {
-        World world = player.getEntityWorld();
+        World world = player.getWorld();
         if (world.isClient()) return;
 
         GripData gd = GRIP.computeIfAbsent(player.getUuid(), u -> new GripData());
@@ -164,7 +164,7 @@ public class ResinTrimEffect {
         gd.sinceGrip = 0;
         gd.releaseGrace = RELEASE_GRACE_TICKS;
 
-        player.getEntityWorld().playSound(
+        player.getWorld().playSound(
                 null,
                 player.getBlockPos(),
                 SoundEvents.BLOCK_SLIME_BLOCK_FALL,
@@ -175,7 +175,7 @@ public class ResinTrimEffect {
     }
 
     private static Direction findContactDirection(ServerPlayerEntity player) {
-        World world = player.getEntityWorld();
+        World world = player.getWorld();
         Box box = player.getBoundingBox();
 
         Direction best = null;

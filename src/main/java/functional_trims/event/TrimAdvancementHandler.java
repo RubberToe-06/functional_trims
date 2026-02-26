@@ -1,7 +1,6 @@
 package functional_trims.event;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
 import net.minecraft.registry.RegistryKey;
@@ -14,7 +13,6 @@ import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 
 import java.util.Map;
 
-import static functional_trims.config.FTConfig.isTrimEnabled;
 
 public class TrimAdvancementHandler {
     public static void register() {
@@ -76,7 +74,7 @@ public class TrimAdvancementHandler {
 
 
     private static void grantAdvancement(ServerPlayerEntity player, Identifier id) {
-        AdvancementEntry adv = player.getEntityWorld().getServer().getAdvancementLoader().get(id);
+        AdvancementEntry adv = player.getWorld().getServer().getAdvancementLoader().get(id);
         if (adv != null && !player.getAdvancementTracker().getProgress(adv).isDone()) {
             player.getAdvancementTracker().grantCriterion(adv, "auto");
         }

@@ -21,7 +21,7 @@ public class ExperienceOrbEntityMixin {
     @Inject(method = "onPlayerCollision", at = @At("HEAD"))
     private void functional_trims$boostExp(PlayerEntity player, CallbackInfo ci) {
 
-        if (player.getEntityWorld().isClient()) return;
+        if (player.getWorld().isClient()) return;
         if (!(player instanceof ServerPlayerEntity serverPlayer)) return;
         if (!FTConfig.isTrimEnabled("lapis")) return;
 

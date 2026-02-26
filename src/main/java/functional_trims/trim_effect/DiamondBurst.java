@@ -25,7 +25,7 @@ public final class DiamondBurst {
     public static void doBurst(PlayerEntity player) {
         // Require server player + server world
         if (!(player instanceof ServerPlayerEntity serverPlayer)) return;
-        if (!(serverPlayer.getEntityWorld() instanceof ServerWorld world)) return;
+        if (!(serverPlayer.getWorld() instanceof ServerWorld world)) return;
 
         final double px = serverPlayer.getX();
         final double py = serverPlayer.getY() + serverPlayer.getStandingEyeHeight() * 0.5;
