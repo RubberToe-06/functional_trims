@@ -1,13 +1,11 @@
 package functional_trims.func;
 
-import functional_trims.FunctionalTrims;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.trim.ArmorTrim;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.item.trim.ArmorTrimMaterial;
 import net.minecraft.registry.RegistryKey;
 
 public class TrimHelper {
@@ -23,7 +21,7 @@ public class TrimHelper {
             ItemStack stack = player.getEquippedStack(slot);
             if (!stack.isEmpty()) {
                 ArmorTrim trim = stack.get(DataComponentTypes.TRIM);
-                if (trim != null && trim.material().matchesKey(materialKey)) {
+                if (trim != null && trim.getMaterial().matchesKey(materialKey)) {
                     trimCount++;
                 }
             }
@@ -44,7 +42,7 @@ public class TrimHelper {
             ItemStack stack = player.getEquippedStack(slot);
             if (!stack.isEmpty()) {
                 ArmorTrim trim = stack.get(DataComponentTypes.TRIM);
-                if (trim != null && trim.material().matchesKey(materialKey)) {
+                if (trim != null && trim.getMaterial().matchesKey(materialKey)) {
                     trimCount++;
                 }
             }

@@ -5,7 +5,7 @@ import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EntityView;

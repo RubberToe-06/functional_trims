@@ -19,7 +19,6 @@ public final class FunctionalTrimsConfig {
     public boolean quartzEnabled = true;
     public boolean amethystEnabled = true;
     public boolean copperEnabled = true;
-    public boolean resinEnabled = true;
 
     //-----------------------------
     // Trim Specific Settings
@@ -64,8 +63,5 @@ public final class FunctionalTrimsConfig {
     public float lightningStrikeChanceMultiplier = 1.0f;
     public float chargedEffectDuration = 60.0f;
     public float chargedStrikeDamageMultiplier = 1.5f;
-
-    // Resin
-    public float gripStrengthMultiplier = 1.0f;
 
 }

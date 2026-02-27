@@ -3,11 +3,11 @@ package functional_trims.mixin;
 import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.mob.PiglinBrain;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,20 +31,19 @@ public class PiglinBrainMixin {
      * and immediately clear any anger/pathing toward them.
      */
     @Inject(
-            method = "getPreferredTarget(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/mob/PiglinEntity;)Ljava/util/Optional;",
+            method = "getPreferredTarget(Lnet/minecraft/entity/mob/PiglinEntity;)Ljava/util/Optional;",
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerWorld world, PiglinEntity piglin,
+    private static void functional_trims$pacifyGoldTrimmedPlayers(PiglinEntity piglin,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
         piglin.getBrain()
-                .getOptionalRegisteredMemory(net.minecraft.entity.ai.brain.MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER)
+                .getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER)
                 .filter(target -> target instanceof PlayerEntity player &&
                         TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) > 0)
                 .ifPresent(target -> {
-                    // Clear anger memories, but don't freeze their AI
-                    piglin.getBrain().forget(net.minecraft.entity.ai.brain.MemoryModuleType.ANGRY_AT);
-                    piglin.getBrain().forget(net.minecraft.entity.ai.brain.MemoryModuleType.ATTACK_TARGET);
+                    piglin.getBrain().forget(MemoryModuleType.ANGRY_AT);
+                    piglin.getBrain().forget(MemoryModuleType.ATTACK_TARGET);
                     piglin.setAttacking(false);
 
                     cir.setReturnValue(Optional.empty());
@@ -56,11 +55,11 @@ public class PiglinBrainMixin {
      * Prevent anger when gold-trimmed players open chests or mine gold-related blocks.
      */
     @Inject(
-            method = "onGuardedBlockInteracted(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/player/PlayerEntity;Z)V",
+            method = "onGuardedBlockInteracted(Lnet/minecraft/entity/player/PlayerEntity;Z)V",
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$preventAngerOnGoldTrim(ServerWorld world, PlayerEntity player, boolean blockOpen, CallbackInfo ci) {
+    private static void functional_trims$preventAngerOnGoldTrim(PlayerEntity player, boolean blockOpen, CallbackInfo ci) {
         if (!FTConfig.isTrimEnabled("gold")) return;
         if (TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) == 4) {
             ci.cancel();
@@ -71,7 +70,7 @@ public class PiglinBrainMixin {
      * Extend vanilla logic: treat full gold-trimmed armor as “piglin-safe”.
      */
     @Inject(
-            method = "isWearingPiglinSafeArmor(Lnet/minecraft/entity/LivingEntity;)Z",
+            method = "wearsGoldArmor(Lnet/minecraft/entity/LivingEntity;)Z",
             at = @At("RETURN"),
             cancellable = true
     )

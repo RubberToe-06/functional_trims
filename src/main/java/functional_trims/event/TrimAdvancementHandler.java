@@ -3,14 +3,14 @@ package functional_trims.event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
+import net.minecraft.item.trim.ArmorTrimMaterial;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import functional_trims.FunctionalTrims;
 import functional_trims.func.TrimHelper;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 
 import java.util.Map;
 
@@ -39,8 +39,7 @@ public class TrimAdvancementHandler {
                 Map.entry(ArmorTrimMaterials.IRON, "full_iron_trim"),
                 Map.entry(ArmorTrimMaterials.COPPER, "full_copper_trim"),
                 Map.entry(ArmorTrimMaterials.AMETHYST, "full_amethyst_trim"),
-                Map.entry(ArmorTrimMaterials.QUARTZ, "full_quartz_trim"),
-                Map.entry(ArmorTrimMaterials.RESIN, "full_resin_trim")
+                Map.entry(ArmorTrimMaterials.QUARTZ, "full_quartz_trim")
         );
 
         for (var entry : trimToAdvancement.entrySet()) {
@@ -69,7 +68,6 @@ public class TrimAdvancementHandler {
         if (key == ArmorTrimMaterials.LAPIS) return cfg.lapisEnabled;
         if (key == ArmorTrimMaterials.COPPER) return cfg.copperEnabled;
         if (key == ArmorTrimMaterials.QUARTZ) return cfg.quartzEnabled;
-        if (key == ArmorTrimMaterials.RESIN) return cfg.resinEnabled;
 
         return true;
     }

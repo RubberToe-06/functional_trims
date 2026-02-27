@@ -4,7 +4,7 @@ import functional_trims.config.ConfigManager;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
@@ -44,7 +44,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
             boolean hasFullSet = TrimHelper.countTrim(player, ArmorTrimMaterials.AMETHYST) == 4;
 
             PlayerData data = PLAYER_DATA.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());
-            Vec3d currentPos = player.getEntityPos();
+            Vec3d currentPos = player.getPos();
             double distSq = currentPos.squaredDistanceTo(data.lastPos);
 
             boolean isMoving = distSq > MOVEMENT_THRESHOLD_SQ;
