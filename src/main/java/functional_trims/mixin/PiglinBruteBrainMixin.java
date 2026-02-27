@@ -21,7 +21,6 @@ import java.util.Optional;
  */
 @Mixin(PiglinBruteBrain.class)
 public class PiglinBruteBrainMixin {
-    public static boolean PIGLINS_DISTRACTIBLE = ConfigManager.get().distractPiglinBrutesEnabled;
 
     @Inject(
             method = "getTarget(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/mob/AbstractPiglinEntity;)Ljava/util/Optional;",
@@ -30,6 +29,7 @@ public class PiglinBruteBrainMixin {
     )
     private static void functional_trims$pacifyGoldTrimmedPlayers(ServerWorld world, AbstractPiglinEntity piglin,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
+        boolean PIGLINS_DISTRACTIBLE = ConfigManager.get().distractPiglinBrutesEnabled;
         if (!FTConfig.isTrimEnabled("gold")) return;
         if (!PIGLINS_DISTRACTIBLE) return;
         piglin.getBrain()
