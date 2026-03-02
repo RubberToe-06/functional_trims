@@ -40,7 +40,10 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         Items.SMITHING_TABLE,
                         Text.literal("Functional Trims"),
                         Text.literal("Harness the power of armor trims!"),
-                        Identifier.of(FunctionalTrims.MOD_ID, "gui/advancements/backgrounds/functional_trims"),
+                        Identifier.of(
+                                FunctionalTrims.MOD_ID,
+                                "textures/gui/advancements/backgrounds/functional_trims.png"
+                        ),
                         AdvancementFrame.TASK,
                         true, true, false
                 )
