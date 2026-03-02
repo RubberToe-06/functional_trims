@@ -1,6 +1,5 @@
 package functional_trims.trim_effect;
 
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 
 /**
  * Quartz Trim — "Pure Vitality"

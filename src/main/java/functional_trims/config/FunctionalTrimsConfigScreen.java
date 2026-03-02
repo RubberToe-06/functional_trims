@@ -310,28 +310,6 @@ public final class FunctionalTrimsConfigScreen {
                 ).build()
         );
 
-        // ----------------
-        // Resin
-        // ----------------
-        materials.addEntry(
-                entry.startSubCategory(
-                        Text.literal("Resin"),
-                        List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.resinEnabled)
-                                        .setDefaultValue(true)
-                                        .setSaveConsumer(val -> cfg.resinEnabled = val)
-                                        .build(),
-
-                                entry.startFloatField(Text.literal("Grip Strength Multiplier"), cfg.gripStrengthMultiplier)
-                                        .setDefaultValue(1.0f)
-                                        .setMin(0.1f)
-                                        .setMax(3.0f)
-                                        .setSaveConsumer(val -> cfg.gripStrengthMultiplier = val)
-                                        .build()
-                        )
-                ).build()
-        );
-
         return builder.build();
     }
 }

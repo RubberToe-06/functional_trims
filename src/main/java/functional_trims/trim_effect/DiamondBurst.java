@@ -67,7 +67,7 @@ public final class DiamondBurst {
             float damage = (float)(MAX_DAMAGE * falloff);
             if (damage > 0.0f) {
                 // damage(ServerWorld, DamageSource, float)
-                e.damage(world, sources.playerAttack(serverPlayer), damage);
+                e.damage(sources.playerAttack(serverPlayer), damage);
             }
 
             double nx = dx / dist, nz = dz / dist;

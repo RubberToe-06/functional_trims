@@ -182,7 +182,7 @@ Click a material below to view its effect in detail.
 </details>
 
 <details>
-  <summary><b>Resin</b></summary>
+  <summary><b>Resin (1.21.2+)</b></summary>
 
   <div align="center">
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/b/b8/Resin_Brick_JE1_BE1.webp/revision/latest?cb=20251006025521" alt="Resin Brick" width="200" style="border-radius:10px;">

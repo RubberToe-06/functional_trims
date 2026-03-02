@@ -12,7 +12,7 @@ import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Items;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -80,68 +80,59 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         });
 
         // --- Critical hit negation ---
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, amount, originalAmount, blocked) -> {
-            if (!(entity instanceof ServerPlayerEntity player)) return;
-            if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return;
-            if (!FTConfig.isTrimEnabled("iron")) return;
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+            if (!(entity instanceof ServerPlayerEntity player)) return true;
+            if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return true;
+            if (!FTConfig.isTrimEnabled("iron")) return true;
 
             Entity attacker = source.getAttacker();
-            if (attacker instanceof ServerPlayerEntity pAttacker) {
-                boolean isCrit = pAttacker.fallDistance > 0.0F
-                        && !pAttacker.isOnGround()
-                        && !pAttacker.isClimbing()
-                        && !pAttacker.isTouchingWater();
+            if (!(attacker instanceof ServerPlayerEntity pAttacker)) return true;
 
-                if (isCrit) {
-                    float healBack = amount * 0.5f;
-                    player.heal(healBack);
+            boolean isCrit = pAttacker.fallDistance > 0.0F
+                    && !pAttacker.isOnGround()
+                    && !pAttacker.isClimbing()
+                    && !pAttacker.isTouchingWater();
 
-                    if (player.getEntityWorld() instanceof ServerWorld world) {
-                        world.playSound(null, player.getBlockPos(),
-                                SoundEvents.BLOCK_ANVIL_PLACE,
-                                SoundCategory.PLAYERS,
-                                0.3f, 1.15f);
-                    }
-                }
+            if (isCrit && player.getEntityWorld() instanceof ServerWorld world) {
+                world.getServer().execute(() ->
+                        entity.damage(source, amount * 0.5f)
+                );
+                world.playSound(null, player.getBlockPos(),
+                        SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS, 0.3f, 1.15f);
+                return false;
             }
+            return true;
         });
 
         // --- Knockback on block ---
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, amount, originalAmount, blocked) -> {
-            if (!(entity instanceof ServerPlayerEntity player)) return;
-            if (!blocked) return;
-            if (!player.isBlocking()) return;
-            if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return;
-            if (!(player.getEntityWorld() instanceof ServerWorld world)) return;
-            if (!FTConfig.isTrimEnabled("iron")) return;
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+            if (!(entity instanceof ServerPlayerEntity player)) return true;
+            if (!player.isBlocking()) return true;
+            if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) return true;
+            if (!(player.getEntityWorld() instanceof ServerWorld world)) return true;
+            if (!FTConfig.isTrimEnabled("iron")) return true;
 
             Entity attackerEntity = source.getAttacker();
-            if (!(attackerEntity instanceof LivingEntity attacker)) return;
-
-            // Ignore projectiles
-            if (!(source.isDirect()) || source.getSource() instanceof ProjectileEntity) return;
+            if (!(attackerEntity instanceof LivingEntity attacker)) return true;
+            if (!source.isDirect() || source.getSource() instanceof ProjectileEntity) return true;
 
             double distanceSq = player.squaredDistanceTo(attacker);
-            if (distanceSq > MAX_RANGE * MAX_RANGE) return;
+            if (distanceSq > MAX_RANGE * MAX_RANGE) return true;
 
             double dx = attacker.getX() - player.getX();
             double dz = attacker.getZ() - player.getZ();
-            double dist = Math.sqrt(dx * dx + dz * dz);
-            if (dist < 1.0e-6) dist = 1.0e-6;
-            double nx = dx / dist;
-            double nz = dz / dist;
+            double dist = Math.max(Math.sqrt(dx * dx + dz * dz), 1.0e-6);
 
-            attacker.takeKnockback(KB_STRENGTH, -nx, -nz);
+            attacker.takeKnockback(KB_STRENGTH, -(dx / dist), -(dz / dist));
             attacker.addVelocity(0.0, Y_BOOST, 0.0);
             attacker.velocityDirty = true;
 
             world.playSound(null, player.getBlockPos(),
-                    SoundEvents.BLOCK_ANVIL_PLACE,
-                    SoundCategory.PLAYERS,
-                    0.3f, 1.15f);
+                    SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS, 0.3f, 1.15f);
 
             // --- Advancement Trigger: Knockback Attacker ---
             ModCriteria.TRIM_TRIGGER.trigger(player, "iron", "knockback_attacker");
+            return true;
         });
     }
 
@@ -151,16 +142,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) continue;
             if (!FTConfig.isTrimEnabled("iron")) return;
 
-            var cooldowns = player.getItemCooldownManager();
-
-            if (player.getOffHandStack().isOf(Items.SHIELD)) {
-                Identifier group = cooldowns.getGroup(player.getOffHandStack());
-                if (group != null) cooldowns.remove(group);
-            }
-            if (player.getMainHandStack().isOf(Items.SHIELD)) {
-                Identifier group = cooldowns.getGroup(player.getMainHandStack());
-                if (group != null) cooldowns.remove(group);
-            }
+            player.getItemCooldownManager().remove(Items.SHIELD);
         }
     }
 }

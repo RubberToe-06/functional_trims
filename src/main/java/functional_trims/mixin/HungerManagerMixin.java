@@ -6,10 +6,11 @@ import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.player.HungerManager;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,8 +30,12 @@ public abstract class HungerManagerMixin {
 
     /** Cache the owning player each tick. */
     @Inject(method = "update", at = @At("HEAD"))
-    private void functionalTrims$setOwner(ServerPlayerEntity player, CallbackInfo ci) {
-        this.functionalTrims$owner = player;
+    private void functionalTrims$setOwner(PlayerEntity player, CallbackInfo ci) {
+        if (player instanceof ServerPlayerEntity sp) {
+            this.functionalTrims$owner = sp;
+        } else {
+            this.functionalTrims$owner = null;
+        }
     }
 
     /**

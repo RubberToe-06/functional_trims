@@ -6,7 +6,7 @@ import functional_trims.func.TrimHelper;
 import functional_trims.trim_effect.ModEffects;
 import functional_trims.config.FTConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.server.world.ServerWorld;

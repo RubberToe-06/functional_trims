@@ -3,11 +3,10 @@ package functional_trims.event;
 import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.block.WireOrientation;
 
 import java.util.*;
 
@@ -73,11 +72,11 @@ public class RedstoneTrimPowerTicker {
 
     private static void refreshNeighbors(ServerWorld world, BlockPos pos, boolean on) {
         var block = world.getBlockState(pos).getBlock();
-        world.updateNeighborsAlways(pos, block, (WireOrientation) null);
+        world.updateNeighborsAlways(pos, block);
         for (Direction dir : Direction.values()) {
             BlockPos neighbor = pos.offset(dir);
             if (world.isChunkLoaded(neighbor)) {
-                world.updateNeighborsAlways(neighbor, block, (WireOrientation) null);
+                world.updateNeighborsAlways(neighbor, block);
             }
         }
     }

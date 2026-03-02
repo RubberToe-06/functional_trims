@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 
 import net.minecraft.entity.mob.PiglinBruteEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.item.trim.ArmorTrimMaterials;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -35,9 +35,10 @@ public class GoldTrimAdvancementTriggers {
 
                 BlockPos pos = player.getBlockPos();
 
-                // Use getOrThrow with RegistryKeys.STRUCTURE
                 Registry<Structure> structureRegistry =
-                        world.getRegistryManager().getOrThrow(RegistryKeys.STRUCTURE);
+                        world.getRegistryManager()
+                                .getOptional(RegistryKeys.STRUCTURE)
+                                .orElseThrow();
 
                 RegistryEntry<Structure> bastionEntry =
                         structureRegistry.getEntry(Identifier.of("minecraft", "bastion_remnant")).orElse(null);

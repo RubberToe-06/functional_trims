@@ -17,7 +17,6 @@ public final class FTConfig {
             case "lapis" -> cfg.lapisEnabled;
             case "copper" -> cfg.copperEnabled;
             case "quartz" -> cfg.quartzEnabled;
-            case "resin" -> cfg.resinEnabled;
             default -> true;
         };
     }

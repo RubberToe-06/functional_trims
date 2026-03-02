@@ -31,8 +31,9 @@ public class AmethystVisionEffect extends StatusEffect {
     }
 
     @Override
-    public boolean applyUpdateEffect(ServerWorld world, LivingEntity entity, int amplifier) {
+    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (!(entity instanceof ServerPlayerEntity player)) return false;
+        if (!(player.getEntityWorld() instanceof ServerWorld world)) return false;
         UUID id = player.getUuid();
 
         // mark as active this tick
@@ -111,6 +112,6 @@ public class AmethystVisionEffect extends StatusEffect {
 
         DataTracker.SerializedEntry<Byte> entry = DataTracker.SerializedEntry.of(FLAGS, clientFlags);
         player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(target.getId(),
-                List.<DataTracker.SerializedEntry<?>>of(entry)));
+                List.of(entry)));
     }
 }
