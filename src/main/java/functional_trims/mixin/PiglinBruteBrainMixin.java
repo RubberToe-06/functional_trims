@@ -36,7 +36,7 @@ public class PiglinBruteBrainMixin {
                 .getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER)
                 .filter(target -> target instanceof PlayerEntity player &&
                         TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) == 4)
-                .ifPresent(target -> {
+                .ifPresent(_ -> {
                     piglin.getBrain().forget(MemoryModuleType.ANGRY_AT);
                     piglin.getBrain().forget(MemoryModuleType.ATTACK_TARGET);
                     piglin.setAttacking(false);
