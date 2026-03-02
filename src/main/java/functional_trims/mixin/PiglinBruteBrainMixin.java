@@ -1,5 +1,6 @@
 package functional_trims.mixin;
 
+import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.minecraft.entity.LivingEntity;
@@ -29,6 +30,7 @@ public class PiglinBruteBrainMixin {
     private static void functional_trims$pacifyGoldTrimmedPlayers(AbstractPiglinEntity piglin,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
         if (!FTConfig.isTrimEnabled("gold")) return;
+        if (!ConfigManager.get().distractPiglinBrutesEnabled) return;
 
         piglin.getBrain()
                 .getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER)
