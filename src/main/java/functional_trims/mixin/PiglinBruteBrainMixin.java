@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import java.util.Optional;
 
 /**
@@ -27,22 +28,27 @@ public class PiglinBruteBrainMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$pacifyGoldTrimmedPlayers(AbstractPiglinEntity piglin,
-                                                                  CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
+    private static void functional_trims$pacifyGoldTrimmedPlayers(
+            AbstractPiglinEntity piglin,
+            CallbackInfoReturnable<Optional<? extends LivingEntity>> cir
+    ) {
         if (!FTConfig.isTrimEnabled("gold")) return;
         if (!ConfigManager.get().distractPiglinBrutesEnabled) return;
 
-        piglin.getBrain()
-                .getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER)
-                .filter(target -> target instanceof PlayerEntity player &&
-                        TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) == 4)
-                .ifPresent(_ -> {
-                    piglin.getBrain().forget(MemoryModuleType.ANGRY_AT);
-                    piglin.getBrain().forget(MemoryModuleType.ATTACK_TARGET);
-                    piglin.setAttacking(false);
+        Optional<? extends LivingEntity> possibleTarget =
+                piglin.getBrain()
+                        .getOptionalRegisteredMemory(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER)
+                        .filter(entity ->
+                                entity instanceof PlayerEntity player &&
+                                        TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) == 4
+                        );
 
-                    cir.setReturnValue(Optional.empty());
-                });
+        if (possibleTarget.isPresent()) {
+            piglin.getBrain().forget(MemoryModuleType.ANGRY_AT);
+            piglin.getBrain().forget(MemoryModuleType.ATTACK_TARGET);
+            piglin.setAttacking(false);
+
+            cir.setReturnValue(Optional.empty());
+        }
     }
-
 }
