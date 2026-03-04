@@ -14,19 +14,19 @@ public final class FunctionalTrimsConfigScreen {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Text.literal("Functional Trims"));
+                .setTitle(Text.translatable("config.functional_trims.title"));
 
         builder.setSavingRunnable(ConfigManager::save);
 
         ConfigEntryBuilder entry = builder.entryBuilder();
 
-        ConfigCategory materials = builder.getOrCreateCategory(Text.literal("Trim Materials"));
+        ConfigCategory materials = builder.getOrCreateCategory(Text.translatable("config.functional_trims.category.trim_materials"));
 
         // Master toggle
         materials.addEntry(
-                entry.startBooleanToggle(Text.literal("Enable All Trim Effects"), cfg.enableAll)
+                entry.startBooleanToggle(Text.translatable("config.functional_trims.enable_all"), cfg.enableAll)
                         .setDefaultValue(true)
-                        .setTooltip(Text.literal("Disables all trim effects globally"))
+                        .setTooltip(Text.translatable("config.functional_trims.enable_all.tooltip"))
                         .setSaveConsumer(val -> cfg.enableAll = val)
                         .build()
         );
@@ -36,28 +36,28 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Iron"),
+                        Text.translatable("config.functional_trims.iron"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.ironEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.ironEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.ironEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Projectile Reflect Chance (0-1)"), cfg.projectileReflectChance)
+                                entry.startFloatField(Text.translatable("config.functional_trims.iron.reflect"), cfg.projectileReflectChance)
                                         .setDefaultValue(0.6f)
                                         .setMin(0.0f)
                                         .setMax(1.0f)
                                         .setSaveConsumer(val -> cfg.projectileReflectChance = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Shield Knockback Strength Multiplier"), cfg.shieldKnockbackStrengthMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.iron.knockback"), cfg.shieldKnockbackStrengthMultiplier)
                                         .setDefaultValue(1.15f)
                                         .setMin(0.0f)
                                         .setMax(5.0f)
                                         .setSaveConsumer(val -> cfg.shieldKnockbackStrengthMultiplier = val)
                                         .build(),
 
-                                entry.startBooleanToggle(Text.literal("Axe Attack Resistance"), cfg.axeAttackResistanceEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.iron.axe_resist"), cfg.axeAttackResistanceEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.axeAttackResistanceEnabled = val)
                                         .build()
@@ -70,14 +70,14 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Gold"),
+                        Text.translatable("config.functional_trims.gold"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.goldEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.goldEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.goldEnabled = val)
                                         .build(),
 
-                                entry.startBooleanToggle(Text.literal("Distract Piglin Brutes"), cfg.distractPiglinBrutesEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.gold.distract"), cfg.distractPiglinBrutesEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.distractPiglinBrutesEnabled = val)
                                         .build()
@@ -90,21 +90,21 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Diamond"),
+                        Text.translatable("config.functional_trims.diamond"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.diamondEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.diamondEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.diamondEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Health Regained After Burst (0-1)"), cfg.percentHealthRegainedAfterBurst)
+                                entry.startFloatField(Text.translatable("config.functional_trims.diamond.heal_burst"), cfg.percentHealthRegainedAfterBurst)
                                         .setDefaultValue(0.5f)
                                         .setMin(0.0f)
                                         .setMax(1.0f)
                                         .setSaveConsumer(val -> cfg.percentHealthRegainedAfterBurst = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Armor Durability Lost After Burst (0-1)"), cfg.percentArmorDurabilityLostAfterBurst)
+                                entry.startFloatField(Text.translatable("config.functional_trims.diamond.armor_loss"), cfg.percentArmorDurabilityLostAfterBurst)
                                         .setDefaultValue(1.0f)
                                         .setMin(0.0f)
                                         .setMax(1.0f)
@@ -119,9 +119,9 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Netherite"),
+                        Text.translatable("config.functional_trims.netherite"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.netheriteEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.netheriteEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.netheriteEnabled = val)
                                         .build()
@@ -134,14 +134,14 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Redstone"),
+                        Text.translatable("config.functional_trims.redstone"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.redstoneEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.redstoneEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.redstoneEnabled = val)
                                         .build(),
 
-                                entry.startIntField(Text.literal("Block Power Level When Stepped On (0-15)"), cfg.blockPowerLevelWhenSteppedOn)
+                                entry.startIntField(Text.translatable("config.functional_trims.redstone.power"), cfg.blockPowerLevelWhenSteppedOn)
                                         .setDefaultValue(15)
                                         .setMin(0)
                                         .setMax(15)
@@ -156,21 +156,21 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Emerald"),
+                        Text.translatable("config.functional_trims.emerald"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.emeraldEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.emeraldEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.emeraldEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Extra Roll #1 Chance (0-1)"), cfg.percentChanceForExtraRoll1)
+                                entry.startFloatField(Text.translatable("config.functional_trims.emerald.roll1"), cfg.percentChanceForExtraRoll1)
                                         .setDefaultValue(1.0f)
                                         .setMin(0.0f)
                                         .setMax(1.0f)
                                         .setSaveConsumer(val -> cfg.percentChanceForExtraRoll1 = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Extra Roll #2 Chance (0-1)"), cfg.percentChanceForExtraRoll2)
+                                entry.startFloatField(Text.translatable("config.functional_trims.emerald.roll2"), cfg.percentChanceForExtraRoll2)
                                         .setDefaultValue(0.5f)
                                         .setMin(0.0f)
                                         .setMax(1.0f)
@@ -185,14 +185,14 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Lapis"),
+                        Text.translatable("config.functional_trims.lapis"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.lapisEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.lapisEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.lapisEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Extra EXP Multiplier"), cfg.extraExpMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.lapis.exp"), cfg.extraExpMultiplier)
                                         .setDefaultValue(0.5f)
                                         .setMin(0.0f)
                                         .setMax(10.0f)
@@ -207,28 +207,28 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Quartz"),
+                        Text.translatable("config.functional_trims.quartz"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.quartzEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.quartzEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.quartzEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Hunger Restored Multiplier"), cfg.hungerRestoredMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.quartz.hunger"), cfg.hungerRestoredMultiplier)
                                         .setDefaultValue(1.25f)
                                         .setMin(0.0f)
                                         .setMax(10.0f)
                                         .setSaveConsumer(val -> cfg.hungerRestoredMultiplier = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Saturation Restored Multiplier"), cfg.saturationRestoredMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.quartz.saturation"), cfg.saturationRestoredMultiplier)
                                         .setDefaultValue(1.25f)
                                         .setMin(0.0f)
                                         .setMax(10.0f)
                                         .setSaveConsumer(val -> cfg.saturationRestoredMultiplier = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Potion Effect Duration Multiplier"), cfg.potionEffectDurationMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.quartz.potion"), cfg.potionEffectDurationMultiplier)
                                         .setDefaultValue(1.25f)
                                         .setMin(0.0f)
                                         .setMax(10.0f)
@@ -243,28 +243,28 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Amethyst"),
+                        Text.translatable("config.functional_trims.amethyst"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.amethystEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.amethystEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.amethystEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Seconds Standing Still Before Effect"), cfg.motionlessSecondsBeforeEffectStanding)
+                                entry.startFloatField(Text.translatable("config.functional_trims.amethyst.stand"), cfg.motionlessSecondsBeforeEffectStanding)
                                         .setDefaultValue(3.0f)
                                         .setMin(0.0f)
                                         .setMax(60.0f)
                                         .setSaveConsumer(val -> cfg.motionlessSecondsBeforeEffectStanding = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Seconds Sneaking Still Before Effect"), cfg.motionlessSecondsBeforeEffectSneaking)
+                                entry.startFloatField(Text.translatable("config.functional_trims.amethyst.sneak"), cfg.motionlessSecondsBeforeEffectSneaking)
                                         .setDefaultValue(1.5f)
                                         .setMin(0.0f)
                                         .setMax(60.0f)
                                         .setSaveConsumer(val -> cfg.motionlessSecondsBeforeEffectSneaking = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Effect Range Multiplier"), cfg.effectRangeMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.amethyst.range"), cfg.effectRangeMultiplier)
                                         .setDefaultValue(1.0f)
                                         .setMin(0.1f)
                                         .setMax(10.0f)
@@ -279,28 +279,28 @@ public final class FunctionalTrimsConfigScreen {
         // ----------------
         materials.addEntry(
                 entry.startSubCategory(
-                        Text.literal("Copper"),
+                        Text.translatable("config.functional_trims.copper"),
                         List.of(
-                                entry.startBooleanToggle(Text.literal("Enabled"), cfg.copperEnabled)
+                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.copperEnabled)
                                         .setDefaultValue(true)
                                         .setSaveConsumer(val -> cfg.copperEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Lightning Strike Chance Multiplier"), cfg.lightningStrikeChanceMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.copper.lightning"), cfg.lightningStrikeChanceMultiplier)
                                         .setDefaultValue(1.0f)
                                         .setMin(0.0f)
                                         .setMax(10.0f)
                                         .setSaveConsumer(val -> cfg.lightningStrikeChanceMultiplier = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Charged Effect Duration (seconds)"), cfg.chargedEffectDuration)
+                                entry.startFloatField(Text.translatable("config.functional_trims.copper.charged_time"), cfg.chargedEffectDuration)
                                         .setDefaultValue(60.0f)
                                         .setMin(0.0f)
                                         .setMax(600.0f)
                                         .setSaveConsumer(val -> cfg.chargedEffectDuration = val)
                                         .build(),
 
-                                entry.startFloatField(Text.literal("Charged Strike Damage Multiplier"), cfg.chargedStrikeDamageMultiplier)
+                                entry.startFloatField(Text.translatable("config.functional_trims.copper.charged_damage"), cfg.chargedStrikeDamageMultiplier)
                                         .setDefaultValue(1.5f)
                                         .setMin(0.0f)
                                         .setMax(10.0f)
@@ -309,7 +309,6 @@ public final class FunctionalTrimsConfigScreen {
                         )
                 ).build()
         );
-
         return builder.build();
     }
 }
