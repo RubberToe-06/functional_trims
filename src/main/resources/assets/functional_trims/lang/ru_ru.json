@@ -1,0 +1,56 @@
+{
+  "effect.functional_trims.amethyst_vision": "Аметистовое зрение",
+  "effect.functional_trims.charged": "Перегрузка",
+
+  "config.functional_trims.category.trim_materials": "Материалы отделки",
+
+  "config.functional_trims.title": "Настройки Functional Trims",
+  "config.functional_trims.enabled": "Включена",
+  
+  "config.functional_trims.enable_all": "Включить всё",
+  "config.functional_trims.enable_all.tooltip": "Глобально переключает все эффекты отделок на броню",
+
+  "config.functional_trims.iron": "Железная",
+  "config.functional_trims.iron.reflect": "Шанс отражения снаряда",
+  "config.functional_trims.iron.knockback": "Множитель силы отбрасывания щитом",
+  "config.functional_trims.iron.axe_resist": "Сопротивление к урону от топора",
+
+  "config.functional_trims.gold": "Золотая",
+  "config.functional_trims.gold.distract": "Отвлечение брутальных пиглинов",
+
+  "config.functional_trims.diamond": "Алмазная",
+  "config.functional_trims.diamond.heal_burst": "Восстановление здоровья при расколе",
+  "config.functional_trims.diamond.armor_loss": "Потеря прочности при расколе",
+
+  "config.functional_trims.netherite": "Незеритовая",
+
+  "config.functional_trims.redstone": "Редстоуновая",
+  "config.functional_trims.redstone.power": "Сила сигнала от брони",
+
+  "config.functional_trims.emerald": "Изумрудная",
+  "config.functional_trims.emerald.roll1": "Шанс первой добавочной генерации лута",
+  "config.functional_trims.emerald.roll2": "Шанс второй добавочной генерации лута",
+
+  "config.functional_trims.lapis": "Лазуритовая",
+  "config.functional_trims.lapis.exp": "Множитель дополнительного опыта",
+
+  "config.functional_trims.quartz": "Кварцевая",
+  "config.functional_trims.quartz.hunger": "Множитель восстановления голода",
+  "config.functional_trims.quartz.saturation": "Множитель восстановления насыщения",
+  "config.functional_trims.quartz.potion": "Множитель увеличения длительности эффектов",
+
+  "config.functional_trims.amethyst": "Аметистовая",
+  "config.functional_trims.amethyst.stand": "Требуется времени неподвижно стоять (в секундах)",
+  "config.functional_trims.amethyst.sneak": "Требуется времени неподвижно в приседе (в секундах)",
+  "config.functional_trims.amethyst.range": "Множитель дальности действия эффекта",
+
+  "config.functional_trims.copper": "Медная",
+  "config.functional_trims.copper.lightning": "Множитель шанса удара молнии",
+  "config.functional_trims.copper.charged_time": "Длительность эффекта перегрузки (в секундах)",
+  "config.functional_trims.copper.charged_damage": "Множитель урона перегруженного удара",
+
+  "config.functional_trims.resin": "Смоляная",
+  "config.functional_trims.resin.grip": "Множитель силы прилипания",
+
+  "modmenu.descriptionTranslation.functional_trims": "Мод добавляет интересные и сбалансированные эффекты для отделок на броню."
+}
