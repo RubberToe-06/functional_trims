@@ -1,21 +1,12 @@
 ![Functional Armor Trims title](https://cdn.modrinth.com/data/cached_images/6ab63b4be0d08a77d31be4497a1b05ea4381f96b.png) 
 
-
-
-
-
-
-
 **A mod that gives purpose to every armor trim.**  
 Functional Trims reimagines Minecraft’s armor trims by turning them into unique, gameplay-affecting abilities — each material grants a distinct passive or triggered effect when worn on a full set of armor.
-
 
 ## Overview
 Tired of trims being purely cosmetic?  
 This mod makes them *functional* by assigning fun, balanced abilities that encourage strategic equipment choices.  
 Every trim material brings something new to the table, from survival perks to combat mechanics.
-
-
 
 ## Trim Effects
 Click a material below to view its effect in detail.
@@ -36,8 +27,6 @@ Click a material below to view its effect in detail.
     <li>Piglins and Piglin Brutes will become completely passive around you, even while mining gold ore, looting bastion chests, and even attacking them.</li>
   </ul>
 
-  
-
 </details>
 
 <details>
@@ -55,8 +44,6 @@ Click a material below to view its effect in detail.
   <ul>
     <li>Your armor will take the full force of a fatal attack, shattering itself in the process. When this happens a massive burst of energy is released, knocking back and damaging enemies nearby to give the user room to get to safety.</li>
   </ul>
-
-  
 
 </details>
 
@@ -241,32 +228,59 @@ Click a material below to view its effect in detail.
 
 </details>
 
-
-
-
 ## Compatibility
 - Built for **Minecraft 1.21.8+**
 - Requires **Fabric API** and **Cloth Config API**
 - Tested with most common modpacks
 - Loosely tested with **Quilt Loader**. Use at your own risk
 
-
-
 ## Installation
 1. Download the latest `.jar` from the **Files** tab  
 2. Place it in your `mods` folder  
 3. Launch Minecraft with either Fabric or Quilt
 
+## Contributing
+Contributions are welcome! Whether it's bug fixes, translations, balance tweaks, or new trim ideas, feel free to open a pull request.
 
+### Guidelines
+- **Base all pull requests on the `main` branch.**
+- Keep changes focused and minimal when possible.
+- If adding gameplay changes, please include a short explanation of the design intent.
+
+### Translations
+If you'd like to add a new language:
+
+1. Copy `en_us.json`
+2. Rename it to your language code (example: `ru_ru.json`)
+3. Translate the values while keeping the keys unchanged
+4. Submit a pull request
+
+Language files are located in:
+```
+src/main/resources/assets/functional_trims/lang/
+```
+
+### Development Setup
+1. Clone the repository
+2. Import the project into **IntelliJ IDEA**
+3. Run the mod using the `runClient` Gradle task
+```batch
+./gradlew runClient
+```
+
+### Code Style
+- Follow the existing formatting and structure used in the project
+- Avoid unnecessary refactors in PRs unrelated to the feature
+
+### Backporting
+All contributions are merged into `main` first.  
+Maintainers are encouraged backport compatible changes to older Minecraft versions.
 
 ## Feedback & Support
 Report bugs on the **[GitHub Issues]([https://github.com/yourusername/FunctionalTrims/issues](https://github.com/RubberToe-06/functional_trims/issues))** page.
 
-
-
 ## Credits
 Created by **RubberToe**  
-
 
 ## Support
 If you enjoy the mod, consider supporting me!  
