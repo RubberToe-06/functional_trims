@@ -243,7 +243,7 @@ Click a material below to view its effect in detail.
 Contributions are welcome! Whether it's bug fixes, translations, balance tweaks, or new trim ideas, feel free to open a pull request.
 
 ### Guidelines
-- **Base all pull requests on the `main` branch.**
+- **Base all pull requests on the `main` branch.** (except for backports)
 - Keep changes focused and minimal when possible.
 - If adding gameplay changes, please include a short explanation of the design intent.
 
