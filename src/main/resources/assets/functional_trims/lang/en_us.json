@@ -7,48 +7,59 @@
   "config.functional_trims.title": "Functional Trims Config",
   "config.functional_trims.enabled": "Enabled",
   
-  "config.functional_trims.enable_all.tooltip": "Disables all trim effects globally",
+  "config.functional_trims.enable_all.tooltip": "Toggles all trim effects globally",
   "config.functional_trims.enable_all": "Enable All Trim Effects",
 
   "config.functional_trims.iron": "Iron",
   "config.functional_trims.iron.reflect": "Projectile Reflect Chance",
   "config.functional_trims.iron.knockback": "Shield Knockback Strength Multiplier",
   "config.functional_trims.iron.axe_resist": "Axe Attack Resistance",
+  "config.functional_trims.iron.tooltip": "Full Set Effect: \"Unyielding Defense\"\nShield has no cooldown and knocks enemies back.\nIncoming projectiles may be deflected.\nCritical hits deal reduced damage.",
 
   "config.functional_trims.gold": "Gold",
   "config.functional_trims.gold.distract": "Distract Piglin Brutes",
+  "config.functional_trims.gold.tooltip": "Full Set Effect: \"Lord of the Nether\"\nPiglins become completely passive.",
 
   "config.functional_trims.diamond": "Diamond",
-  "config.functional_trims.diamond.heal_burst": "Health Regained After Burst",
-  "config.functional_trims.diamond.armor_loss": "Armor Durability Lost After Burst",
+  "config.functional_trims.diamond.heal": "Health Restored after Burst",
+  "config.functional_trims.diamond.armor_loss": "Armor Durability Lost after Burst",
+  "config.functional_trims.diamond.tooltip": "Full Set Effect: \"Shattering Resilience\"\nArmor shatters to prevent fatal damage.",
 
   "config.functional_trims.netherite": "Netherite",
+  "config.functional_trims.netherite.tooltip": "Full Set Effect: \"Immovable Object\"\nYou become completely immune to knockback.",
 
   "config.functional_trims.redstone": "Redstone",
-  "config.functional_trims.redstone.power": "Block Power Level When Stepped On",
+  "config.functional_trims.redstone.power": "Redstone Power Level when Stepped On",
+  "config.functional_trims.redstone.tooltip": "Full Set Effect: \"Fully Conductive\"\nBlocks you step on emit a redstone signal.",
 
   "config.functional_trims.emerald": "Emerald",
   "config.functional_trims.emerald.roll1": "Extra Roll #1 Chance",
   "config.functional_trims.emerald.roll2": "Extra Roll #2 Chance",
+  "config.functional_trims.emerald.tooltip": "Full Set Effect: \"Explorer’s Fortune\"\nLoot chests grant more loot per chest.",
 
   "config.functional_trims.lapis": "Lapis",
   "config.functional_trims.lapis.exp": "Extra EXP Multiplier",
+  "config.functional_trims.lapis.tooltip": "Full Set Effect: \"Scholar’s Insight\"\nExperience orbs grant more experience.",
 
   "config.functional_trims.quartz": "Quartz",
   "config.functional_trims.quartz.hunger": "Hunger Restored Multiplier",
   "config.functional_trims.quartz.saturation": "Saturation Restored Multiplier",
   "config.functional_trims.quartz.potion": "Potion Effect Duration Multiplier",
+  "config.functional_trims.quartz.tooltip": "Full Set Effect: \"Enriched Vitality\"\nFood restores more saturation and hunger.\nPotions last longer.",
 
   "config.functional_trims.amethyst": "Amethyst",
-  "config.functional_trims.amethyst.stand": "Time Standing Still Before Effect (seconds)",
-  "config.functional_trims.amethyst.sneak": "Time Sneaking Still Before Effect (seconds)",
+  "config.functional_trims.amethyst.stand": "Seconds Standing Still to Activate",
+  "config.functional_trims.amethyst.sneak": "Seconds Sneaking to Activate",
   "config.functional_trims.amethyst.range": "Effect Range Multiplier",
+  "config.functional_trims.amethyst.tooltip": "Full Set Effect: \"Resonating Vision\"\nSee mobs through walls while motionless.",
 
   "config.functional_trims.copper": "Copper",
   "config.functional_trims.copper.lightning": "Lightning Strike Chance Multiplier",
-  "config.functional_trims.copper.charged_time": "Charged Effect Duration (seconds)",
-  "config.functional_trims.copper.charged_damage": "Charged Strike Damage Multiplier",
+  "config.functional_trims.copper.charged_time": "Charged Effect Duration (Seconds)",
+  "config.functional_trims.copper.charged_damage": "Charged Attack Damage Multiplier",
+  "config.functional_trims.copper.tooltip": "Full Set Effect: \"Supercharged Strike\"\nLightning strikes may supercharge you.\nYour next attack becomes stronger.\nLightning strikes you more often.",
 
   "config.functional_trims.resin": "Resin",
-  "config.functional_trims.resin.grip": "Grip Strength Multiplier"
+  "config.functional_trims.resin.grip": "Grip Strength Multiplier",
+  "config.functional_trims.resin.tooltip": "Full Set Effect: \"Adhesive Grip\"\nSticks to walls when sneaking next to them."
 }
