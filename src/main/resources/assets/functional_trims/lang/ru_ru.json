@@ -14,54 +14,54 @@
   "config.functional_trims.iron.reflect": "Шанс отражения снаряда",
   "config.functional_trims.iron.knockback": "Множитель силы отбрасывания щитом",
   "config.functional_trims.iron.axe_resist": "Сопротивление к урону от топора",
-  "config.functional_trims.iron.tooltip": "Эффект полного комплекта: \"Закалённый для боя\"\nЩит не блокируется и отбрасывает врагов назад.\nЛетящие снаряды могут быть отражены бронёй.\nКритические удары наносят меньше урона.",
+  "config.functional_trims.iron.tooltip": "Эффект полного комплекта: «Закалённый для боя»\nЩит не блокируется и отбрасывает врагов назад.\nЛетящие снаряды могут быть отражены бронёй.\nКритические удары наносят меньше урона.",
 
   "config.functional_trims.gold": "Золотая",
   "config.functional_trims.gold.distract": "Отвлечение брутальных пиглинов",
-  "config.functional_trims.gold.tooltip": "Эффект полного комплекта: \"Лорд Незера\"\nПолностью отвлекает пиглинов от игрока.",
+  "config.functional_trims.gold.tooltip": "Эффект полного комплекта: «Лорд Незера»\nПолностью отвлекает пиглинов от игрока.",
 
   "config.functional_trims.diamond": "Алмазная",
   "config.functional_trims.diamond.heal": "Восстановление здоровья при расколе",
   "config.functional_trims.diamond.armor_loss": "Потеря прочности при расколе",
-  "config.functional_trims.diamond.tooltip": "Эффект полного комплекта: \"Хрупкое спасение\"\nБроня поглотит критичный урон и расколется.",
+  "config.functional_trims.diamond.tooltip": "Эффект полного комплекта: «Хрупкое спасение»\nБроня поглотит критичный урон и расколется.",
 
   "config.functional_trims.netherite": "Незеритовая",
-  "config.functional_trims.netherite.tooltip": "Эффект полного комплекта: \"Непоколебимость\"\nДелает игрока невосприимчивым к отбрасыванию.",
+  "config.functional_trims.netherite.tooltip": "Эффект полного комплекта: «Непоколебимость»\nДелает игрока невосприимчивым к отбрасыванию.",
 
   "config.functional_trims.redstone": "Редстоуновая",
   "config.functional_trims.redstone.power": "Сила сигнала от брони",
-  "config.functional_trims.redstone.tooltip": "Эффект полного комплекта: \"Идеальный проводник\"\nИздаёт сигнал на блоки под игроком.",
+  "config.functional_trims.redstone.tooltip": "Эффект полного комплекта: «Идеальный проводник»\nИздаёт сигнал на блоки под игроком.",
 
   "config.functional_trims.emerald": "Изумрудная",
   "config.functional_trims.emerald.roll1": "Шанс первой добавочной генерации добычи",
   "config.functional_trims.emerald.roll2": "Шанс второй добавочной генерации добычи",
-  "config.functional_trims.emerald.tooltip": "Эффект полного комплекта: \"Удача искателя\"\nОбыскиваемые сундуки содержат больше добычи.",
+  "config.functional_trims.emerald.tooltip": "Эффект полного комплекта: «Удача искателя»\nОбыскиваемые сундуки содержат больше добычи.",
 
   "config.functional_trims.lapis": "Лазуритовая",
   "config.functional_trims.lapis.exp": "Множитель дополнительного опыта",
-  "config.functional_trims.lapis.tooltip": "Эффект полного комплекта: \"Чутьё учёного\"\nДаёт больше опыта из сфер опыта.",
+  "config.functional_trims.lapis.tooltip": "Эффект полного комплекта: «Чутьё учёного»\nДаёт больше опыта из сфер опыта.",
 
   "config.functional_trims.quartz": "Кварцевая",
   "config.functional_trims.quartz.hunger": "Множитель восстановления голода",
   "config.functional_trims.quartz.saturation": "Множитель восстановления насыщения",
   "config.functional_trims.quartz.potion": "Множитель увеличения длительности зелий",
-  "config.functional_trims.quartz.tooltip": "Эффект полного комплекта: \"Энергия минералов\"\nЕда даёт больше голода и насыщения.\nЭффект зелий длится дольше.",
+  "config.functional_trims.quartz.tooltip": "Эффект полного комплекта: «Энергия минералов»\nЕда даёт больше голода и насыщения.\nЭффект зелий длится дольше.",
 
   "config.functional_trims.amethyst": "Аметистовая",
   "config.functional_trims.amethyst.stand": "Требуется секунд неподвижно стоять",
   "config.functional_trims.amethyst.sneak": "Требуется секунд неподвижно в приседе",
   "config.functional_trims.amethyst.range": "Множитель дальности действия эффекта",
-  "config.functional_trims.amethyst.tooltip": "Эффект полного комплекта: \"Кристальное зрение\"\nПодсвечивает всех мобов, если игрок неподвижен.",
+  "config.functional_trims.amethyst.tooltip": "Эффект полного комплекта: «Кристальное зрение»\nПодсвечивает всех мобов, если игрок неподвижен.",
 
   "config.functional_trims.copper": "Медная",
   "config.functional_trims.copper.lightning": "Множитель шанса удара молнии",
   "config.functional_trims.copper.charged_time": "Длительность критического заряда (в секундах)",
   "config.functional_trims.copper.charged_damage": "Множитель урона заряженного удара",
-  "config.functional_trims.copper.tooltip": "Эффект полного комплекта: \"Разряд\"\nМолния даёт игроку критический заряд.\nСледующая атака становится сильнее.\nМолнии чаще бьют в игрока.",
+  "config.functional_trims.copper.tooltip": "Эффект полного комплекта: «Разряд»\nМолния даёт игроку критический заряд.\nСледующая атака становится сильнее.\nМолнии чаще бьют в игрока.",
 
   "config.functional_trims.resin": "Смоляная",
   "config.functional_trims.resin.grip": "Множитель силы прилипания",
-  "config.functional_trims.resin.tooltip": "Эффект полного комплекта: \"Цепкая хватка\"\nВ приседе прилепляет игрока к стене.",
+  "config.functional_trims.resin.tooltip": "Эффект полного комплекта: «Цепкая хватка»\nВ приседе прилепляет игрока к стене.",
 
   "modmenu.descriptionTranslation.functional_trims": "Мод добавляет интересные и сбалансированные эффекты для отделок на броню."
 }
