@@ -1,0 +1,8 @@
+{
+  "config.functional_trims.iron.tooltip": "Full Set Effect: \"Unyielding Defence\"\nShield has no cooldown and knocks enemies back.\nIncoming projectiles may be deflected.\nCritical hits deal reduced damage.",
+
+  "config.functional_trims.diamond.armor_loss": "Armour Durability Lost after Burst",
+  "config.functional_trims.diamond.tooltip": "Full Set Effect: \"Shattering Resilience\"\nArmour shatters to prevent fatal damage.",
+
+  "modmenu.descriptionTranslation.functional_trims": "Makes the armour trims have fun but balanced bonus effects."
+}
