@@ -159,7 +159,6 @@ public final class FunctionalTrimsConfigScreen {
                 )
                 .setTooltip(Text.translatable("config.functional_trims.redstone.tooltip"))
                 .build()
-
         );
 
         // ----------------
