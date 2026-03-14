@@ -52,12 +52,3 @@ public abstract class LootTableMixin {
         }
     }
 }
-
-
-
-
-
-
-
-
-
