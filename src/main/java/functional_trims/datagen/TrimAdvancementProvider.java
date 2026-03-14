@@ -17,6 +17,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
 import functional_trims.FunctionalTrims;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -32,14 +33,16 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
         return potion;
     }
     @Override
-    public void generateAdvancement(RegistryWrapper.WrapperLookup registries,
-                                    Consumer<AdvancementEntry> consumer) {
-        // Root (optional)
+    public void generateAdvancement(
+        @NotNull RegistryWrapper.WrapperLookup registries,
+        @NotNull Consumer<AdvancementEntry> consumer) {
+
+        // Root
         AdvancementEntry root = Advancement.Builder.create()
                 .display(
                         Items.SMITHING_TABLE,
-                        Text.literal("Functional Trims"),
-                        Text.literal("Harness the power of armor trims!"),
+                        Text.translatable("advancements.functional_trims.root.title"),
+                        Text.translatable("advancements.functional_trims.root.description"),
                         Identifier.of(FunctionalTrims.MOD_ID, "gui/advancements/backgrounds/functional_trims"),
                         AdvancementFrame.TASK,
                         true, true, false
@@ -52,13 +55,12 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.REDSTONE,
-                        Text.literal("Power Walk"),
-                        Text.literal("Equip a full set of redstone trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_redstone_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_redstone_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_redstone_trim");
 
@@ -67,13 +69,12 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(powerWalk)
                 .display(
                         Items.REDSTONE_LAMP,
-                        Text.literal("Walking on Sunshine"),
-                        Text.literal("Power a redstone lamp by walking on it with redstone-trimmed armor"),
+                        Text.translatable("advancements.functional_trims.redstone.redstone_lamp_activation.title"),
+                        Text.translatable("advancements.functional_trims.redstone.redstone_lamp_activation.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
                 )
-                // Real custom criterion using TrimTriggerCriterion
                 .criterion("activate_lamp",
                         ModCriteria.TRIM_TRIGGER.criterion("redstone", "activate_lamp"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":redstone_lamp_activation");
@@ -84,13 +85,12 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.EMERALD,
-                        Text.literal("Explorer's Fortune"),
-                        Text.literal("Equip a full set of emerald trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_emerald_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_emerald_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_emerald_trim");
 
@@ -99,8 +99,8 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(explorersFortune)
                 .display(
                         Items.CHEST,
-                        Text.literal("1 in 7.5 trillion"),
-                        Text.literal("Open a loot chest while wearing emerald-trimmed armor."),
+                        Text.translatable("advancements.functional_trims.emerald.1_in_7_5_trillion.title"),
+                        Text.translatable("advancements.functional_trims.emerald.1_in_7_5_trillion.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -115,23 +115,22 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.LAPIS_LAZULI,
-                        Text.literal("Scholar's Insight"),
-                        Text.literal("Equip a full set of lapis trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_lapis_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_lapis_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_lapis_trim");
 
-        // Lapis trim sub-advancement 1
+        // Lapis trim sub-advancement
         Advancement.Builder.create()
                 .parent(scholarsInsight)
                 .display(
                         Items.ENDER_EYE,
-                        Text.literal("Infinite Wisdom"),
-                        Text.literal("Reach level 100 while wearing lapis trimmed armor."),
+                        Text.translatable("advancements.functional_trims.lapis.level_100.title"),
+                        Text.translatable("advancements.functional_trims.lapis.level_100.description"),
                         null,
                         AdvancementFrame.CHALLENGE,
                         true, true, false
@@ -144,8 +143,8 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(scholarsInsight)
                 .display(
                         Items.EXPERIENCE_BOTTLE,
-                        Text.literal("Extra Credit"),
-                        Text.literal("Absorb an experience orb while wearing lapis trimmed armor."),
+                        Text.translatable("advancements.functional_trims.lapis.first_lesson.title"),
+                        Text.translatable("advancements.functional_trims.lapis.first_lesson.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
@@ -154,29 +153,27 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("lapis", "absorb_xp_orb"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":lapis/first_lesson");
 
-
         // Full gold trim advancement
         AdvancementEntry lordOfTheNether = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.GOLD_INGOT,
-                        Text.literal("Lord of the Nether"),
-                        Text.literal("Equip a full set of gold trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_gold_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_gold_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_gold_trim");
 
-        // Gold trim sub-advancement 1
+        // Gold trim sub-advancement
         Advancement.Builder.create()
                 .parent(lordOfTheNether)
                 .display(
                         Items.GILDED_BLACKSTONE,
-                        Text.literal("Royal Visit"),
-                        Text.literal("Enter a Bastion Remnant while wearing gold-trimmed armor."),
+                        Text.translatable("advancements.functional_trims.gold.enter_bastion.title"),
+                        Text.translatable("advancements.functional_trims.gold.enter_bastion.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -185,13 +182,13 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("gold", "enter_bastion"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":gold/enter_bastion");
 
-        // Gold trim sub-advancement 2
+        // Gold trim sub-advancement
         Advancement.Builder.create()
                 .parent(lordOfTheNether)
                 .display(
                         Items.GOLDEN_SWORD,
-                        Text.literal("Establishing Dominance"),
-                        Text.literal("Attack a Piglin Brute while wearing gold-trimmed armor."),
+                        Text.translatable("advancements.functional_trims.gold.attack_piglin_brute.title"),
+                        Text.translatable("advancements.functional_trims.gold.attack_piglin_brute.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
@@ -200,29 +197,27 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("gold", "attack_piglin_brute"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":gold/attack_piglin_brute");
 
-
         // Full diamond trim advancement
         AdvancementEntry shatteringResilliance = Advancement.Builder.create()
                 .parent(root)
                 .display(
                         Items.DIAMOND,
-                        Text.literal("Shattering Resilliance"),
-                        Text.literal("Equip a full set of diamond trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_diamond_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_diamond_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_diamond_trim");
 
-        // Diamond sub-advancement
+        // Diamond trim sub-advancement
         Advancement.Builder.create()
                 .parent(shatteringResilliance)
                 .display(
                         Items.NETHER_STAR,
-                        Text.literal("Noble Sacrifice"),
-                        Text.literal("Take fatal damage while wearing diamond trimmed armor."),
+                        Text.translatable("advancements.functional_trims.diamond.armor_shatter.title"),
+                        Text.translatable("advancements.functional_trims.diamond.armor_shatter.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
@@ -236,23 +231,22 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.NETHERITE_INGOT,
-                        Text.literal("Immoveable Object"),
-                        Text.literal("Equip a full set of netherite trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_netherite_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_netherite_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_netherite_trim");
 
-        // Netherite sub-advancement
+        // Netherite trim sub-advancement
         Advancement.Builder.create()
                 .parent(immoveableObject)
                 .display(
                         Items.TNT,
-                        Text.literal("That Was Cute.."),
-                        Text.literal("Completely resist an explosion with netherite trimmed armor."),
+                        Text.translatable("advancements.functional_trims.netherite.that_was_cute.title"),
+                        Text.translatable("advancements.functional_trims.netherite.that_was_cute.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -266,23 +260,22 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.IRON_INGOT,
-                        Text.literal("Unyielding Defense"),
-                        Text.literal("Equip a full set of iron trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_iron_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_iron_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_iron_trim");
 
-        // Iron sub-advancement 1
+        // Iron trim sub-advancement
         Advancement.Builder.create()
                 .parent(unyieldingDefense)
                 .display(
                         Items.ARROW,
-                        Text.literal("Ding!"),
-                        Text.literal("Reflect a projectile with iron trimmed armor."),
+                        Text.translatable("advancements.functional_trims.iron.reflect_projectile.title"),
+                        Text.translatable("advancements.functional_trims.iron.reflect_projectile.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -291,13 +284,13 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("iron", "reflect_projectile"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":iron/reflect_projectile");
 
-        // Iron sub-advancement 2
+        // Iron trim sub-advancement
         Advancement.Builder.create()
                 .parent(unyieldingDefense)
                 .display(
                         Items.SHIELD,
-                        Text.literal("Clang!"),
-                        Text.literal("Knock back an attacker with your shield while wearing iron trimmed armor."),
+                        Text.translatable("advancements.functional_trims.iron.knockback_attacker.title"),
+                        Text.translatable("advancements.functional_trims.iron.knockback_attacker.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -311,23 +304,22 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.COPPER_INGOT,
-                        Text.literal("Supercharged Strike"),
-                        Text.literal("Equip a full set of copper trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_copper_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_copper_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_copper_trim");
 
-        // Copper sub-advancement 1
+        // Copper trim sub-advancement
         Advancement.Builder.create()
                 .parent(superchargedStrike)
                 .display(
                         Items.LIGHTNING_ROD,
-                        Text.literal("Strike Me Down, Zeus!"),
-                        Text.literal("Get struck by lightning while wearing copper trimmed armor."),
+                        Text.translatable("advancements.functional_trims.copper.struck_by_lightning.title"),
+                        Text.translatable("advancements.functional_trims.copper.struck_by_lightning.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -336,13 +328,13 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("copper", "struck_by_lightning"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":copper/struck_by_lightning");
 
-        // Copper sub-advancement 2
+        // Copper trim sub-advancement
         Advancement.Builder.create()
                 .parent(superchargedStrike)
                 .display(
                         Items.MACE,
-                        Text.literal("The Wrath of Mjolnir"),
-                        Text.literal("Do 20 damage to a mob with the mace while supercharged"),
+                        Text.translatable("advancements.functional_trims.copper.mace_strike.title"),
+                        Text.translatable("advancements.functional_trims.copper.mace_strike.description"),
                         null,
                         AdvancementFrame.CHALLENGE,
                         true, true, false
@@ -356,23 +348,22 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.AMETHYST_SHARD,
-                        Text.literal("Resonating Vision"),
-                        Text.literal("Equip a full set of amethyst trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_amethyst_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_amethyst_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_amethyst_trim");
 
-        // Amethyst sub-advancement 1
+        // Amethyst trim sub-advancement
         Advancement.Builder.create()
                 .parent(resonatingVision)
                 .display(
                         Items.SPYGLASS,
-                        Text.literal("Wallhacks Enabled"),
-                        Text.literal("Stay still and sense the echoes around you"),
+                        Text.translatable("advancements.functional_trims.amethyst.wallhacks_enabled.title"),
+                        Text.translatable("advancements.functional_trims.amethyst.wallhacks_enabled.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
@@ -381,13 +372,13 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("amethyst", "wallhacks_enabled"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":amethyst/wallhacks_enabled");
 
-        // Amethyst sub-advancement 2
+        // Amethyst trim sub-advancement
         Advancement.Builder.create()
                 .parent(resonatingVision)
                 .display(
                         Items.ENDER_EYE,
-                        Text.literal("I See You"),
-                        Text.literal("Sense an invisible mob with amethyst vision"),
+                        Text.translatable("advancements.functional_trims.amethyst.i_see_you.title"),
+                        Text.translatable("advancements.functional_trims.amethyst.i_see_you.description"),
                         null,
                         AdvancementFrame.CHALLENGE,
                         true, true, false
@@ -401,23 +392,22 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.RESIN_BRICK,
-                        Text.literal("Adhesive Grip"),
-                        Text.literal("Equip a full set of resin trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_resin_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_resin_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_resin_trim");
 
-        // resin sub-advancement 1
+        // Resin trim sub-advancement
         Advancement.Builder.create()
                 .parent(adhesiveGrip)
                 .display(
                         Items.SLIME_BALL,
-                        Text.literal("Gettin' Sticky"),
-                        Text.literal("Stick to a wall by crouching with resin trimmed armor"),
+                        Text.translatable("advancements.functional_trims.resin.stick_to_wall.title"),
+                        Text.translatable("advancements.functional_trims.resin.stick_to_wall.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -426,13 +416,13 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("resin", "stick_to_wall"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":resin/stick_to_wall");
 
-        // resin sub-advancement 2
+        // Resin trim sub-advancement
         Advancement.Builder.create()
                 .parent(adhesiveGrip)
                 .display(
                         Items.FEATHER,
-                        Text.literal("Evel Kinievel"),
-                        Text.literal("Break a 100 block fall by sticking to a wall"),
+                        Text.translatable("advancements.functional_trims.resin.long_fall.title"),
+                        Text.translatable("advancements.functional_trims.resin.long_fall.description"),
                         null,
                         AdvancementFrame.CHALLENGE,
                         true, true, false
@@ -446,23 +436,22 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .parent(root)
                 .display(
                         Items.QUARTZ,
-                        Text.literal("Enriched Vitality"),
-                        Text.literal("Equip a full set of quartz trimmed armor"),
+                        Text.translatable("advancements.functional_trims.full_quartz_trim.title"),
+                        Text.translatable("advancements.functional_trims.full_quartz_trim.description"),
                         null,
                         AdvancementFrame.TASK,
                         true, true, false
                 )
-                // 'auto' criterion matches what we’ll grant manually
                 .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, FunctionalTrims.MOD_ID + ":full_quartz_trim");
 
-        // Quartz sub-advancement 1
+        // Quartz trim sub-advancement
         Advancement.Builder.create()
                 .parent(enrichedVitality)
                 .display(
                         Items.GOLDEN_CARROT,
-                        Text.literal("Oversaturated"),
-                        Text.literal("Eat a golden carrot with quartz trimmed armor equipped"),
+                        Text.translatable("advancements.functional_trims.quartz.eat_golden_carrot.title"),
+                        Text.translatable("advancements.functional_trims.quartz.eat_golden_carrot.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false
@@ -471,13 +460,13 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("quartz", "eat_golden_carrot"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":quartz/eat_golden_carrot");
 
-        // Quartz sub-advancement 2
+        // Quartz trim sub-advancement
         Advancement.Builder.create()
                 .parent(enrichedVitality)
                 .display(
                         createPotionIcon(),
-                        Text.literal("Liquid Gains"),
-                        Text.literal("Consume a potion while wearing quartz trimmed armor"),
+                        Text.translatable("advancements.functional_trims.quartz.drink_potion.title"),
+                        Text.translatable("advancements.functional_trims.quartz.drink_potion.description"),
                         null,
                         AdvancementFrame.GOAL,
                         true, true, false

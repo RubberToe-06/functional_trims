@@ -1,4 +1,77 @@
 {
+  "advancements.functional_trims.root.title": "Functional Trims",
+  "advancements.functional_trims.root.description": "Harness the power of armor trims!",
+
+  "advancements.functional_trims.full_redstone_trim.title": "Fully Conductive",
+  "advancements.functional_trims.full_redstone_trim.description": "Equip a full set of Redstone-trimmed armor",
+  "advancements.functional_trims.full_emerald_trim.title": "Explorer's Fortune",
+  "advancements.functional_trims.full_emerald_trim.description": "Equip a full set of Emerald-trimmed armor",
+  "advancements.functional_trims.full_lapis_trim.title": "Scholar's Insight",
+  "advancements.functional_trims.full_lapis_trim.description": "Equip a full set of Lapis-trimmed armor",
+  "advancements.functional_trims.full_gold_trim.title": "Lord of the Nether",
+  "advancements.functional_trims.full_gold_trim.description": "Equip a full set of Gold-trimmed armor",
+  "advancements.functional_trims.full_diamond_trim.title": "Shattering Resilience",
+  "advancements.functional_trims.full_diamond_trim.description": "Equip a full set of Diamond-trimmed armor",
+  "advancements.functional_trims.full_netherite_trim.title": "Immovable Object",
+  "advancements.functional_trims.full_netherite_trim.description": "Equip a full set of Netherite-trimmed armor",
+  "advancements.functional_trims.full_iron_trim.title": "Unyielding Defense",
+  "advancements.functional_trims.full_iron_trim.description": "Equip a full set of Iron-trimmed armor",
+  "advancements.functional_trims.full_copper_trim.title": "Supercharged Strike",
+  "advancements.functional_trims.full_copper_trim.description": "Equip a full set of Copper-trimmed armor",
+  "advancements.functional_trims.full_amethyst_trim.title": "Resonating Vision",
+  "advancements.functional_trims.full_amethyst_trim.description": "Equip a full set of Amethyst-trimmed armor",
+  "advancements.functional_trims.full_resin_trim.title": "Adhesive Grip",
+  "advancements.functional_trims.full_resin_trim.description": "Equip a full set of Resin-trimmed armor",
+  "advancements.functional_trims.full_quartz_trim.title": "Enriched Vitality",
+  "advancements.functional_trims.full_quartz_trim.description": "Equip a full set of Quartz-trimmed armor",
+
+  "advancements.functional_trims.redstone.redstone_lamp_activation.title": "Walking on Sunshine",
+  "advancements.functional_trims.redstone.redstone_lamp_activation.description": "Power a Redstone Lamp with Redstone-trimmed armor",
+
+  "advancements.functional_trims.emerald.1_in_7_5_trillion.title": "1 in 7.5 Trillion",
+  "advancements.functional_trims.emerald.1_in_7_5_trillion.description": "Open a Loot Chest while wearing Emerald-trimmed armor",
+
+  "advancements.functional_trims.lapis.level_100.title": "Infinite Wisdom",
+  "advancements.functional_trims.lapis.level_100.description": "Reach level 100 while wearing Lapis-trimmed armor",
+  "advancements.functional_trims.lapis.first_lesson.title": "Extra Credit",
+  "advancements.functional_trims.lapis.first_lesson.description": "Absorb an Experience Orb while wearing Lapis-trimmed armor",
+
+  "advancements.functional_trims.gold.enter_bastion.title": "Royal Visit",
+  "advancements.functional_trims.gold.enter_bastion.description": "Enter a Bastion Remnant while wearing Gold-trimmed armor",
+  "advancements.functional_trims.gold.attack_piglin_brute.title": "Establishing Dominance",
+  "advancements.functional_trims.gold.attack_piglin_brute.description": "Attack a Piglin Brute while wearing Gold-trimmed armor",
+
+  "advancements.functional_trims.diamond.armor_shatter.title": "Noble Sacrifice",
+  "advancements.functional_trims.diamond.armor_shatter.description": "Take fatal damage while wearing Diamond-trimmed armor",
+
+  "advancements.functional_trims.netherite.that_was_cute.title": "That Was Cute...",
+  "advancements.functional_trims.netherite.that_was_cute.description": "Completely resist an explosion with Netherite-trimmed armor",
+
+  "advancements.functional_trims.iron.reflect_projectile.title": "Ding!",
+  "advancements.functional_trims.iron.reflect_projectile.description": "Reflect a projectile with Iron-trimmed armor",
+  "advancements.functional_trims.iron.knockback_attacker.title": "Clang!",
+  "advancements.functional_trims.iron.knockback_attacker.description": "Knock back an attacker with your shield while wearing Iron-trimmed armor",
+
+  "advancements.functional_trims.copper.struck_by_lightning.title": "Strike Me Down, Zeus!",
+  "advancements.functional_trims.copper.struck_by_lightning.description": "Get struck by Lightning while wearing Copper-trimmed armor",
+  "advancements.functional_trims.copper.mace_strike.title": "The Wrath of Mjolnir",
+  "advancements.functional_trims.copper.mace_strike.description": "Deal 20 damage to a mob with the Mace while supercharged",
+
+  "advancements.functional_trims.amethyst.wallhacks_enabled.title": "Wallhacks Enabled",
+  "advancements.functional_trims.amethyst.wallhacks_enabled.description": "Stay still and sense the echoes around you",
+  "advancements.functional_trims.amethyst.i_see_you.title": "I See You",
+  "advancements.functional_trims.amethyst.i_see_you.description": "Sense an invisible mob with Amethyst Vision",
+
+  "advancements.functional_trims.resin.stick_to_wall.title": "Gettin' Sticky",
+  "advancements.functional_trims.resin.stick_to_wall.description": "Stick to a wall by crouching with Resin-trimmed armor",
+  "advancements.functional_trims.resin.long_fall.title": "Evel Knievel",
+  "advancements.functional_trims.resin.long_fall.description": "Break a 100-block fall by sticking to a wall",
+
+  "advancements.functional_trims.quartz.eat_golden_carrot.title": "Oversaturated",
+  "advancements.functional_trims.quartz.eat_golden_carrot.description": "Eat a Golden Carrot while wearing Quartz-trimmed armor",
+  "advancements.functional_trims.quartz.drink_potion.title": "Liquid Gains",
+  "advancements.functional_trims.quartz.drink_potion.description": "Consume a potion while wearing Quartz-trimmed armor",
+
   "effect.functional_trims.amethyst_vision": "Amethyst Vision",
   "effect.functional_trims.charged": "Supercharged",
 
@@ -6,7 +79,7 @@
 
   "config.functional_trims.title": "Functional Trims Config",
   "config.functional_trims.enabled": "Enabled",
-  
+
   "config.functional_trims.enable_all.tooltip": "Toggles all trim effects globally",
   "config.functional_trims.enable_all": "Enable All Trim Effects",
 
@@ -35,11 +108,11 @@
   "config.functional_trims.emerald": "Emerald",
   "config.functional_trims.emerald.roll1": "Extra Roll #1 Chance",
   "config.functional_trims.emerald.roll2": "Extra Roll #2 Chance",
-  "config.functional_trims.emerald.tooltip": "Full Set Effect: \"Explorer’s Fortune\"\nLoot chests grant more loot per chest.",
+  "config.functional_trims.emerald.tooltip": "Full Set Effect: \"Explorer’s Fortune\"\nLoot Chests grant more loot per chest.",
 
   "config.functional_trims.lapis": "Lapis",
   "config.functional_trims.lapis.exp": "Extra EXP Multiplier",
-  "config.functional_trims.lapis.tooltip": "Full Set Effect: \"Scholar’s Insight\"\nExperience orbs grant more experience.",
+  "config.functional_trims.lapis.tooltip": "Full Set Effect: \"Scholar’s Insight\"\nExperience Orbs grant more experience.",
 
   "config.functional_trims.quartz": "Quartz",
   "config.functional_trims.quartz.hunger": "Hunger Restored Multiplier",
@@ -61,5 +134,5 @@
 
   "config.functional_trims.resin": "Resin",
   "config.functional_trims.resin.grip": "Grip Strength Multiplier",
-  "config.functional_trims.resin.tooltip": "Full Set Effect: \"Adhesive Grip\"\nSticks to walls when sneaking next to them."
+  "config.functional_trims.resin.tooltip": "Full Set Effect: \"Adhesive Grip\"\nStick to walls when sneaking next to them."
 }
