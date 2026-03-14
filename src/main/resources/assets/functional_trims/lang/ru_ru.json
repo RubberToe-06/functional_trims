@@ -1,4 +1,77 @@
 {
+  "advancements.functional_trims.root.title": "Мастерство отделки",
+  "advancements.functional_trims.root.description": "Изучите искусство создания отделок с особыми свойствами!",
+
+  "advancements.functional_trims.full_redstone_trim.title": "Заземлённый источник",
+  "advancements.functional_trims.full_redstone_trim.description": "Наденьте полный комплект брони с редстоуновой отделкой",
+  "advancements.functional_trims.full_emerald_trim.title": "Удачливый искатель",
+  "advancements.functional_trims.full_emerald_trim.description": "Наденьте полный комплект брони с изумрудной отделкой",
+  "advancements.functional_trims.full_lapis_trim.title": "Чуткий учёный",
+  "advancements.functional_trims.full_lapis_trim.description": "Наденьте полный комплект брони с лазуритовой отделкой",
+  "advancements.functional_trims.full_gold_trim.title": "Незерский лорд",
+  "advancements.functional_trims.full_gold_trim.description": "Наденьте полный комплект брони с золотой отделкой",
+  "advancements.functional_trims.full_diamond_trim.title": "Стойкий ювелир",
+  "advancements.functional_trims.full_diamond_trim.description": "Наденьте полный комплект брони с алмазной отделкой",
+  "advancements.functional_trims.full_netherite_trim.title": "Непоколебимая личность",
+  "advancements.functional_trims.full_netherite_trim.description": "Наденьте полный комплект брони с незеритовой отделкой",
+  "advancements.functional_trims.full_iron_trim.title": "Закалённый боец",
+  "advancements.functional_trims.full_iron_trim.description": "Наденьте полный комплект брони с железной отделкой",
+  "advancements.functional_trims.full_copper_trim.title": "Безрассудный энергетик",
+  "advancements.functional_trims.full_copper_trim.description": "Наденьте полный комплект брони с медной отделкой",
+  "advancements.functional_trims.full_amethyst_trim.title": "Проницательный провидец",
+  "advancements.functional_trims.full_amethyst_trim.description": "Наденьте полный комплект брони с аметистовой отделкой",
+  "advancements.functional_trims.full_resin_trim.title": "Цепкий скалолаз",
+  "advancements.functional_trims.full_resin_trim.description": "Наденьте полный комплект брони со смоляной отделкой",
+  "advancements.functional_trims.full_quartz_trim.title": "Сытый странник",
+  "advancements.functional_trims.full_quartz_trim.description": "Наденьте полный комплект брони с кварцевой отделкой",
+
+  "advancements.functional_trims.redstone.redstone_lamp_activation.title": "Светлая идея",
+  "advancements.functional_trims.redstone.redstone_lamp_activation.description": "Запитайте лампу бронёй с редстоуновой отделкой",
+
+  "advancements.functional_trims.emerald.1_in_7_5_trillion.title": "Сокровища Эльдорадо",
+  "advancements.functional_trims.emerald.1_in_7_5_trillion.description": "Обыщите сундук с добычей, пока в броне с изумрудной отделкой",
+
+  "advancements.functional_trims.lapis.level_100.title": "Главный надмозг",
+  "advancements.functional_trims.lapis.level_100.description": "Достигните 100 уровня опыта, пока в броне с лазуритовой отделкой",
+  "advancements.functional_trims.lapis.first_lesson.title": "Дополнительный балл",
+  "advancements.functional_trims.lapis.first_lesson.description": "Поглотите сферу опыта, пока в броне с лазуритовой отделкой",
+
+  "advancements.functional_trims.gold.enter_bastion.title": "Королевский приём",
+  "advancements.functional_trims.gold.enter_bastion.description": "Войдите в развалины бастиона, пока в броне с золотой отделкой",
+  "advancements.functional_trims.gold.attack_piglin_brute.title": "Это было не просто смело...",
+  "advancements.functional_trims.gold.attack_piglin_brute.description": "Ударьте брутального пиглина, пока в броне с золотой отделкой",
+
+  "advancements.functional_trims.diamond.armor_shatter.title": "Алмазы на ветер",
+  "advancements.functional_trims.diamond.armor_shatter.description": "Получите критический урон, пока в броне с алмазной отделкой",
+
+  "advancements.functional_trims.netherite.that_was_cute.title": "Не бита, не крашена",
+  "advancements.functional_trims.netherite.that_was_cute.description": "Переживите взрыв, пока в броне с незеритовой отделкой",
+
+  "advancements.functional_trims.iron.reflect_projectile.title": "Звон!",
+  "advancements.functional_trims.iron.reflect_projectile.description": "Отразите снаряд благодаря броне с железной отделкой",
+  "advancements.functional_trims.iron.knockback_attacker.title": "Лязг!",
+  "advancements.functional_trims.iron.knockback_attacker.description": "Отбросьте врага щитом, пока в броне с железной отделкой",
+
+  "advancements.functional_trims.copper.struck_by_lightning.title": "Сверкает молния в ночи",
+  "advancements.functional_trims.copper.struck_by_lightning.description": "Получите удар молнии, пока в броне с медной отделкой",
+  "advancements.functional_trims.copper.mace_strike.title": "Вернуть должок",
+  "advancements.functional_trims.copper.mace_strike.description": "Нанесите 10 сердец урона булавой с критическим зарядом",
+
+  "advancements.functional_trims.amethyst.wallhacks_enabled.title": "Вижу всё",
+  "advancements.functional_trims.amethyst.wallhacks_enabled.description": "Замрите, чтобы начать видеть звуки",
+  "advancements.functional_trims.amethyst.i_see_you.title": "На 2 шага впереди",
+  "advancements.functional_trims.amethyst.i_see_you.description": "Обнаружьте невидимого моба аметистовым зрением",
+
+  "advancements.functional_trims.resin.stick_to_wall.title": "Человек-паук",
+  "advancements.functional_trims.resin.stick_to_wall.description": "Прилипните к стене благодаря броне со смоляной отделкой",
+  "advancements.functional_trims.resin.long_fall.title": "Смертельный номер",
+  "advancements.functional_trims.resin.long_fall.description": "Переживите падение со высоты 100 блоков, прилипнув к стене",
+
+  "advancements.functional_trims.quartz.eat_golden_carrot.title": "Пресытиться за раз",
+  "advancements.functional_trims.quartz.eat_golden_carrot.description": "Съешьте золотую морковь, пока в броне с кварцевой отделкой",
+  "advancements.functional_trims.quartz.drink_potion.title": "Эффект плацебо",
+  "advancements.functional_trims.quartz.drink_potion.description": "Выпейте зелье, пока в броне с кварцевой отделкой",
+
   "effect.functional_trims.amethyst_vision": "Аметистовое зрение",
   "effect.functional_trims.charged": "Критический заряд",
 
@@ -6,7 +79,7 @@
 
   "config.functional_trims.title": "Настройки Functional Trims",
   "config.functional_trims.enabled": "Включена",
-  
+
   "config.functional_trims.enable_all.tooltip": "Глобально переключает все эффекты отделок на броню",
   "config.functional_trims.enable_all": "Включить все эффекты",
 
