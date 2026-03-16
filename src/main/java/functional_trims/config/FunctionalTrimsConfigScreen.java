@@ -62,7 +62,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.axeAttackResistanceEnabled = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.iron.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -82,7 +84,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.distractPiglinBrutesEnabled = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.gold.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -97,7 +101,7 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.diamondEnabled = val)
                                         .build(),
 
-                                entry.startFloatField(Text.translatable("config.functional_trims.diamond.heal_burst"), cfg.percentHealthRegainedAfterBurst)
+                                entry.startFloatField(Text.translatable("config.functional_trims.diamond.heal"), cfg.percentHealthRegainedAfterBurst)
                                         .setDefaultValue(0.5f)
                                         .setMin(0.0f)
                                         .setMax(1.0f)
@@ -111,7 +115,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.percentArmorDurabilityLostAfterBurst = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.diamond.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -126,7 +132,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.netheriteEnabled = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.netherite.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -148,7 +156,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.blockPowerLevelWhenSteppedOn = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.redstone.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -177,7 +187,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.percentChanceForExtraRoll2 = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.emerald.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -199,7 +211,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.extraExpMultiplier = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.lapis.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -235,7 +249,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.potionEffectDurationMultiplier = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.quartz.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -271,7 +287,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.effectRangeMultiplier = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.amethyst.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -307,7 +325,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.chargedStrikeDamageMultiplier = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.copper.tooltip"))
+                .build()
         );
 
         // ----------------
@@ -329,7 +349,9 @@ public final class FunctionalTrimsConfigScreen {
                                         .setSaveConsumer(val -> cfg.gripStrengthMultiplier = val)
                                         .build()
                         )
-                ).build()
+                )
+                .setTooltip(Text.translatable("config.functional_trims.resin.tooltip"))
+                .build()
         );
 
         return builder.build();

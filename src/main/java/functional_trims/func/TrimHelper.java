@@ -53,5 +53,3 @@ public class TrimHelper {
         return trimCount == 4;
     }
 }
-
-

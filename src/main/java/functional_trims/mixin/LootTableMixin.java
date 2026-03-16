@@ -73,12 +73,3 @@ public abstract class LootTableMixin {
         }
     }
 }
-
-
-
-
-
-
-
-
-
