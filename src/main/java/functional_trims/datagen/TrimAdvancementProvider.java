@@ -387,50 +387,6 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         ModCriteria.TRIM_TRIGGER.criterion("amethyst", "i_see_you"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":amethyst/i_see_you");
 
-        // Full resin trim advancement
-        AdvancementEntry adhesiveGrip = Advancement.Builder.create()
-                .parent(root)
-                .display(
-                        Items.RESIN_BRICK,
-                        Text.translatable("advancements.functional_trims.full_resin_trim.title"),
-                        Text.translatable("advancements.functional_trims.full_resin_trim.description"),
-                        null,
-                        AdvancementFrame.TASK,
-                        true, true, false
-                )
-                .criterion("auto", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
-                .build(consumer, FunctionalTrims.MOD_ID + ":full_resin_trim");
-
-        // Resin trim sub-advancement
-        Advancement.Builder.create()
-                .parent(adhesiveGrip)
-                .display(
-                        Items.SLIME_BALL,
-                        Text.translatable("advancements.functional_trims.resin.stick_to_wall.title"),
-                        Text.translatable("advancements.functional_trims.resin.stick_to_wall.description"),
-                        null,
-                        AdvancementFrame.GOAL,
-                        true, true, false
-                )
-                .criterion("stick_to_wall",
-                        ModCriteria.TRIM_TRIGGER.criterion("resin", "stick_to_wall"))
-                .build(consumer, FunctionalTrims.MOD_ID + ":resin/stick_to_wall");
-
-        // Resin trim sub-advancement
-        Advancement.Builder.create()
-                .parent(adhesiveGrip)
-                .display(
-                        Items.FEATHER,
-                        Text.translatable("advancements.functional_trims.resin.long_fall.title"),
-                        Text.translatable("advancements.functional_trims.resin.long_fall.description"),
-                        null,
-                        AdvancementFrame.CHALLENGE,
-                        true, true, false
-                )
-                .criterion("long_fall",
-                        ModCriteria.TRIM_TRIGGER.criterion("resin", "long_fall"))
-                .build(consumer, FunctionalTrims.MOD_ID + ":resin/long_fall");
-
         // Full quartz trim advancement
         AdvancementEntry enrichedVitality = Advancement.Builder.create()
                 .parent(root)

@@ -329,31 +329,6 @@ public final class FunctionalTrimsConfigScreen {
                 .setTooltip(Text.translatable("config.functional_trims.copper.tooltip"))
                 .build()
         );
-
-        // ----------------
-        // Resin
-        // ----------------
-        materials.addEntry(
-                entry.startSubCategory(
-                        Text.translatable("config.functional_trims.resin"),
-                        List.of(
-                                entry.startBooleanToggle(Text.translatable("config.functional_trims.enabled"), cfg.resinEnabled)
-                                        .setDefaultValue(true)
-                                        .setSaveConsumer(val -> cfg.resinEnabled = val)
-                                        .build(),
-
-                                entry.startFloatField(Text.translatable("config.functional_trims.resin.grip"), cfg.gripStrengthMultiplier)
-                                        .setDefaultValue(1.0f)
-                                        .setMin(0.1f)
-                                        .setMax(3.0f)
-                                        .setSaveConsumer(val -> cfg.gripStrengthMultiplier = val)
-                                        .build()
-                        )
-                )
-                .setTooltip(Text.translatable("config.functional_trims.resin.tooltip"))
-                .build()
-        );
-
         return builder.build();
     }
 }
