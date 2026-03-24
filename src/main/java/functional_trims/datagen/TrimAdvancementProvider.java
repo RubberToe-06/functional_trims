@@ -43,7 +43,7 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         Items.SMITHING_TABLE,
                         Text.translatable("advancements.functional_trims.root.title"),
                         Text.translatable("advancements.functional_trims.root.description"),
-                        Identifier.of(FunctionalTrims.MOD_ID, "gui/advancements/backgrounds/functional_trims"),
+                        Identifier.of("minecraft", "block/polished_blackstone_bricks"),
                         AdvancementFrame.TASK,
                         true, true, false
                 )
@@ -133,7 +133,7 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         Text.translatable("advancements.functional_trims.lapis.level_100.description"),
                         null,
                         AdvancementFrame.CHALLENGE,
-                        true, true, false
+                        true, true, true
                 )
                 .criterion("reach_level_100",
                         ModCriteria.TRIM_TRIGGER.criterion("lapis", "reach_level_100"))
@@ -376,12 +376,12 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
         Advancement.Builder.create()
                 .parent(resonatingVision)
                 .display(
-                        Items.ENDER_EYE,
+                        Items.ENDER_PEARL,
                         Text.translatable("advancements.functional_trims.amethyst.i_see_you.title"),
                         Text.translatable("advancements.functional_trims.amethyst.i_see_you.description"),
                         null,
                         AdvancementFrame.CHALLENGE,
-                        true, true, false
+                        true, true, true
                 )
                 .criterion("i_see_you",
                         ModCriteria.TRIM_TRIGGER.criterion("amethyst", "i_see_you"))
@@ -425,7 +425,7 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                         Text.translatable("advancements.functional_trims.resin.long_fall.description"),
                         null,
                         AdvancementFrame.CHALLENGE,
-                        true, true, false
+                        true, true, true
                 )
                 .criterion("long_fall",
                         ModCriteria.TRIM_TRIGGER.criterion("resin", "long_fall"))
