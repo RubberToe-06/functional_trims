@@ -7,7 +7,6 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,7 +17,6 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
     private static final int CROUCH_TICKS = (int)(ConfigManager.get().motionlessSecondsBeforeEffectSneaking * 20.0f);      // 1.5 seconds
     private static final int EFFECT_DURATION = -1;   // infinite
     private static final double MOVEMENT_THRESHOLD_SQ = 0.0001;
-
     private static final Map<UUID, PlayerData> PLAYER_DATA = new HashMap<>();
 
     private static class PlayerData {

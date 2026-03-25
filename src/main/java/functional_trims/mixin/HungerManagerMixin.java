@@ -4,7 +4,6 @@ import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
-import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,9 +21,8 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(HungerManager.class)
 public abstract class HungerManagerMixin {
-    private static final float FOOD_HUNGER_MULT = ConfigManager.get().hungerRestoredMultiplier; // +25% hunger (nutrition)
-    private static final float FOOD_SAT_MULT    = ConfigManager.get().saturationRestoredMultiplier; // +25% saturation
-
+    @Unique private static final float FOOD_HUNGER_MULT = ConfigManager.get().hungerRestoredMultiplier; // +25% hunger (nutrition)
+    @Unique private static final float FOOD_SAT_MULT    = ConfigManager.get().saturationRestoredMultiplier; // +25% saturation
     @Unique private @Nullable ServerPlayerEntity functionalTrims$owner;
 
     /** Cache the owning player each tick. */

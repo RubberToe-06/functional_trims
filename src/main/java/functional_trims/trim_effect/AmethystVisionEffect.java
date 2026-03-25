@@ -49,6 +49,7 @@ public class AmethystVisionEffect extends StatusEffect {
         glowingIds.removeIf(eid -> {
             var e = world.getEntityById(eid);
             if (!(e instanceof LivingEntity le) || !nearby.contains(le)) {
+                assert e instanceof LivingEntity;
                 sendGlowPacket(player, (LivingEntity) e, false);
                 return true;
             }
@@ -111,6 +112,6 @@ public class AmethystVisionEffect extends StatusEffect {
 
         DataTracker.SerializedEntry<Byte> entry = DataTracker.SerializedEntry.of(FLAGS, clientFlags);
         player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(target.getId(),
-                List.<DataTracker.SerializedEntry<?>>of(entry)));
+                List.of(entry)));
     }
 }

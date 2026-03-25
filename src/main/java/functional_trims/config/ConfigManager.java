@@ -3,7 +3,6 @@ package functional_trims.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,7 +10,6 @@ import java.nio.file.Path;
 public final class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("functionaltrims.json");
-
     private static FunctionalTrimsConfig config = new FunctionalTrimsConfig();
 
     public static FunctionalTrimsConfig get() {

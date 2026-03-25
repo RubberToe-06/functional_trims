@@ -18,7 +18,6 @@ import net.minecraft.text.Text;
 import functional_trims.FunctionalTrims;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -474,6 +473,5 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
                 .criterion("drink_potion",
                         ModCriteria.TRIM_TRIGGER.criterion("quartz", "drink_potion"))
                 .build(consumer, FunctionalTrims.MOD_ID + ":quartz/drink_potion");
-
     }
 }

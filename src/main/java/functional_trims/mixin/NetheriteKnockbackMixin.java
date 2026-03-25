@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Cancels standard knockback from attacks/projectiles for Netherite-trimmed players.
- *
  * This does NOT cover explosions (explosions are handled via Entity#isImmuneToExplosion).
  */
 @Mixin(LivingEntity.class)
