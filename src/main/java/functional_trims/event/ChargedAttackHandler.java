@@ -49,7 +49,7 @@ public class ChargedAttackHandler {
             target.damage(serverWorld, serverWorld.getDamageSources().playerAttack(player), boostedDamage * BOOSTED_ATTACK_MULTIPLIER);
             target.setOnFireFor(4);
 
-            // ✅ Advancement trigger
+            // Advancement trigger
             if (player.getMainHandStack().isOf(Items.MACE) && boostedDamage >= 20.0F) {
                 ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "copper", "mace_strike");
 
@@ -64,6 +64,7 @@ public class ChargedAttackHandler {
             }
 
             // --- Remove Charged after hit ---
+            assert serverWorld.getServer() != null;
             serverWorld.getServer().execute(() -> player.removeStatusEffect(ModEffects.CHARGED));
 
             // --- Ambient effects ---

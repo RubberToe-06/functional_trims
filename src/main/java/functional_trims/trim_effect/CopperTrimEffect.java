@@ -3,7 +3,6 @@ package functional_trims.trim_effect;
 import functional_trims.config.ConfigManager;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
-import functional_trims.trim_effect.ModEffects;
 import functional_trims.config.FTConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
@@ -56,6 +55,7 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
         ModCriteria.TRIM_TRIGGER.trigger(player, "copper", "struck_by_lightning");
 
         // Schedule CHARGED effect next tick
+        assert world.getServer() != null;
         world.getServer().execute(() -> {
             player.addStatusEffect(ModEffects.CHARGED_60S);
             player.playSound(net.minecraft.sound.SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0F, 1.0F);

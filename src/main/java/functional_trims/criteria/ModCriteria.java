@@ -6,7 +6,6 @@ import functional_trims.FunctionalTrims;
 
 /**
  * Central registry for custom advancement criteria.
- *
  * IMPORTANT: Criteria.register takes a String in 1.21.x, not an Identifier.
  * Passing "functional_trims:trim_trigger" keeps your namespace. :contentReference[oaicite:23]{index=23}
  */

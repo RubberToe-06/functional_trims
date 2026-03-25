@@ -40,7 +40,7 @@ public class ResinTrimEffect {
 
     private static double GRIP_STRENGTH() {
         // safety clamp so people can't set something insane
-        return Math.max(0.1, Math.min(3.0, functional_trims.config.ConfigManager.get().gripStrengthMultiplier));
+        return Math.clamp(functional_trims.config.ConfigManager.get().gripStrengthMultiplier, 0.1, 3.0);
     }
 
     public static void register() {
@@ -97,10 +97,6 @@ public class ResinTrimEffect {
         } else if (contact != null) {
             gd.normal = contact;
         }
-
-        // ============================
-        // DECEL -> STUCK (1.21.11 FIXED)
-        // ============================
 
         Vec3d vel = player.getVelocity();
         player.fallDistance = 0;

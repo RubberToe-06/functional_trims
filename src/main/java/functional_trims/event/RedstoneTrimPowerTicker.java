@@ -7,13 +7,14 @@ import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.block.WireOrientation;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class RedstoneTrimPowerTicker {
 
-    private static final Map<UUID, BlockPos> lastPositions = new HashMap<>();
     private static final Map<BlockPos, Integer> poweredBlocks = new HashMap<>();
 
     // How long (in ticks) a block stays powered after player leaves
@@ -25,6 +26,7 @@ public class RedstoneTrimPowerTicker {
 
     private static void onWorldTick(ServerWorld world) {
         if (!FTConfig.isTrimEnabled("redstone")) return;
+
         // Mark blocks that should remain powered this tick
         Set<BlockPos> activeThisTick = new HashSet<>();
 
@@ -33,10 +35,9 @@ public class RedstoneTrimPowerTicker {
             if (trims <= 3) return;
 
             BlockPos below = player.getBlockPos().down();
-            if (!world.isChunkLoaded(below)) return;
+            if (!world.getChunkManager().isChunkLoaded(below.getX() >> 4, below.getZ() >> 4)) return;
 
             activeThisTick.add(below);
-            lastPositions.put(player.getUuid(), below);
         });
 
         // Decrease timers & collect blocks to turn off
@@ -54,7 +55,7 @@ public class RedstoneTrimPowerTicker {
             }
             // Turn off if expired
             else if (timer <= 0) {
-                refreshNeighbors(world, pos, false);
+                refreshNeighbors(world, pos);
                 toRemove.add(pos);
             }
         }
@@ -66,18 +67,19 @@ public class RedstoneTrimPowerTicker {
         for (BlockPos pos : activeThisTick) {
             if (!poweredBlocks.containsKey(pos)) {
                 poweredBlocks.put(pos, GRACE_TICKS);
-                refreshNeighbors(world, pos, true);
+                refreshNeighbors(world, pos);
             }
         }
     }
 
-    private static void refreshNeighbors(ServerWorld world, BlockPos pos, boolean on) {
+    private static void refreshNeighbors(ServerWorld world, BlockPos pos) {
         var block = world.getBlockState(pos).getBlock();
-        world.updateNeighborsAlways(pos, block, (WireOrientation) null);
+        world.updateNeighborsAlways(pos, block, null);
+
         for (Direction dir : Direction.values()) {
             BlockPos neighbor = pos.offset(dir);
-            if (world.isChunkLoaded(neighbor)) {
-                world.updateNeighborsAlways(neighbor, block, (WireOrientation) null);
+            if (world.getChunkManager().isChunkLoaded(neighbor.getX() >> 4, neighbor.getZ() >> 4)) {
+                world.updateNeighborsAlways(neighbor, block, null);
             }
         }
     }

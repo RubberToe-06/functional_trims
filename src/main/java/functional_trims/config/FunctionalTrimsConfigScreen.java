@@ -11,7 +11,6 @@ import java.util.List;
 public final class FunctionalTrimsConfigScreen {
     public static Screen create(Screen parent) {
         FunctionalTrimsConfig cfg = ConfigManager.get();
-
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
                 .setTitle(Text.translatable("config.functional_trims.title"));
@@ -19,7 +18,6 @@ public final class FunctionalTrimsConfigScreen {
         builder.setSavingRunnable(ConfigManager::save);
 
         ConfigEntryBuilder entry = builder.entryBuilder();
-
         ConfigCategory materials = builder.getOrCreateCategory(Text.translatable("config.functional_trims.category.trim_materials"));
 
         // Master toggle

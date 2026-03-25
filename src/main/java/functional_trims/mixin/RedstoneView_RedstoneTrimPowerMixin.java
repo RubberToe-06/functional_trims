@@ -30,7 +30,6 @@ public interface RedstoneView_RedstoneTrimPowerMixin {
     )
     private void functionalTrims$powerUnderTrimmedPlayers(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         Object self = this;
-        // Only override if vanilla logic found no power
         if (cir.getReturnValue()) return;
         if (!(self instanceof WorldView worldView)) return;
         if (worldView.isClient()) return; // server only

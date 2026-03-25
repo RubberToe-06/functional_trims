@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Handles explosion knockback for Netherite-trimmed players safely.
- *
  * NOTE:
  * - Explosion knockback does NOT use LivingEntity#takeKnockback.
  * - The explosion pipeline checks Entity#isImmuneToExplosion(Explosion).

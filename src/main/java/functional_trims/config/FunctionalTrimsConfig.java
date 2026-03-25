@@ -1,12 +1,7 @@
 package functional_trims.config;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public final class FunctionalTrimsConfig {
+
     // Toggles for trim effects
     public boolean enableAll = true;
     public boolean ironEnabled = true;

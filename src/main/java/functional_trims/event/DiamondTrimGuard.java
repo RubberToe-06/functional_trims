@@ -38,11 +38,8 @@ public final class DiamondTrimGuard {
                 int maxDurability = stack.getMaxDamage();
 
                 // Clamp percent between 0 and 1 for safety
-                float percent = Math.max(0.0f,
-                        Math.min(1.0f, PERCENT_ARMOR_DURABILITY_LOST));
-
+                float percent = Math.clamp(PERCENT_ARMOR_DURABILITY_LOST, 0.0f, 1.0f);
                 int durabilityLoss = Math.round(maxDurability * percent);
-
                 if (durabilityLoss <= 0) continue;
 
                 stack.damage(durabilityLoss, player, slot);
