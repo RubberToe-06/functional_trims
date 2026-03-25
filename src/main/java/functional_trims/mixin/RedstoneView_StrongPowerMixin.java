@@ -20,7 +20,9 @@ public interface RedstoneView_StrongPowerMixin {
     private void functionalTrims$addTrimStrongPower(BlockPos pos, CallbackInfoReturnable<Integer> cir) {
         if (!(this instanceof World world)) return;
         if (!FTConfig.isTrimEnabled("redstone")) return;
+
         final int EXTRA_POWER = ConfigManager.get().blockPowerLevelWhenSteppedOn;
+
         // Check for players above the position
         for (PlayerEntity player : world.getPlayers()) {
             if (player.getBlockPos().down().equals(pos)) {

@@ -31,9 +31,7 @@ public class ModEffects {
         );
 
         CHARGED_EFFECT = CHARGED.value(); // <-- unwrap to plain StatusEffect
-
         CHARGED_60S = new StatusEffectInstance(CHARGED, (int)(20 * CHARGED_DURATION), 0, true, false, true);
-
 
         FunctionalTrims.LOGGER.info("Registered Functional Trims effects.");
     }

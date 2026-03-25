@@ -4,20 +4,19 @@ import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
-import functional_trims.trim_effect.ModEffects;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    private static final float POTION_MULT = ConfigManager.get().potionEffectDurationMultiplier;
+    @Unique private static final float POTION_MULT = ConfigManager.get().potionEffectDurationMultiplier;
 
     /**
      * Scale duration for beneficial effects as they're applied.

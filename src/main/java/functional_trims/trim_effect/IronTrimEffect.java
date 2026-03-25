@@ -2,7 +2,6 @@ package functional_trims.trim_effect;
 
 import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
-import functional_trims.config.FunctionalTrimsConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -47,7 +46,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             if (!isProjectile && !isFallingBlock) return true;
 
             // 50% chance to deflect
-            if (player.getRandom().nextFloat() < 0.5f) {
+            if (player.getRandom().nextFloat() < CHANCE_TO_DEFLECT) {
                 // Sound + particle
                 world.playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS,
@@ -150,6 +149,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.IRON)) continue;
             if (!FTConfig.isTrimEnabled("iron")) return;
+            if (!COOLDOWN_NEGATION_ENABLED) return;
 
             var cooldowns = player.getItemCooldownManager();
 

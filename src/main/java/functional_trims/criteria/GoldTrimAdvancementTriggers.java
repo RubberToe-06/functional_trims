@@ -1,11 +1,8 @@
 package functional_trims.criteria;
 
-import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
-
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-
 import net.minecraft.entity.mob.PiglinBruteEntity;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.registry.RegistryKeys;
@@ -66,7 +63,6 @@ public class GoldTrimAdvancementTriggers {
                     ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "gold", "hit_piglin_brute");
                 }
             }
-
             return ActionResult.PASS;
         });
     }
