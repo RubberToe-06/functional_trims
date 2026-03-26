@@ -1,6 +1,7 @@
 package functional_trims.trim_effect;
 
 import functional_trims.config.ConfigManager;
+import functional_trims.effect.ModEffects;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;

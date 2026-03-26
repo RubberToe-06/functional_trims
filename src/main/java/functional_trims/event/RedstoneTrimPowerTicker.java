@@ -1,12 +1,18 @@
 package functional_trims.event;
 
 import functional_trims.config.FTConfig;
+import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,61 +21,102 @@ import java.util.Set;
 
 public class RedstoneTrimPowerTicker {
 
-    private static final Map<BlockPos, Integer> poweredBlocks = new HashMap<>();
-
-    // How long (in ticks) a block stays powered after player leaves
-    private static final int GRACE_TICKS = 3;
+    private static final Map<RegistryKey<World>, Set<BlockPos>> PREVIOUS_POWERED = new HashMap<>();
 
     public static void register() {
         ServerTickEvents.END_WORLD_TICK.register(RedstoneTrimPowerTicker::onWorldTick);
     }
 
+    public static Set<BlockPos> getPoweredBlocksUnderPlayer(PlayerEntity player) {
+        Set<BlockPos> positions = new HashSet<>();
+
+        if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) {
+            return positions;
+        }
+
+        var box = player.getBoundingBox();
+        int y = (int) Math.floor(box.minY - 0.05);
+
+        int minX = (int) Math.floor(box.minX);
+        int maxX = (int) Math.floor(box.maxX - 1.0E-6);
+        int minZ = (int) Math.floor(box.minZ);
+        int maxZ = (int) Math.floor(box.maxZ - 1.0E-6);
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                positions.add(new BlockPos(x, y, z));
+            }
+        }
+
+        return positions;
+    }
+
+    public static boolean isPlayerPoweringPos(PlayerEntity player, BlockPos pos) {
+        if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) return false;
+
+        var box = player.getBoundingBox();
+        int y = (int) Math.floor(box.minY - 0.05);
+
+        if (pos.getY() != y) return false;
+
+        int minX = (int) Math.floor(box.minX);
+        int maxX = (int) Math.floor(box.maxX - 1.0E-6);
+        int minZ = (int) Math.floor(box.minZ);
+        int maxZ = (int) Math.floor(box.maxZ - 1.0E-6);
+
+        return pos.getX() >= minX && pos.getX() <= maxX
+                && pos.getZ() >= minZ && pos.getZ() <= maxZ;
+    }
+
     private static void onWorldTick(ServerWorld world) {
         if (!FTConfig.isTrimEnabled("redstone")) return;
 
-        // Mark blocks that should remain powered this tick
-        Set<BlockPos> activeThisTick = new HashSet<>();
+        RegistryKey<World> worldKey = world.getRegistryKey();
+        Set<BlockPos> currentPowered = new HashSet<>();
+        Set<BlockPos> newlyPowered = new HashSet<>();
 
-        world.getPlayers().forEach(player -> {
-            int trims = TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE);
-            if (trims <= 3) return;
+        for (ServerPlayerEntity player : world.getPlayers()) {
+            if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) continue;
 
-            BlockPos below = player.getBlockPos().down();
-            if (!world.getChunkManager().isChunkLoaded(below.getX() >> 4, below.getZ() >> 4)) return;
+            for (BlockPos pos : getPoweredBlocksUnderPlayer(player)) {
+                if (!world.getChunkManager().isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)) continue;
 
-            activeThisTick.add(below);
-        });
-
-        // Decrease timers & collect blocks to turn off
-        Set<BlockPos> toRemove = new HashSet<>();
-
-        poweredBlocks.replaceAll((pos, timer) -> timer - 1);
-
-        for (Map.Entry<BlockPos, Integer> entry : poweredBlocks.entrySet()) {
-            BlockPos pos = entry.getKey();
-            int timer = entry.getValue();
-
-            // Refresh timer if still active
-            if (activeThisTick.contains(pos)) {
-                poweredBlocks.put(pos, GRACE_TICKS);
-            }
-            // Turn off if expired
-            else if (timer <= 0) {
-                refreshNeighbors(world, pos);
-                toRemove.add(pos);
+                boolean added = currentPowered.add(pos);
+                if (added) {
+                    newlyPowered.add(pos);
+                }
             }
         }
 
-        // Remove expired entries
-        toRemove.forEach(poweredBlocks::remove);
+        Set<BlockPos> previousPowered = PREVIOUS_POWERED.getOrDefault(worldKey, Set.of());
 
-        // Turn on new blocks
-        for (BlockPos pos : activeThisTick) {
-            if (!poweredBlocks.containsKey(pos)) {
-                poweredBlocks.put(pos, GRACE_TICKS);
+        Set<BlockPos> changed = new HashSet<>(previousPowered);
+        changed.addAll(currentPowered);
+
+        for (BlockPos pos : changed) {
+            boolean wasPowered = previousPowered.contains(pos);
+            boolean isPowered = currentPowered.contains(pos);
+
+            if (wasPowered != isPowered) {
                 refreshNeighbors(world, pos);
             }
         }
+
+        for (ServerPlayerEntity player : world.getPlayers()) {
+            if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) continue;
+
+            for (BlockPos pos : getPoweredBlocksUnderPlayer(player)) {
+                if (!world.getChunkManager().isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)) continue;
+
+                if (newlyPowered.contains(pos)
+                        && !previousPowered.contains(pos)
+                        && world.getBlockState(pos).isOf(Blocks.REDSTONE_LAMP)) {
+                    ModCriteria.TRIM_TRIGGER.trigger(player, "redstone", "activate_lamp");
+                }
+            }
+        }
+
+        PREVIOUS_POWERED.put(worldKey, currentPowered);
     }
 
     private static void refreshNeighbors(ServerWorld world, BlockPos pos) {
