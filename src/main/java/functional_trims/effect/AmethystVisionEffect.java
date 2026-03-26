@@ -1,4 +1,4 @@
-package functional_trims.trim_effect;
+package functional_trims.effect;
 
 import functional_trims.config.ConfigManager;
 import functional_trims.mixin.EntityAccessor;

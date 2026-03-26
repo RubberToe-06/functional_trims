@@ -1,9 +1,7 @@
-package functional_trims.trim_effect;
+package functional_trims.effect;
 
 import functional_trims.FunctionalTrims;
-import functional_trims.config.ConfigManager;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -13,11 +11,10 @@ public class ModEffects {
 
     public static RegistryEntry<StatusEffect> AMETHYST_VISION;
     public static RegistryEntry<StatusEffect> CHARGED;
-    public static StatusEffect CHARGED_EFFECT; // <-- add this line
-    public static StatusEffectInstance CHARGED_60S;
-    private static final float CHARGED_DURATION = ConfigManager.get().chargedEffectDuration;
+    public static StatusEffect CHARGED_EFFECT;
 
     public static void register() {
+
         AMETHYST_VISION = Registry.registerReference(
                 Registries.STATUS_EFFECT,
                 Identifier.of(FunctionalTrims.MOD_ID, "amethyst_vision"),
@@ -30,8 +27,7 @@ public class ModEffects {
                 new ChargedEffect()
         );
 
-        CHARGED_EFFECT = CHARGED.value(); // <-- unwrap to plain StatusEffect
-        CHARGED_60S = new StatusEffectInstance(CHARGED, (int)(20 * CHARGED_DURATION), 0, true, false, true);
+        CHARGED_EFFECT = CHARGED.value();
 
         FunctionalTrims.LOGGER.info("Registered Functional Trims effects.");
     }

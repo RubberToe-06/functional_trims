@@ -2,6 +2,7 @@ package functional_trims.criteria;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancement.AdvancementCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.CriterionConditions;
 import net.minecraft.predicate.entity.LootContextPredicate;
@@ -50,7 +51,7 @@ public class TrimTriggerCriterion extends AbstractCriterion<TrimTriggerCriterion
      * .criterion("activate_mechanism",
      *     ModCriteria.TRIM_TRIGGER.criterion("redstone", "activate_mechanism"))
      */
-    public net.minecraft.advancement.AdvancementCriterion<Conditions> criterion(String material, String triggerType) {
+    public AdvancementCriterion<Conditions> criterion(String material, String triggerType) {
         return this.create(new Conditions(
                 /* player */ Optional.empty(),
                 material,

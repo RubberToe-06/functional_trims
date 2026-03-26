@@ -1,23 +1,31 @@
 package functional_trims.trim_effect;
 
 import functional_trims.config.ConfigManager;
-import functional_trims.criteria.ModCriteria;
-import functional_trims.func.TrimHelper;
 import functional_trims.config.FTConfig;
+import functional_trims.criteria.ModCriteria;
+import functional_trims.effect.ModEffects;
+import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.entity.LightningEntity;
 import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.sound.SoundEvents;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
 
 public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
 
     private static final int LIGHTNING_COOLDOWN_TICKS = 200; // 10s between possible strikes
-    private static final float LIGHTNING_COOLDOWN_MULT = ConfigManager.get().lightningStrikeChanceMultiplier;
-    private final WeakHashMap<UUID, Integer> cooldowns = new WeakHashMap<>();
+    private static final int CHARGED_DURATION_TICKS = 20 * 60; // 60s
+
+    private final Map<UUID, Integer> cooldowns = new HashMap<>();
+
+    private static float lightningCooldownMultiplier() {
+        return ConfigManager.get().lightningStrikeChanceMultiplier;
+    }
 
     @Override
     public void onEndTick(ServerWorld world) {
@@ -30,14 +38,15 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
 
             UUID id = player.getUuid();
             cooldowns.putIfAbsent(id, 0);
-            int cd = cooldowns.get(id);
-            if (cd > 0) {
-                cooldowns.put(id, cd - 1);
+
+            int cooldown = cooldowns.get(id);
+            if (cooldown > 0) {
+                cooldowns.put(id, cooldown - 1);
                 continue;
             }
 
-            // small random chance each tick (≈ once every 10s average)
-            if (world.getRandom().nextInt((int)(200 / LIGHTNING_COOLDOWN_MULT) ) == 0) {
+            int strikeInterval = Math.max(1, (int) (200 / lightningCooldownMultiplier()));
+            if (world.getRandom().nextInt(strikeInterval) == 0) {
                 summonLightning(world, player);
                 cooldowns.put(id, LIGHTNING_COOLDOWN_TICKS);
             }
@@ -46,19 +55,25 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
 
     private void summonLightning(ServerWorld world, ServerPlayerEntity player) {
         if (!FTConfig.isTrimEnabled("copper")) return;
+
         LightningEntity lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, world);
         lightning.refreshPositionAfterTeleport(player.getX(), player.getY(), player.getZ());
         lightning.setCosmetic(true);
         world.spawnEntity(lightning);
 
-        // --- Trigger advancement ---
         ModCriteria.TRIM_TRIGGER.trigger(player, "copper", "struck_by_lightning");
 
-        // Schedule CHARGED effect next tick
         assert world.getServer() != null;
         world.getServer().execute(() -> {
-            player.addStatusEffect(ModEffects.CHARGED_60S);
-            player.playSound(net.minecraft.sound.SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0F, 1.0F);
+            player.addStatusEffect(new StatusEffectInstance(
+                    ModEffects.CHARGED,
+                    CHARGED_DURATION_TICKS,
+                    0,
+                    false,
+                    false,
+                    true
+            ));
+            player.playSound(SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0F, 1.0F);
         });
     }
 }
