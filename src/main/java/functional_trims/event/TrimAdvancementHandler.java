@@ -55,19 +55,19 @@ public class TrimAdvancementHandler {
     private static boolean isTrimEnabled(RegistryKey<ArmorTrimMaterial> key) {
         var cfg = functional_trims.config.ConfigManager.get();
 
-        if (!cfg.enableAll) return false;
+        if (!cfg.modEnabled) return false;
 
-        if (key == ArmorTrimMaterials.AMETHYST) return cfg.amethystEnabled;
-        if (key == ArmorTrimMaterials.IRON) return cfg.ironEnabled;
-        if (key == ArmorTrimMaterials.GOLD) return cfg.goldEnabled;
-        if (key == ArmorTrimMaterials.DIAMOND) return cfg.diamondEnabled;
-        if (key == ArmorTrimMaterials.NETHERITE) return cfg.netheriteEnabled;
-        if (key == ArmorTrimMaterials.REDSTONE) return cfg.redstoneEnabled;
-        if (key == ArmorTrimMaterials.EMERALD) return cfg.emeraldEnabled;
-        if (key == ArmorTrimMaterials.LAPIS) return cfg.lapisEnabled;
-        if (key == ArmorTrimMaterials.COPPER) return cfg.copperEnabled;
-        if (key == ArmorTrimMaterials.QUARTZ) return cfg.quartzEnabled;
-        if (key == ArmorTrimMaterials.RESIN) return cfg.resinEnabled;
+        if (key == ArmorTrimMaterials.AMETHYST) return cfg.amethyst.enabled;
+        if (key == ArmorTrimMaterials.IRON) return cfg.iron.enabled;
+        if (key == ArmorTrimMaterials.GOLD) return cfg.gold.enabled;
+        if (key == ArmorTrimMaterials.DIAMOND) return cfg.diamond.enabled;
+        if (key == ArmorTrimMaterials.NETHERITE) return cfg.netherite.enabled;
+        if (key == ArmorTrimMaterials.REDSTONE) return cfg.redstone.enabled;
+        if (key == ArmorTrimMaterials.EMERALD) return cfg.emerald.enabled;
+        if (key == ArmorTrimMaterials.LAPIS) return cfg.lapis.enabled;
+        if (key == ArmorTrimMaterials.COPPER) return cfg.copper.enabled;
+        if (key == ArmorTrimMaterials.QUARTZ) return cfg.quartz.enabled;
+        if (key == ArmorTrimMaterials.RESIN) return cfg.resin.enabled;
 
         return true;
     }

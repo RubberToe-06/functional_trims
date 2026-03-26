@@ -48,7 +48,7 @@ public interface RedstoneViewMixin {
         if (!(this instanceof World world)) return;
         if (!FTConfig.isTrimEnabled("redstone")) return;
 
-        int extraPower = Math.min(15, ConfigManager.get().blockPowerLevelWhenSteppedOn);
+        int extraPower = Math.min(15, ConfigManager.get().redstone.blockPowerLevelWhenSteppedOn);
 
         for (PlayerEntity player : world.getPlayers()) {
             if (RedstoneTrimPowerTicker.isPlayerPoweringPos(player, pos)) {

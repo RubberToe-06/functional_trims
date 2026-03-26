@@ -18,7 +18,7 @@ public class AmethystVisionEffect extends StatusEffect {
     private static final byte GLOW_MASK = 0x40;
     private static final Map<UUID, Set<Integer>> glowingByPlayer = new ConcurrentHashMap<>();
     private static final Map<UUID, Boolean> wasActive = new ConcurrentHashMap<>();
-    private static final float RANGE_MULTIPLIER = ConfigManager.get().effectRangeMultiplier;
+    private static final float RANGE_MULTIPLIER = ConfigManager.get().amethyst.effectRangeMultiplier;
 
     public AmethystVisionEffect() {
         super(StatusEffectCategory.BENEFICIAL, 0xAA00FF);

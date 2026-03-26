@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 public class ChargedAttackHandler {
 
     private static float boostedAttackMultiplier() {
-        return ConfigManager.get().chargedStrikeDamageMultiplier;
+        return ConfigManager.get().copper.chargedStrikeDamageMultiplier;
     }
 
     public static void register() {

@@ -21,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(HungerManager.class)
 public abstract class HungerManagerMixin {
-    @Unique private static final float FOOD_HUNGER_MULT = ConfigManager.get().hungerRestoredMultiplier; // +25% hunger (nutrition)
-    @Unique private static final float FOOD_SAT_MULT    = ConfigManager.get().saturationRestoredMultiplier; // +25% saturation
+    @Unique private static final float FOOD_HUNGER_MULT = ConfigManager.get().quartz.hungerRestoredMultiplier; // +25% hunger (nutrition)
+    @Unique private static final float FOOD_SAT_MULT    = ConfigManager.get().quartz.saturationRestoredMultiplier; // +25% saturation
     @Unique private @Nullable ServerPlayerEntity functionalTrims$owner;
 
     /** Cache the owning player each tick. */
@@ -54,8 +54,8 @@ public abstract class HungerManagerMixin {
         if (item == Items.GOLDEN_APPLE || item == Items.ENCHANTED_GOLDEN_APPLE || item == Items.SUSPICIOUS_STEW) return;
 
         // Boost hunger and saturation
-        int   nutrition  = (Integer) args.get(0);
-        float saturation = (Float)   args.get(1);
+        int   nutrition  = args.get(0);
+        float saturation = args.get(1);
 
         int   boostedNutrition  = Math.max(Math.round(nutrition * FOOD_HUNGER_MULT), 2);
         float boostedSaturation = saturation * FOOD_SAT_MULT;

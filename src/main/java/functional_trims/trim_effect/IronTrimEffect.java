@@ -22,11 +22,11 @@ import net.minecraft.util.math.Vec3d;
 
 public class IronTrimEffect implements ServerTickEvents.EndTick {
 
-    private static final double KB_STRENGTH = ConfigManager.get().shieldKnockbackStrengthMultiplier;
-    private static final double CHANCE_TO_DEFLECT = ConfigManager.get().projectileReflectChance;
+    private static final double KB_STRENGTH = ConfigManager.get().iron.shieldKnockbackStrengthMultiplier;
+    private static final double CHANCE_TO_DEFLECT = ConfigManager.get().iron.projectileReflectChance;
     private static final double Y_BOOST = 0.15;
     private static final double MAX_RANGE = 4.0;
-    private static final boolean COOLDOWN_NEGATION_ENABLED = ConfigManager.get().axeAttackResistanceEnabled;
+    private static final boolean COOLDOWN_NEGATION_ENABLED = ConfigManager.get().iron.axeAttackResistanceEnabled;
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());

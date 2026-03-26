@@ -36,7 +36,7 @@ public class ResinTrimEffect {
     }
 
     private static double gripStrength() {
-        return Math.clamp(ConfigManager.get().gripStrengthMultiplier, 0.1, 3.0);
+        return Math.clamp(ConfigManager.get().resin.gripStrengthMultiplier, 0.1, 3.0);
     }
 
     public static void register() {
