@@ -3,15 +3,11 @@ package functional_trims;
 import functional_trims.config.ConfigManager;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.event.ChargedAttackHandler;
-import functional_trims.event.DiamondTrimGuard;
 import functional_trims.event.RedstoneTrimPowerTicker;
 import functional_trims.event.TrimAdvancementHandler;
-import functional_trims.trim_effect.AmethystTrimEffect;
+import functional_trims.trim_effect.*;
 import functional_trims.effect.AmethystVisionEffect;
-import functional_trims.trim_effect.CopperTrimEffect;
-import functional_trims.trim_effect.IronTrimEffect;
 import functional_trims.effect.ModEffects;
-import functional_trims.trim_effect.ResinTrimEffect;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import org.slf4j.Logger;
@@ -43,12 +39,12 @@ public class FunctionalTrims implements ModInitializer {
         ResinTrimEffect.register();
         AmethystTrimEffect.register();
         IronTrimEffect.register();
+        DiamondTrimEffect.register();
     }
 
     private static void registerEventHandlers() {
         RedstoneTrimPowerTicker.register();
         TrimAdvancementHandler.register();
-        DiamondTrimGuard.register();
         ChargedAttackHandler.register();
     }
 
