@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Unique private static final float POTION_MULT = ConfigManager.get().potionEffectDurationMultiplier;
+    @Unique private static final float POTION_MULT = ConfigManager.get().quartz.potionEffectDurationMultiplier;
 
     /**
      * Scale duration for beneficial effects as they're applied.

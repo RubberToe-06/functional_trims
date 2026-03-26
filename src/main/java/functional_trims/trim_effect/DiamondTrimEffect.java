@@ -161,10 +161,10 @@ public class DiamondTrimEffect {
     }
 
     private static float percentHealthRegained() {
-        return ConfigManager.get().percentHealthRegainedAfterBurst;
+        return ConfigManager.get().diamond.percentHealthRegainedAfterBurst;
     }
 
     private static float percentArmorDurabilityLost() {
-        return ConfigManager.get().percentArmorDurabilityLostAfterBurst;
+        return ConfigManager.get().diamond.percentArmorDurabilityLostAfterBurst;
     }
 }

@@ -27,16 +27,11 @@ public class TrimTriggerCriterion extends AbstractCriterion<TrimTriggerCriterion
         return ID;
     }
 
-
     @Override
     public Codec<Conditions> getConditionsCodec() {
         return Conditions.CODEC;
     }
 
-    /**
-     * Call this from your gameplay logic when the effect actually fires.
-     * Example: when redstone trim powers a block.
-     */
     public void trigger(ServerPlayerEntity player, String material, String triggerType) {
         Predicate<Conditions> check = cond ->
                 cond.material().equals(material) &&
@@ -44,13 +39,6 @@ public class TrimTriggerCriterion extends AbstractCriterion<TrimTriggerCriterion
         super.trigger(player, check);
     }
 
-    /**
-     * Helper for datagen: build an AdvancementCriterion for
-     * (material=X, triggerType=Y) without writing raw JSON.
-     * Usage in your provider:
-     * .criterion("activate_mechanism",
-     *     ModCriteria.TRIM_TRIGGER.criterion("redstone", "activate_mechanism"))
-     */
     public AdvancementCriterion<Conditions> criterion(String material, String triggerType) {
         return this.create(new Conditions(
                 /* player */ Optional.empty(),
@@ -59,22 +47,11 @@ public class TrimTriggerCriterion extends AbstractCriterion<TrimTriggerCriterion
         ));
     }
 
-    /**
-     * Conditions record. Matches Mojang's pattern (see e.g. LightningStrikeCriterion.Conditions). :contentReference[oaicite:15]{index=15}
-     * - player: Optional<LootContextPredicate> that can restrict "which player"
-     *   (we're not using it yet, so it'll usually be Optional.empty()).
-     * - material: which trim material must have caused it.
-     * - triggerType: which event type we're talking about.
-     */
     public record Conditions(
             Optional<LootContextPredicate> player,
             String material,
             String triggerType
     ) implements AbstractCriterion.Conditions, CriterionConditions {
-
-        // The CODEC defines how this condition is read from advancement JSON.
-        //   optionalFieldOf("player") for Optional<LootContextPredicate>
-        //   fieldOf(...) for required strings, etc. :contentReference[oaicite:16]{index=16} :contentReference[oaicite:17]{index=17}
         public static final Codec<Conditions> CODEC = RecordCodecBuilder.create(instance ->
                 instance.group(
                         LootContextPredicate.CODEC
@@ -88,8 +65,5 @@ public class TrimTriggerCriterion extends AbstractCriterion<TrimTriggerCriterion
                                 .forGetter(Conditions::triggerType)
                 ).apply(instance, Conditions::new)
         );
-
-        // AbstractCriterion.Conditions already provides a default validate(...)
-        // implementation (the vanilla records don't all override it). :contentReference[oaicite:18]{index=18} :contentReference[oaicite:19]{index=19}
     }
 }

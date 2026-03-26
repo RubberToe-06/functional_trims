@@ -29,7 +29,7 @@ public class PiglinBruteBrainMixin {
     )
     private static void functional_trims$pacifyGoldTrimmedPlayers(ServerWorld world, AbstractPiglinEntity piglinBrute,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
-        boolean PIGLINS_DISTRACTIBLE = ConfigManager.get().distractPiglinBrutesEnabled;
+        boolean PIGLINS_DISTRACTIBLE = ConfigManager.get().gold.distractPiglinBrutesEnabled;
         if (!FTConfig.isTrimEnabled("gold")) return;
         if (!PIGLINS_DISTRACTIBLE) return;
         piglinBrute.getBrain()

@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LootTable.class)
 public abstract class LootTableMixin {
     @Unique private static final ThreadLocal<Boolean> emeraldTrim$rerolling = ThreadLocal.withInitial(() -> false);
-    @Unique private static final float CHANCE_FOR_FIRST_REROLL = ConfigManager.get().percentChanceForExtraRoll1;
-    @Unique private static final float CHANCE_FOR_SECOND_REROLL = ConfigManager.get().percentChanceForExtraRoll2;
+    @Unique private static final float CHANCE_FOR_FIRST_REROLL = ConfigManager.get().emerald.percentChanceForExtraRoll1;
+    @Unique private static final float CHANCE_FOR_SECOND_REROLL = ConfigManager.get().emerald.percentChanceForExtraRoll2;
 
     @Inject(
             method = "supplyInventory(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/loot/context/LootWorldContext;J)V",

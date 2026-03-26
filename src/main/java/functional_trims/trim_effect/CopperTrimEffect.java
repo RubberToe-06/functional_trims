@@ -24,7 +24,7 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
     private final Map<UUID, Integer> cooldowns = new HashMap<>();
 
     private static float lightningCooldownMultiplier() {
-        return ConfigManager.get().lightningStrikeChanceMultiplier;
+        return ConfigManager.get().copper.lightningStrikeChanceMultiplier;
     }
 
     @Override

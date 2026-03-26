@@ -14,8 +14,8 @@ import java.util.UUID;
 
 public class AmethystTrimEffect implements ServerTickEvents.EndTick {
 
-    private static final int STAND_STILL_TICKS = (int)(ConfigManager.get().motionlessSecondsBeforeEffectStanding * 20.0f); // 3 seconds
-    private static final int CROUCH_TICKS = (int)(ConfigManager.get().motionlessSecondsBeforeEffectSneaking * 20.0f);      // 1.5 seconds
+    private static final int STAND_STILL_TICKS = (int)(ConfigManager.get().amethyst.motionlessSecondsBeforeEffectStanding * 20.0f); // 3 seconds
+    private static final int CROUCH_TICKS = (int)(ConfigManager.get().amethyst.motionlessSecondsBeforeEffectSneaking * 20.0f);      // 1.5 seconds
     private static final int EFFECT_DURATION = -1;   // infinite
     private static final double MOVEMENT_THRESHOLD_SQ = 0.0001;
     private static final Map<UUID, PlayerData> PLAYER_DATA = new HashMap<>();
@@ -29,7 +29,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
     @Override
     public void onEndTick(net.minecraft.server.MinecraftServer server) {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            if (!ConfigManager.get().enableAll || !ConfigManager.get().amethystEnabled) {
+            if (!ConfigManager.get().modEnabled || !ConfigManager.get().amethyst.enabled) {
                 // If disabled, remove effect from player
                 player.removeStatusEffect(ModEffects.AMETHYST_VISION);
                 // Reset tracking data
