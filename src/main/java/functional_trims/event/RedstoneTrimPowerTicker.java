@@ -23,7 +23,7 @@ public class RedstoneTrimPowerTicker {
     private static final Map<ResourceKey<Level>, Set<BlockPos>> PREVIOUS_POWERED = new HashMap<>();
 
     public static void register() {
-        ServerTickEvents.END_WORLD_TICK.register(RedstoneTrimPowerTicker::onWorldTick);
+        ServerTickEvents.END_LEVEL_TICK.register(RedstoneTrimPowerTicker::onWorldTick);
     }
 
     public static Set<BlockPos> getPoweredBlocksUnderPlayer(Player player) {

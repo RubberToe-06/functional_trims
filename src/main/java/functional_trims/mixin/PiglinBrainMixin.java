@@ -35,17 +35,17 @@ public class PiglinBrainMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel serverLevel, Piglin piglin,
+    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel level, Piglin body,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
-        piglin.getBrain()
+        body.getBrain()
                 .getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER)
                 .filter(target -> target instanceof Player player &&
                         TrimHelper.countTrim(player, TrimMaterials.GOLD) > 0)
                 .ifPresent(target -> {
                     // Clear anger memories, but don't freeze their AI
-                    piglin.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);
-                    piglin.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET);
-                    piglin.setAggressive(false);
+                    body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);
+                    body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET);
+                    body.setAggressive(false);
 
                     cir.setReturnValue(Optional.empty());
                 });
@@ -60,7 +60,7 @@ public class PiglinBrainMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$preventAngerOnGoldTrim(ServerLevel serverLevel, Player player, boolean bl, CallbackInfo ci) {
+    private static void functional_trims$preventAngerOnGoldTrim(ServerLevel level, Player player, boolean onlyIfTheySeeThePlayer, CallbackInfo ci) {
         if (!FTConfig.isTrimEnabled("gold")) return;
         if (TrimHelper.countTrim(player, TrimMaterials.GOLD) == 4) {
             ci.cancel();

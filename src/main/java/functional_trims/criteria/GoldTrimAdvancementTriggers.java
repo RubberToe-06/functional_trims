@@ -26,7 +26,7 @@ public class GoldTrimAdvancementTriggers {
      * Fires when a player with 4× GOLD trims is inside a Bastion.
      */
     private static void registerBastionEntryTrigger() {
-        ServerTickEvents.END_WORLD_TICK.register((ServerLevel world) -> {
+        ServerTickEvents.END_LEVEL_TICK.register((ServerLevel world) -> {
             for (ServerPlayer player : world.players()) {
                 if (TrimHelper.countTrim(player, TrimMaterials.GOLD) != 4) continue;
 

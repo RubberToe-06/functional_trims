@@ -1,7 +1,7 @@
 package functional_trims.datagen;
 
 import functional_trims.criteria.ModCriteria;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -18,11 +18,13 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import functional_trims.FunctionalTrims;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class TrimAdvancementProvider extends FabricAdvancementProvider {
-    public TrimAdvancementProvider(FabricDataOutput output,
+    public TrimAdvancementProvider(FabricPackOutput output,
                                    CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
@@ -463,7 +465,7 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
         Advancement.Builder.advancement()
                 .parent(enrichedVitality)
                 .display(
-                        createPotionIcon(),
+                        Objects.requireNonNull(createPotionIcon().getCraftingRemainder()),
                         Component.translatable("advancements.functional_trims.quartz.drink_potion.title"),
                         Component.translatable("advancements.functional_trims.quartz.drink_potion.description"),
                         null,

@@ -39,7 +39,7 @@ public class ResinTrimEffect {
     }
 
     public static void register() {
-        ServerTickEvents.START_WORLD_TICK.register((ServerLevel world) -> {
+        ServerTickEvents.START_LEVEL_TICK.register((ServerLevel world) -> {
             if (!FTConfig.isTrimEnabled("resin")) return;
 
             for (ServerPlayer player : world.players()) {

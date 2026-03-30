@@ -25,27 +25,27 @@ public abstract class LivingEntityMixin {
     @ModifyVariable(
             method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z",
             at = @At("HEAD"),
-            argsOnly = true
-    )
-    private MobEffectInstance functionalTrims$quartz_extendPositive(MobEffectInstance original) {
+            argsOnly = true,
+            name = "newEffect")
+    private MobEffectInstance functionalTrims$quartz_extendPositive(MobEffectInstance newEffect) {
         LivingEntity self = (LivingEntity)(Object)this;
 
-        if (!(self instanceof ServerPlayer player)) return original;
-        if (!(TrimHelper.countTrim(  player, TrimMaterials.QUARTZ) == 4)) return original;
-        if (!FTConfig.isTrimEnabled("quartz")) return original;
+        if (!(self instanceof ServerPlayer player)) return newEffect;
+        if (!(TrimHelper.countTrim(  player, TrimMaterials.QUARTZ) == 4)) return newEffect;
+        if (!FTConfig.isTrimEnabled("quartz")) return newEffect;
 
         // Only buff beneficial effects
-        if (original.getEffect().value().getCategory() != MobEffectCategory.BENEFICIAL) return original;
+        if (newEffect.getEffect().value().getCategory() != MobEffectCategory.BENEFICIAL) return newEffect;
 
-        int boostedDur = Math.round(original.getDuration() * POTION_MULT);
+        int boostedDur = Math.round(newEffect.getDuration() * POTION_MULT);
         ModCriteria.TRIM_TRIGGER.trigger(player, "quartz", "drink_potion");
         return new MobEffectInstance(
-                original.getEffect(),
+                newEffect.getEffect(),
                 boostedDur,
-                original.getAmplifier(),
-                original.isAmbient(),
-                original.isVisible(),
-                original.showIcon()
+                newEffect.getAmplifier(),
+                newEffect.isAmbient(),
+                newEffect.isVisible(),
+                newEffect.showIcon()
         );
 
     }

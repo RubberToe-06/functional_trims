@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
+public class CopperTrimEffect implements ServerTickEvents.EndLevelTick {
 
     private static final int LIGHTNING_COOLDOWN_TICKS = 200; // 10s between possible strikes
     private static final int CHARGED_DURATION_TICKS = 20 * 60; // 60s
