@@ -30,10 +30,10 @@ public abstract class LootTableMixin {
             method = "fill(Lnet/minecraft/world/Container;Lnet/minecraft/world/level/storage/loot/LootParams;J)V",
             at = @At("TAIL")
     )
-    private void emeraldTrimLuckyLoot(Container inventory, LootParams ctx, long seed, CallbackInfo ci) {
+    private void emeraldTrimLuckyLoot(Container container, LootParams lootParams, long l, CallbackInfo ci) {
         if (emeraldTrim$rerolling.get()) return; // prevent recursion
 
-        Entity opener = ctx.contextMap().getOptional(LootContextParams.THIS_ENTITY);
+        Entity opener = lootParams.contextMap().getOptional(LootContextParams.THIS_ENTITY);
         if (!(opener instanceof ServerPlayer player)) return;
         if (!FTConfig.isTrimEnabled("emerald")) return;
 
@@ -43,12 +43,12 @@ public abstract class LootTableMixin {
         emeraldTrim$rerolling.set(true);
         int extraRolls = 0;
         try {
-            RandomSource random = ctx.getLevel().getRandom();
+            RandomSource random = lootParams.getLevel().getRandom();
             if (random.nextFloat() < CHANCE_FOR_FIRST_REROLL) extraRolls++;
             if (random.nextFloat() < CHANCE_FOR_SECOND_REROLL) extraRolls++;
 
             for (int i = 0; i < extraRolls; i++) {
-                ((LootTable) (Object) this).fill(inventory, ctx, seed + i + 1);
+                ((LootTable) (Object) this).fill(container, lootParams, l + i + 1);
             }
 
         } finally {

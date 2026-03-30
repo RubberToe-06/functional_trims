@@ -27,20 +27,20 @@ public class PiglinBruteBrainMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel world, AbstractPiglin piglinBrute,
+    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel serverLevel, AbstractPiglin abstractPiglin,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
         boolean PIGLINS_DISTRACTIBLE = ConfigManager.get().gold.distractPiglinBrutesEnabled;
         if (!FTConfig.isTrimEnabled("gold")) return;
         if (!PIGLINS_DISTRACTIBLE) return;
-        piglinBrute.getBrain()
+        abstractPiglin.getBrain()
                 .getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER)
                 .filter(target -> target instanceof Player player &&
                         TrimHelper.countTrim(player, TrimMaterials.GOLD) > 0)
                 .ifPresent(target -> {
                     // Clear anger memories, but let them keep moving/idle
-                    piglinBrute.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);
-                    piglinBrute.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET);
-                    piglinBrute.setAggressive(false);
+                    abstractPiglin.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);
+                    abstractPiglin.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET);
+                    abstractPiglin.setAggressive(false);
 
                     cir.setReturnValue(Optional.empty());
                 });

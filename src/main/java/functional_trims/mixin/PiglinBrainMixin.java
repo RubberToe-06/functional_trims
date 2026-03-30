@@ -35,7 +35,7 @@ public class PiglinBrainMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel world, Piglin piglin,
+    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel serverLevel, Piglin piglin,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
         piglin.getBrain()
                 .getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER)
@@ -60,7 +60,7 @@ public class PiglinBrainMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void functional_trims$preventAngerOnGoldTrim(ServerLevel world, Player player, boolean blockOpen, CallbackInfo ci) {
+    private static void functional_trims$preventAngerOnGoldTrim(ServerLevel serverLevel, Player player, boolean bl, CallbackInfo ci) {
         if (!FTConfig.isTrimEnabled("gold")) return;
         if (TrimHelper.countTrim(player, TrimMaterials.GOLD) == 4) {
             ci.cancel();
@@ -75,11 +75,11 @@ public class PiglinBrainMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private static void functional_trims$goldTrimCountsAsSafe(LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
+    private static void functional_trims$goldTrimCountsAsSafe(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValue()) return;
         if (!FTConfig.isTrimEnabled("gold")) return;
 
-        if (entity instanceof Player player) {
+        if (livingEntity instanceof Player player) {
             int goldTrims = TrimHelper.countTrim(player, TrimMaterials.GOLD);
             if (goldTrims == 4) { // full set only
                 cir.setReturnValue(true);

@@ -24,8 +24,8 @@ public abstract class HungerManagerMixin {
     @Unique private @Nullable ServerPlayer functionalTrims$owner;
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void functionalTrims$setOwner(ServerPlayer player, CallbackInfo ci) {
-        this.functionalTrims$owner = player;
+    private void functionalTrims$setOwner(ServerPlayer serverPlayer, CallbackInfo ci) {
+        this.functionalTrims$owner = serverPlayer;
     }
 
     @ModifyArgs(

@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class NetheriteKnockbackMixin {
 
     @Inject(method = "knockback", at = @At("HEAD"), cancellable = true)
-    private void functional_trims$cancelKnockback(double strength, double x, double z, CallbackInfo ci) {
+    private void functional_trims$cancelKnockback(double d, double e, double f, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (!FTConfig.isTrimEnabled("netherite")) return;
 

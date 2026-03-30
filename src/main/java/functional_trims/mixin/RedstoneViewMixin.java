@@ -22,7 +22,7 @@ public interface RedstoneViewMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void functionalTrims$powerUnderTrimmedPlayers(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+    private void functionalTrims$powerUnderTrimmedPlayers(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
         Object self = this;
 
         if (cir.getReturnValue()) return;
@@ -32,7 +32,7 @@ public interface RedstoneViewMixin {
         if (!FTConfig.isTrimEnabled("redstone")) return;
 
         for (Player player : entityView.players()) {
-            if (RedstoneTrimPowerTicker.isPlayerPoweringPos(player, pos)) {
+            if (RedstoneTrimPowerTicker.isPlayerPoweringPos(player, blockPos)) {
                 cir.setReturnValue(true);
                 return;
             }
@@ -44,14 +44,14 @@ public interface RedstoneViewMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void functionalTrims$addTrimStrongPower(BlockPos pos, CallbackInfoReturnable<Integer> cir) {
+    private void functionalTrims$addTrimStrongPower(BlockPos blockPos, CallbackInfoReturnable<Integer> cir) {
         if (!(this instanceof Level world)) return;
         if (!FTConfig.isTrimEnabled("redstone")) return;
 
         int extraPower = Math.min(15, ConfigManager.get().redstone.blockPowerLevelWhenSteppedOn);
 
         for (Player player : world.players()) {
-            if (RedstoneTrimPowerTicker.isPlayerPoweringPos(player, pos)) {
+            if (RedstoneTrimPowerTicker.isPlayerPoweringPos(player, blockPos)) {
                 cir.setReturnValue(Math.max(cir.getReturnValue(), extraPower));
                 return;
             }
