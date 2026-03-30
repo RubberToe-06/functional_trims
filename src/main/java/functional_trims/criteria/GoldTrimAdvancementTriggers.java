@@ -32,7 +32,6 @@ public class GoldTrimAdvancementTriggers {
 
                 BlockPos pos = player.getBlockPos();
 
-                // Use getOrThrow with RegistryKeys.STRUCTURE
                 Registry<Structure> structureRegistry =
                         world.getRegistryManager().getOrThrow(RegistryKeys.STRUCTURE);
 

@@ -11,7 +11,6 @@ public class ModEffects {
 
     public static RegistryEntry<StatusEffect> AMETHYST_VISION;
     public static RegistryEntry<StatusEffect> CHARGED;
-    public static StatusEffect CHARGED_EFFECT;
 
     public static void register() {
 
@@ -26,8 +25,6 @@ public class ModEffects {
                 Identifier.of(FunctionalTrims.MOD_ID, "charged"),
                 new ChargedEffect()
         );
-
-        CHARGED_EFFECT = CHARGED.value();
 
         FunctionalTrims.LOGGER.info("Registered Functional Trims effects.");
     }
