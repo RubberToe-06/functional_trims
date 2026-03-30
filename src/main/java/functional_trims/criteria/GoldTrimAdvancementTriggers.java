@@ -3,18 +3,18 @@ package functional_trims.criteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.entity.mob.PiglinBruteEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.StructureStart;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 
 public class GoldTrimAdvancementTriggers {
     public static void register() {
@@ -26,23 +26,23 @@ public class GoldTrimAdvancementTriggers {
      * Fires when a player with 4× GOLD trims is inside a Bastion.
      */
     private static void registerBastionEntryTrigger() {
-        ServerTickEvents.END_WORLD_TICK.register((ServerWorld world) -> {
-            for (ServerPlayerEntity player : world.getPlayers()) {
-                if (TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) != 4) continue;
+        ServerTickEvents.END_WORLD_TICK.register((ServerLevel world) -> {
+            for (ServerPlayer player : world.players()) {
+                if (TrimHelper.countTrim(player, TrimMaterials.GOLD) != 4) continue;
 
-                BlockPos pos = player.getBlockPos();
+                BlockPos pos = player.blockPosition();
 
                 Registry<Structure> structureRegistry =
-                        world.getRegistryManager().getOrThrow(RegistryKeys.STRUCTURE);
+                        world.registryAccess().lookupOrThrow(Registries.STRUCTURE);
 
-                RegistryEntry<Structure> bastionEntry =
-                        structureRegistry.getEntry(Identifier.of("minecraft", "bastion_remnant")).orElse(null);
+                Holder<Structure> bastionEntry =
+                        structureRegistry.get(Identifier.fromNamespaceAndPath("minecraft", "bastion_remnant")).orElse(null);
                 if (bastionEntry == null) continue;
 
                 StructureStart start =
-                        world.getStructureAccessor().getStructureAt(pos, bastionEntry.value());
+                        world.structureManager().getStructureAt(pos, bastionEntry.value());
 
-                if (start != null && start.hasChildren()) {
+                if (start.isValid()) {
                     ModCriteria.TRIM_TRIGGER.trigger(player, "gold", "enter_bastion");
                 }
             }
@@ -54,15 +54,15 @@ public class GoldTrimAdvancementTriggers {
      */
     private static void registerPiglinBruteHitTrigger() {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (world.isClient()) return ActionResult.PASS;
+            if (world.isClientSide()) return InteractionResult.PASS;
 
-            if (player instanceof ServerPlayerEntity serverPlayer) {
-                if (TrimHelper.countTrim(serverPlayer, ArmorTrimMaterials.GOLD) == 4
-                        && entity instanceof PiglinBruteEntity) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                if (TrimHelper.countTrim(serverPlayer, TrimMaterials.GOLD) == 4
+                        && entity instanceof PiglinBrute) {
                     ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "gold", "hit_piglin_brute");
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 }

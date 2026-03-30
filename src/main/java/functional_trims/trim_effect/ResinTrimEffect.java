@@ -5,17 +5,16 @@ import functional_trims.config.ConfigManager;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -40,19 +39,19 @@ public class ResinTrimEffect {
     }
 
     public static void register() {
-        ServerTickEvents.START_WORLD_TICK.register((ServerWorld world) -> {
+        ServerTickEvents.START_WORLD_TICK.register((ServerLevel world) -> {
             if (!FTConfig.isTrimEnabled("resin")) return;
 
-            for (ServerPlayerEntity player : world.getPlayers()) {
+            for (ServerPlayer player : world.players()) {
                 apply(player);
             }
         });
     }
 
-    private static void apply(ServerPlayerEntity player) {
-        World world = player.getEntityWorld();
-        if (world.isClient()) return;
-        GripData gd = GRIP.computeIfAbsent(player.getUuid(), u -> new GripData());
+    private static void apply(ServerPlayer player) {
+        Level world = player.level();
+        if (world.isClientSide()) return;
+        GripData gd = GRIP.computeIfAbsent(player.getUUID(), u -> new GripData());
 
         if (gd.releaseGrace > 0) {
             player.fallDistance = 0;
@@ -90,18 +89,18 @@ public class ResinTrimEffect {
         }
     }
 
-    private static boolean canGrip(ServerPlayerEntity player) {
-        return TrimHelper.countTrim(player, ArmorTrimMaterials.RESIN) == 4 && player.isSneaking();
+    private static boolean canGrip(ServerPlayer player) {
+        return TrimHelper.countTrim(player, TrimMaterials.RESIN) == 4 && player.isShiftKeyDown();
     }
 
-    private static void releaseIfNeeded(ServerPlayerEntity player, GripData gd) {
+    private static void releaseIfNeeded(ServerPlayer player, GripData gd) {
         if (gd.gripping) {
             release(player, gd);
         }
     }
 
-    private static void beginGrip(ServerPlayerEntity player, GripData gd, Direction contact) {
-        World world = player.getEntityWorld();
+    private static void beginGrip(ServerPlayer player, GripData gd, Direction contact) {
+        Level world = player.level();
 
         gd.gripping = true;
         gd.normal = contact;
@@ -109,9 +108,9 @@ public class ResinTrimEffect {
 
         world.playSound(
                 null,
-                player.getBlockPos(),
-                SoundEvents.BLOCK_HONEY_BLOCK_SLIDE,
-                SoundCategory.PLAYERS,
+                player.blockPosition(),
+                SoundEvents.HONEY_BLOCK_SLIDE,
+                SoundSource.PLAYERS,
                 0.6F,
                 1.0F
         );
@@ -122,32 +121,32 @@ public class ResinTrimEffect {
         }
     }
 
-    private static void applyGripPhysics(ServerPlayerEntity player, GripData gd) {
-        Vec3d vel = player.getVelocity();
+    private static void applyGripPhysics(ServerPlayer player, GripData gd) {
+        Vec3 vel = player.getDeltaMovement();
 
         player.fallDistance = 0;
         player.setNoGravity(true);
 
-        Vec3d normal = directionToVec(gd.normal);
+        Vec3 normal = directionToVec(gd.normal);
 
-        double intoWall = vel.dotProduct(normal);
+        double intoWall = vel.dot(normal);
         if (intoWall < 0) {
-            vel = vel.subtract(normal.multiply(intoWall));
+            vel = vel.subtract(normal.scale(intoWall));
         }
 
         double effectiveDecay = Math.pow(DECAY_RATE, gripStrength());
-        Vec3d newVel = vel.multiply(effectiveDecay);
+        Vec3 newVel = vel.scale(effectiveDecay);
 
-        if (newVel.lengthSquared() < STOP_THRESHOLD * STOP_THRESHOLD) {
-            newVel = Vec3d.ZERO;
+        if (newVel.lengthSqr() < STOP_THRESHOLD * STOP_THRESHOLD) {
+            newVel = Vec3.ZERO;
         }
 
-        player.setVelocity(newVel);
-        player.velocityDirty = true;
-        player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), newVel));
+        player.setDeltaMovement(newVel);
+        player.needsSync = true;
+        player.connection.send(new ClientboundSetEntityMotionPacket(player.getId(), newVel));
 
         if (gd.normal != null) {
-            player.setPosition(
+            player.setPos(
                     player.getX() - normal.x * NUDGE,
                     player.getY() - normal.y * NUDGE,
                     player.getZ() - normal.z * NUDGE
@@ -155,8 +154,8 @@ public class ResinTrimEffect {
         }
     }
 
-    private static void release(ServerPlayerEntity player, GripData gd) {
-        World world = player.getEntityWorld();
+    private static void release(ServerPlayer player, GripData gd) {
+        Level world = player.level();
 
         player.setNoGravity(false);
         player.fallDistance = 0;
@@ -168,33 +167,33 @@ public class ResinTrimEffect {
 
         world.playSound(
                 null,
-                player.getBlockPos(),
-                SoundEvents.BLOCK_SLIME_BLOCK_FALL,
-                SoundCategory.PLAYERS,
+                player.blockPosition(),
+                SoundEvents.SLIME_BLOCK_FALL,
+                SoundSource.PLAYERS,
                 0.4F,
                 1.1F
         );
     }
 
-    private static Direction findContactDirection(ServerPlayerEntity player) {
-        World world = player.getEntityWorld();
-        Box box = player.getBoundingBox();
-        Vec3d velocity = player.getVelocity();
+    private static Direction findContactDirection(ServerPlayer player) {
+        Level world = player.level();
+        AABB box = player.getBoundingBox();
+        Vec3 velocity = player.getDeltaMovement();
         Direction best = null;
         double bestDot = Double.NEGATIVE_INFINITY;
         boolean touchingGround = false;
 
         for (Direction direction : Direction.values()) {
-            Vec3d offset = directionToVec(direction);
-            Box probe = box.offset(offset.multiply(CONTACT_EPS));
+            Vec3 offset = directionToVec(direction);
+            AABB probe = box.move(offset.scale(CONTACT_EPS));
 
-            if (!world.isSpaceEmpty(player, probe)) {
+            if (!world.noCollision(player, probe)) {
                 if (direction == Direction.DOWN) {
                     touchingGround = true;
                     continue;
                 }
 
-                double dot = velocity.dotProduct(offset.multiply(-1));
+                double dot = velocity.dot(offset.scale(-1));
                 if (dot > bestDot) {
                     bestDot = dot;
                     best = direction;
@@ -209,15 +208,15 @@ public class ResinTrimEffect {
         return best;
     }
 
-    private static Vec3d directionToVec(Direction direction) {
+    private static Vec3 directionToVec(Direction direction) {
         if (direction == null) {
-            return Vec3d.ZERO;
+            return Vec3.ZERO;
         }
 
-        return new Vec3d(
-                direction.getOffsetX(),
-                direction.getOffsetY(),
-                direction.getOffsetZ()
+        return new Vec3(
+                direction.getStepX(),
+                direction.getStepY(),
+                direction.getStepZ()
         );
     }
 }

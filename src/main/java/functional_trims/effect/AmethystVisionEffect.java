@@ -2,38 +2,39 @@ package functional_trims.effect;
 
 import functional_trims.config.ConfigManager;
 import functional_trims.mixin.EntityAccessor;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import org.jspecify.annotations.NonNull;
 
-public class AmethystVisionEffect extends StatusEffect {
+public class AmethystVisionEffect extends MobEffect {
     private static final byte GLOW_MASK = 0x40;
     private static final Map<UUID, Set<Integer>> glowingByPlayer = new ConcurrentHashMap<>();
     private static final Map<UUID, Boolean> wasActive = new ConcurrentHashMap<>();
     private static final float RANGE_MULTIPLIER = ConfigManager.get().amethyst.effectRangeMultiplier;
 
     public AmethystVisionEffect() {
-        super(StatusEffectCategory.BENEFICIAL, 0xAA00FF);
-        this.applySound(SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME);
+        super(MobEffectCategory.BENEFICIAL, 0xAA00FF);
+        this.withSoundOnAdded(SoundEvents.AMETHYST_BLOCK_CHIME);
     }
 
     @Override
-    public boolean canApplyUpdateEffect(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return true;
     }
 
     @Override
-    public boolean applyUpdateEffect(ServerWorld world, LivingEntity entity, int amplifier) {
-        if (!(entity instanceof ServerPlayerEntity player)) return false;
-        UUID id = player.getUuid();
+    public boolean applyEffectTick(@NonNull ServerLevel world, @NonNull LivingEntity entity, int amplifier) {
+        if (!(entity instanceof ServerPlayer player)) return false;
+        UUID id = player.getUUID();
 
         // mark as active this tick
         wasActive.put(id, true);
@@ -42,12 +43,12 @@ public class AmethystVisionEffect extends StatusEffect {
         Set<Integer> glowingIds = glowingByPlayer.get(id);
 
         double radius = 25.0 * RANGE_MULTIPLIER;
-        var box = player.getBoundingBox().expand(radius);
-        var nearby = world.getEntitiesByClass(LivingEntity.class, box, e -> e != player && e.isAlive());
+        var box = player.getBoundingBox().inflate(radius);
+        var nearby = world.getEntitiesOfClass(LivingEntity.class, box, e -> e != player && e.isAlive());
 
         // Remove out-of-range entities (unglow them)
         glowingIds.removeIf(eid -> {
-            var e = world.getEntityById(eid);
+            var e = world.getEntity(eid);
             if (!(e instanceof LivingEntity le) || !nearby.contains(le)) {
                 assert e instanceof LivingEntity;
                 sendGlowPacket(player, (LivingEntity) e, false);
@@ -77,22 +78,22 @@ public class AmethystVisionEffect extends StatusEffect {
 
     /** Runs when the effect is completely removed. */
     @Override
-    public void onRemoved(AttributeContainer attributes) {
+    public void removeAttributeModifiers(@NonNull AttributeMap attributes) {
         // nothing: handled dynamically on tick below
     }
 
     /** Extra cleanup every tick to clear stuck glows for players who lost the effect. */
-    public static void tick(ServerWorld world) {
-        for (ServerPlayerEntity player : world.getPlayers()) {
-            UUID id = player.getUuid();
-            boolean active = player.hasStatusEffect(ModEffects.AMETHYST_VISION);
+    public static void tick(ServerLevel world) {
+        for (ServerPlayer player : world.players()) {
+            UUID id = player.getUUID();
+            boolean active = player.hasEffect(ModEffects.AMETHYST_VISION);
 
             if (!active && wasActive.getOrDefault(id, false)) {
                 // just lost the effect → unglow everything
                 Set<Integer> ids = glowingByPlayer.remove(id);
                 if (ids != null) {
                     for (int eid : ids) {
-                        var e = world.getEntityById(eid);
+                        var e = world.getEntity(eid);
                         if (e instanceof LivingEntity le) {
                             sendGlowPacket(player, le, false);
                         }
@@ -103,15 +104,15 @@ public class AmethystVisionEffect extends StatusEffect {
         }
     }
 
-    private static void sendGlowPacket(ServerPlayerEntity player, LivingEntity target, boolean glow) {
+    private static void sendGlowPacket(ServerPlayer player, LivingEntity target, boolean glow) {
         if (target == null || !target.isAlive()) return;
 
         var FLAGS = EntityAccessor.getFlags();
-        byte serverFlags = target.getDataTracker().get(FLAGS);
+        byte serverFlags = target.getEntityData().get(FLAGS);
         byte clientFlags = glow ? (byte) (serverFlags | GLOW_MASK) : serverFlags;
 
-        DataTracker.SerializedEntry<Byte> entry = DataTracker.SerializedEntry.of(FLAGS, clientFlags);
-        player.networkHandler.sendPacket(new EntityTrackerUpdateS2CPacket(target.getId(),
+        SynchedEntityData.DataValue<Byte> entry = SynchedEntityData.DataValue.create(FLAGS, clientFlags);
+        player.connection.send(new ClientboundSetEntityDataPacket(target.getId(),
                 List.of(entry)));
     }
 }

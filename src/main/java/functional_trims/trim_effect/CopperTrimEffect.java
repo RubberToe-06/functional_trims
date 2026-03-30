@@ -6,12 +6,12 @@ import functional_trims.criteria.ModCriteria;
 import functional_trims.effect.ModEffects;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -28,15 +28,15 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
     }
 
     @Override
-    public void onEndTick(ServerWorld world) {
+    public void onEndTick(ServerLevel world) {
         if (!world.isThundering()) return;
         if (!FTConfig.isTrimEnabled("copper")) return;
 
-        for (ServerPlayerEntity player : world.getPlayers()) {
-            if (!TrimHelper.hasFullTrim(player, ArmorTrimMaterials.COPPER)) continue;
-            if (!world.isSkyVisible(player.getBlockPos())) continue;
+        for (ServerPlayer player : world.players()) {
+            if (!TrimHelper.hasFullTrim(player, TrimMaterials.COPPER)) continue;
+            if (!world.canSeeSky(player.blockPosition())) continue;
 
-            UUID id = player.getUuid();
+            UUID id = player.getUUID();
             cooldowns.putIfAbsent(id, 0);
 
             int cooldown = cooldowns.get(id);
@@ -53,19 +53,18 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
         }
     }
 
-    private void summonLightning(ServerWorld world, ServerPlayerEntity player) {
+    private void summonLightning(ServerLevel world, ServerPlayer player) {
         if (!FTConfig.isTrimEnabled("copper")) return;
 
-        LightningEntity lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, world);
-        lightning.refreshPositionAfterTeleport(player.getX(), player.getY(), player.getZ());
-        lightning.setCosmetic(true);
-        world.spawnEntity(lightning);
+        LightningBolt lightning = new LightningBolt(net.minecraft.world.entity.EntityType.LIGHTNING_BOLT, world);
+        lightning.snapTo(player.getX(), player.getY(), player.getZ());
+        lightning.setVisualOnly(true);
+        world.addFreshEntity(lightning);
 
         ModCriteria.TRIM_TRIGGER.trigger(player, "copper", "struck_by_lightning");
 
-        assert world.getServer() != null;
         world.getServer().execute(() -> {
-            player.addStatusEffect(new StatusEffectInstance(
+            player.addEffect(new MobEffectInstance(
                     ModEffects.CHARGED,
                     CHARGED_DURATION_TICKS,
                     0,
@@ -73,7 +72,7 @@ public class CopperTrimEffect implements ServerTickEvents.EndWorldTick {
                     false,
                     true
             ));
-            player.playSound(SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0F, 1.0F);
+            player.playSound(SoundEvents.LIGHTNING_BOLT_THUNDER, 2.0F, 1.0F);
         });
     }
 }

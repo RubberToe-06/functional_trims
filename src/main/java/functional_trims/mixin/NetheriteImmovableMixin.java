@@ -3,12 +3,12 @@ package functional_trims.mixin;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.level.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,22 +24,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class NetheriteImmovableMixin {
 
-    @Inject(method = "isImmuneToExplosion", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "ignoreExplosion", at = @At("HEAD"), cancellable = true)
     private void functional_trims$netheriteTrimExplosionImmunity(Explosion explosion, CallbackInfoReturnable<Boolean> cir) {
         Entity self = (Entity) (Object) this;
 
-        if (!(self instanceof ServerPlayerEntity player)) return;
-        if (TrimHelper.countTrim(player, ArmorTrimMaterials.NETHERITE) < 4) return;
+        if (!(self instanceof ServerPlayer player)) return;
+        if (TrimHelper.countTrim(player, TrimMaterials.NETHERITE) < 4) return;
         if (!FTConfig.isTrimEnabled("netherite")) return;
 
         // Trigger advancement + feedback when an explosion tries to affect the player
         ModCriteria.TRIM_TRIGGER.trigger(player, "netherite", "resist_explosion");
 
-        player.getEntityWorld().playSound(
+        player.level().playSound(
                 null,
-                player.getBlockPos(),
-                SoundEvents.BLOCK_NETHERITE_BLOCK_STEP,
-                SoundCategory.PLAYERS,
+                player.blockPosition(),
+                SoundEvents.NETHERITE_BLOCK_STEP,
+                SoundSource.PLAYERS,
                 0.7f,
                 0.5f
         );

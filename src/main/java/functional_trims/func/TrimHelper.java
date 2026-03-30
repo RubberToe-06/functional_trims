@@ -1,15 +1,15 @@
 package functional_trims.func;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.trim.ArmorTrim;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.trim.ArmorTrim;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
 
 public class TrimHelper {
-    public static int countTrim(PlayerEntity player, RegistryKey<ArmorTrimMaterial> materialKey) {
+    public static int countTrim(Player player, ResourceKey<TrimMaterial> materialKey) {
         int trimCount = 0;
 
         for (EquipmentSlot slot : new EquipmentSlot[]{
@@ -18,10 +18,10 @@ public class TrimHelper {
                 EquipmentSlot.LEGS,
                 EquipmentSlot.FEET}) {
 
-            ItemStack stack = player.getEquippedStack(slot);
+            ItemStack stack = player.getItemBySlot(slot);
             if (!stack.isEmpty()) {
-                ArmorTrim trim = stack.get(DataComponentTypes.TRIM);
-                if (trim != null && trim.material().matchesKey(materialKey)) {
+                ArmorTrim trim = stack.get(DataComponents.TRIM);
+                if (trim != null && trim.material().is(materialKey)) {
                     trimCount++;
                 }
             }
@@ -30,7 +30,7 @@ public class TrimHelper {
         return trimCount;
     }
 
-    public static boolean hasFullTrim(PlayerEntity player, RegistryKey<ArmorTrimMaterial> materialKey) {
+    public static boolean hasFullTrim(Player player, ResourceKey<TrimMaterial> materialKey) {
         int trimCount = countTrim(player, materialKey);
         return trimCount == 4;
     }

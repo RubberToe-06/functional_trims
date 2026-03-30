@@ -3,41 +3,32 @@ package functional_trims.mixin;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
-import net.minecraft.entity.ExperienceOrbEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * Grants bonus experience for players wearing full Lapis-trimmed armor.
- * Runs only on the server side to avoid client-side ClassCastExceptions.
- */
-@Mixin(ExperienceOrbEntity.class)
+@Mixin(ExperienceOrb.class)
 public class ExperienceOrbEntityMixin {
-    @Inject(method = "onPlayerCollision", at = @At("HEAD"))
-    private void functional_trims$boostExp(PlayerEntity player, CallbackInfo ci) {
-
-        if (player.getEntityWorld().isClient()) return;
-        if (!(player instanceof ServerPlayerEntity serverPlayer)) return;
+    @Inject(method = "playerTouch", at = @At("HEAD"))
+    private void functional_trims$boostExp(Player player, CallbackInfo ci) {
+        if (player.level().isClientSide()) return;
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
         if (!FTConfig.isTrimEnabled("lapis")) return;
 
-        // Count how many pieces of Lapis-trimmed armor the player has
-        int trimCount = TrimHelper.countTrim(serverPlayer, ArmorTrimMaterials.LAPIS);
-        if (trimCount < 4) return; // Require full set
+        int trimCount = TrimHelper.countTrim(serverPlayer, TrimMaterials.LAPIS);
+        if (trimCount < 4) return;
 
-        // Reference to the orb being picked up
-        ExperienceOrbEntity orb = (ExperienceOrbEntity) (Object) this;
+        ExperienceOrb orb = (ExperienceOrb) (Object) this;
 
-        // Calculate and apply bonus XP
         float bonusMultiplier = 0.5f;
         int bonus = Math.max(1, (int) (orb.getValue() * bonusMultiplier));
-        serverPlayer.addExperience(bonus);
+        serverPlayer.giveExperiencePoints(bonus);
 
-        // Trigger criteria for advancements
         ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "lapis", "absorb_xp_orb");
         if (serverPlayer.experienceLevel >= 100) {
             ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "lapis", "reach_level_100");

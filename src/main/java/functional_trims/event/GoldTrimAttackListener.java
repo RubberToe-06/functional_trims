@@ -4,23 +4,23 @@ import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.entity.mob.PiglinBruteEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
 
 public class GoldTrimAttackListener {
     public static void register() {
         if (FTConfig.isTrimEnabled("gold")) return;
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (!world.isClient()
-                    && entity instanceof PiglinBruteEntity
-                    && player instanceof ServerPlayerEntity serverPlayer
-                    && TrimHelper.countTrim(player, ArmorTrimMaterials.GOLD) == 4) {
+            if (!world.isClientSide()
+                    && entity instanceof PiglinBrute
+                    && player instanceof ServerPlayer serverPlayer
+                    && TrimHelper.countTrim(player, TrimMaterials.GOLD) == 4) {
 
                 ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "gold", "attack_piglin_brute");
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 }

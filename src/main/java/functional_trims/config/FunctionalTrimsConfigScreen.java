@@ -3,9 +3,8 @@ package functional_trims.config;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public final class FunctionalTrimsConfigScreen {
@@ -14,23 +13,23 @@ public final class FunctionalTrimsConfigScreen {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Text.translatable("config.functional_trims.title"));
+                .setTitle(Component.translatable("config.functional_trims.title"));
 
         builder.setSavingRunnable(ConfigManager::save);
 
         ConfigEntryBuilder entry = builder.entryBuilder();
         ConfigCategory materials = builder.getOrCreateCategory(
-                Text.translatable("config.functional_trims.category.trim_materials")
+                Component.translatable("config.functional_trims.category.trim_materials")
         );
 
         // Master toggle
         materials.addEntry(
                 entry.startBooleanToggle(
-                                Text.translatable("config.functional_trims.enable_all"),
+                                Component.translatable("config.functional_trims.enable_all"),
                                 cfg.modEnabled
                         )
                         .setDefaultValue(true)
-                        .setTooltip(Text.translatable("config.functional_trims.enable_all.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.enable_all.tooltip"))
                         .setSaveConsumer(val -> cfg.modEnabled = val)
                         .build()
         );
@@ -38,10 +37,10 @@ public final class FunctionalTrimsConfigScreen {
         // Iron
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.iron"),
+                                Component.translatable("config.functional_trims.iron"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.iron.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -49,7 +48,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.iron.reflect"),
+                                                        Component.translatable("config.functional_trims.iron.reflect"),
                                                         cfg.iron.projectileReflectChance
                                                 )
                                                 .setDefaultValue(0.6f)
@@ -59,7 +58,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.iron.knockback"),
+                                                        Component.translatable("config.functional_trims.iron.knockback"),
                                                         cfg.iron.shieldKnockbackStrengthMultiplier
                                                 )
                                                 .setDefaultValue(1.15f)
@@ -69,7 +68,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.iron.axe_resist"),
+                                                        Component.translatable("config.functional_trims.iron.axe_resist"),
                                                         cfg.iron.axeAttackResistanceEnabled
                                                 )
                                                 .setDefaultValue(true)
@@ -77,17 +76,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.iron.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.iron.tooltip"))
                         .build()
         );
 
         // Gold
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.gold"),
+                                Component.translatable("config.functional_trims.gold"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.gold.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -95,7 +94,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.gold.distract"),
+                                                        Component.translatable("config.functional_trims.gold.distract"),
                                                         cfg.gold.distractPiglinBrutesEnabled
                                                 )
                                                 .setDefaultValue(true)
@@ -103,17 +102,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.gold.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.gold.tooltip"))
                         .build()
         );
 
         // Diamond
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.diamond"),
+                                Component.translatable("config.functional_trims.diamond"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.diamond.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -121,7 +120,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.diamond.heal"),
+                                                        Component.translatable("config.functional_trims.diamond.heal"),
                                                         cfg.diamond.percentHealthRegainedAfterBurst
                                                 )
                                                 .setDefaultValue(0.5f)
@@ -131,7 +130,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.diamond.armor_loss"),
+                                                        Component.translatable("config.functional_trims.diamond.armor_loss"),
                                                         cfg.diamond.percentArmorDurabilityLostAfterBurst
                                                 )
                                                 .setDefaultValue(1.0f)
@@ -141,17 +140,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.diamond.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.diamond.tooltip"))
                         .build()
         );
 
         // Netherite
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.netherite"),
+                                Component.translatable("config.functional_trims.netherite"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.netherite.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -159,17 +158,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.netherite.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.netherite.tooltip"))
                         .build()
         );
 
         // Redstone
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.redstone"),
+                                Component.translatable("config.functional_trims.redstone"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.redstone.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -177,7 +176,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startIntField(
-                                                        Text.translatable("config.functional_trims.redstone.power"),
+                                                        Component.translatable("config.functional_trims.redstone.power"),
                                                         cfg.redstone.blockPowerLevelWhenSteppedOn
                                                 )
                                                 .setDefaultValue(15)
@@ -187,17 +186,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.redstone.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.redstone.tooltip"))
                         .build()
         );
 
         // Emerald
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.emerald"),
+                                Component.translatable("config.functional_trims.emerald"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.emerald.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -205,7 +204,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.emerald.roll1"),
+                                                        Component.translatable("config.functional_trims.emerald.roll1"),
                                                         cfg.emerald.percentChanceForExtraRoll1
                                                 )
                                                 .setDefaultValue(1.0f)
@@ -215,7 +214,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.emerald.roll2"),
+                                                        Component.translatable("config.functional_trims.emerald.roll2"),
                                                         cfg.emerald.percentChanceForExtraRoll2
                                                 )
                                                 .setDefaultValue(0.5f)
@@ -225,17 +224,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.emerald.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.emerald.tooltip"))
                         .build()
         );
 
         // Lapis
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.lapis"),
+                                Component.translatable("config.functional_trims.lapis"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.lapis.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -243,7 +242,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.lapis.exp"),
+                                                        Component.translatable("config.functional_trims.lapis.exp"),
                                                         cfg.lapis.extraExpMultiplier
                                                 )
                                                 .setDefaultValue(0.5f)
@@ -253,17 +252,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.lapis.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.lapis.tooltip"))
                         .build()
         );
 
         // Quartz
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.quartz"),
+                                Component.translatable("config.functional_trims.quartz"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.quartz.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -271,7 +270,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.quartz.hunger"),
+                                                        Component.translatable("config.functional_trims.quartz.hunger"),
                                                         cfg.quartz.hungerRestoredMultiplier
                                                 )
                                                 .setDefaultValue(1.25f)
@@ -281,7 +280,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.quartz.saturation"),
+                                                        Component.translatable("config.functional_trims.quartz.saturation"),
                                                         cfg.quartz.saturationRestoredMultiplier
                                                 )
                                                 .setDefaultValue(1.25f)
@@ -291,7 +290,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.quartz.potion"),
+                                                        Component.translatable("config.functional_trims.quartz.potion"),
                                                         cfg.quartz.potionEffectDurationMultiplier
                                                 )
                                                 .setDefaultValue(1.25f)
@@ -301,17 +300,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.quartz.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.quartz.tooltip"))
                         .build()
         );
 
         // Amethyst
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.amethyst"),
+                                Component.translatable("config.functional_trims.amethyst"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.amethyst.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -319,7 +318,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.amethyst.stand"),
+                                                        Component.translatable("config.functional_trims.amethyst.stand"),
                                                         cfg.amethyst.motionlessSecondsBeforeEffectStanding
                                                 )
                                                 .setDefaultValue(3.0f)
@@ -329,7 +328,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.amethyst.sneak"),
+                                                        Component.translatable("config.functional_trims.amethyst.sneak"),
                                                         cfg.amethyst.motionlessSecondsBeforeEffectSneaking
                                                 )
                                                 .setDefaultValue(1.5f)
@@ -339,7 +338,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.amethyst.range"),
+                                                        Component.translatable("config.functional_trims.amethyst.range"),
                                                         cfg.amethyst.effectRangeMultiplier
                                                 )
                                                 .setDefaultValue(1.0f)
@@ -349,17 +348,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.amethyst.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.amethyst.tooltip"))
                         .build()
         );
 
         // Copper
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.copper"),
+                                Component.translatable("config.functional_trims.copper"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.copper.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -367,7 +366,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.copper.lightning"),
+                                                        Component.translatable("config.functional_trims.copper.lightning"),
                                                         cfg.copper.lightningStrikeChanceMultiplier
                                                 )
                                                 .setDefaultValue(1.0f)
@@ -377,7 +376,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.copper.charged_time"),
+                                                        Component.translatable("config.functional_trims.copper.charged_time"),
                                                         cfg.copper.chargedEffectDuration
                                                 )
                                                 .setDefaultValue(60.0f)
@@ -387,7 +386,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.copper.charged_damage"),
+                                                        Component.translatable("config.functional_trims.copper.charged_damage"),
                                                         cfg.copper.chargedStrikeDamageMultiplier
                                                 )
                                                 .setDefaultValue(1.5f)
@@ -397,17 +396,17 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.copper.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.copper.tooltip"))
                         .build()
         );
 
         // Resin
         materials.addEntry(
                 entry.startSubCategory(
-                                Text.translatable("config.functional_trims.resin"),
+                                Component.translatable("config.functional_trims.resin"),
                                 List.of(
                                         entry.startBooleanToggle(
-                                                        Text.translatable("config.functional_trims.enabled"),
+                                                        Component.translatable("config.functional_trims.enabled"),
                                                         cfg.resin.enabled
                                                 )
                                                 .setDefaultValue(true)
@@ -415,7 +414,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build(),
 
                                         entry.startFloatField(
-                                                        Text.translatable("config.functional_trims.resin.grip"),
+                                                        Component.translatable("config.functional_trims.resin.grip"),
                                                         cfg.resin.gripStrengthMultiplier
                                                 )
                                                 .setDefaultValue(1.0f)
@@ -425,7 +424,7 @@ public final class FunctionalTrimsConfigScreen {
                                                 .build()
                                 )
                         )
-                        .setTooltip(Text.translatable("config.functional_trims.resin.tooltip"))
+                        .setTooltip(Component.translatable("config.functional_trims.resin.tooltip"))
                         .build()
         );
 

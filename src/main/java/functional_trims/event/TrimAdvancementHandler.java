@@ -1,15 +1,15 @@
 package functional_trims.event;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import functional_trims.FunctionalTrims;
 import functional_trims.func.TrimHelper;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,62 +21,62 @@ public class TrimAdvancementHandler {
     }
 
     private static void onServerTick(MinecraftServer server) {
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             checkFullSet(player);
         }
     }
 
-    private static void checkFullSet(ServerPlayerEntity player) {
-        Map<RegistryKey<ArmorTrimMaterial>, String> trimToAdvancement = Map.ofEntries(
-                Map.entry(ArmorTrimMaterials.REDSTONE, "full_redstone_trim"),
-                Map.entry(ArmorTrimMaterials.EMERALD, "full_emerald_trim"),
-                Map.entry(ArmorTrimMaterials.LAPIS, "full_lapis_trim"),
-                Map.entry(ArmorTrimMaterials.GOLD, "full_gold_trim"),
-                Map.entry(ArmorTrimMaterials.DIAMOND, "full_diamond_trim"),
-                Map.entry(ArmorTrimMaterials.NETHERITE, "full_netherite_trim"),
-                Map.entry(ArmorTrimMaterials.IRON, "full_iron_trim"),
-                Map.entry(ArmorTrimMaterials.COPPER, "full_copper_trim"),
-                Map.entry(ArmorTrimMaterials.AMETHYST, "full_amethyst_trim"),
-                Map.entry(ArmorTrimMaterials.QUARTZ, "full_quartz_trim"),
-                Map.entry(ArmorTrimMaterials.RESIN, "full_resin_trim")
+    private static void checkFullSet(ServerPlayer player) {
+        Map<ResourceKey<TrimMaterial>, String> trimToAdvancement = Map.ofEntries(
+                Map.entry(TrimMaterials.REDSTONE, "full_redstone_trim"),
+                Map.entry(TrimMaterials.EMERALD, "full_emerald_trim"),
+                Map.entry(TrimMaterials.LAPIS, "full_lapis_trim"),
+                Map.entry(TrimMaterials.GOLD, "full_gold_trim"),
+                Map.entry(TrimMaterials.DIAMOND, "full_diamond_trim"),
+                Map.entry(TrimMaterials.NETHERITE, "full_netherite_trim"),
+                Map.entry(TrimMaterials.IRON, "full_iron_trim"),
+                Map.entry(TrimMaterials.COPPER, "full_copper_trim"),
+                Map.entry(TrimMaterials.AMETHYST, "full_amethyst_trim"),
+                Map.entry(TrimMaterials.QUARTZ, "full_quartz_trim"),
+                Map.entry(TrimMaterials.RESIN, "full_resin_trim")
         );
 
         for (var entry : trimToAdvancement.entrySet()) {
-            RegistryKey<ArmorTrimMaterial> materialKey = entry.getKey();
+            ResourceKey<TrimMaterial> materialKey = entry.getKey();
             String advancementId = entry.getValue();
 
             if (TrimHelper.countTrim(player, materialKey) == 4
                     && isTrimEnabled(materialKey)) {
-                grantAdvancement(player, Identifier.of(FunctionalTrims.MOD_ID, advancementId));
+                grantAdvancement(player, Identifier.fromNamespaceAndPath(FunctionalTrims.MOD_ID, advancementId));
             }
         }
     }
 
-    private static boolean isTrimEnabled(RegistryKey<ArmorTrimMaterial> key) {
+    private static boolean isTrimEnabled(ResourceKey<TrimMaterial> key) {
         var cfg = functional_trims.config.ConfigManager.get();
 
         if (!cfg.modEnabled) return false;
 
-        if (key == ArmorTrimMaterials.AMETHYST) return cfg.amethyst.enabled;
-        if (key == ArmorTrimMaterials.IRON) return cfg.iron.enabled;
-        if (key == ArmorTrimMaterials.GOLD) return cfg.gold.enabled;
-        if (key == ArmorTrimMaterials.DIAMOND) return cfg.diamond.enabled;
-        if (key == ArmorTrimMaterials.NETHERITE) return cfg.netherite.enabled;
-        if (key == ArmorTrimMaterials.REDSTONE) return cfg.redstone.enabled;
-        if (key == ArmorTrimMaterials.EMERALD) return cfg.emerald.enabled;
-        if (key == ArmorTrimMaterials.LAPIS) return cfg.lapis.enabled;
-        if (key == ArmorTrimMaterials.COPPER) return cfg.copper.enabled;
-        if (key == ArmorTrimMaterials.QUARTZ) return cfg.quartz.enabled;
-        if (key == ArmorTrimMaterials.RESIN) return cfg.resin.enabled;
+        if (key == TrimMaterials.AMETHYST) return cfg.amethyst.enabled;
+        if (key == TrimMaterials.IRON) return cfg.iron.enabled;
+        if (key == TrimMaterials.GOLD) return cfg.gold.enabled;
+        if (key == TrimMaterials.DIAMOND) return cfg.diamond.enabled;
+        if (key == TrimMaterials.NETHERITE) return cfg.netherite.enabled;
+        if (key == TrimMaterials.REDSTONE) return cfg.redstone.enabled;
+        if (key == TrimMaterials.EMERALD) return cfg.emerald.enabled;
+        if (key == TrimMaterials.LAPIS) return cfg.lapis.enabled;
+        if (key == TrimMaterials.COPPER) return cfg.copper.enabled;
+        if (key == TrimMaterials.QUARTZ) return cfg.quartz.enabled;
+        if (key == TrimMaterials.RESIN) return cfg.resin.enabled;
 
         return true;
     }
 
 
-    private static void grantAdvancement(ServerPlayerEntity player, Identifier id) {
-        AdvancementEntry adv = Objects.requireNonNull(player.getEntityWorld().getServer()).getAdvancementLoader().get(id);
-        if (adv != null && !player.getAdvancementTracker().getProgress(adv).isDone()) {
-            player.getAdvancementTracker().grantCriterion(adv, "auto");
+    private static void grantAdvancement(ServerPlayer player, Identifier id) {
+        AdvancementHolder adv = Objects.requireNonNull(player.level().getServer()).getAdvancements().get(id);
+        if (adv != null && !player.getAdvancements().getOrStartProgress(adv).isDone()) {
+            player.getAdvancements().award(adv, "auto");
         }
     }
 }

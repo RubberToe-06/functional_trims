@@ -5,16 +5,16 @@ import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.effect.ModEffects;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 
 public class ChargedAttackHandler {
 
@@ -24,72 +24,71 @@ public class ChargedAttackHandler {
 
     public static void register() {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (world.isClient()) return ActionResult.PASS;
-            if (!(player instanceof ServerPlayerEntity serverPlayer)) return ActionResult.PASS;
-            if (!(world instanceof ServerWorld serverWorld)) return ActionResult.PASS;
-            if (!(entity instanceof LivingEntity target)) return ActionResult.PASS;
-            if (!player.hasStatusEffect(ModEffects.CHARGED)) return ActionResult.PASS;
-            if (!FTConfig.isTrimEnabled("copper")) return ActionResult.PASS;
+            if (world.isClientSide()) return InteractionResult.PASS;
+            if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
+            if (!(world instanceof ServerLevel serverWorld)) return InteractionResult.PASS;
+            if (!(entity instanceof LivingEntity target)) return InteractionResult.PASS;
+            if (!player.hasEffect(ModEffects.CHARGED)) return InteractionResult.PASS;
+            if (!FTConfig.isTrimEnabled("copper")) return InteractionResult.PASS;
 
-            double baseAttackDamage = player.getAttributeValue(EntityAttributes.ATTACK_DAMAGE);
+            double baseAttackDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
             float extraDamage = (float) (baseAttackDamage * (boostedAttackMultiplier() - 1.0F));
             float resultingDamage = (float) (baseAttackDamage * boostedAttackMultiplier());
 
-            LightningEntity lightning = new LightningEntity(net.minecraft.entity.EntityType.LIGHTNING_BOLT, serverWorld);
-            lightning.refreshPositionAfterTeleport(
+            LightningBolt lightning = new LightningBolt(net.minecraft.world.entity.EntityType.LIGHTNING_BOLT, serverWorld);
+            lightning.snapTo(
                     target.getX() + (world.getRandom().nextDouble() - 0.5) * 0.5,
                     target.getY(),
                     target.getZ() + (world.getRandom().nextDouble() - 0.5) * 0.5
             );
-            lightning.setCosmetic(true);
-            serverWorld.spawnEntity(lightning);
+            lightning.setVisualOnly(true);
+            serverWorld.addFreshEntity(lightning);
 
-            Vec3d knockback = target.getEntityPos().subtract(player.getEntityPos()).normalize().multiply(1.5);
-            target.addVelocity(knockback.x, 0.6, knockback.z);
-            target.velocityDirty = true;
+            Vec3 knockback = target.position().subtract(player.position()).normalize().scale(1.5);
+            target.push(knockback.x, 0.6, knockback.z);
+            target.needsSync = true;
 
-            target.damage(
+            target.hurtServer(
                     serverWorld,
-                    serverWorld.getDamageSources().playerAttack(player),
+                    serverWorld.damageSources().playerAttack(player),
                     extraDamage
             );
-            target.setOnFireFor(4);
+            target.igniteForSeconds(4);
 
-            if (player.getMainHandStack().isOf(Items.MACE) && resultingDamage >= 20.0F) {
+            if (player.getMainHandItem().is(Items.MACE) && resultingDamage >= 20.0F) {
                 ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "copper", "mace_strike");
 
                 serverWorld.playSound(
                         null,
-                        target.getBlockPos(),
-                        SoundEvents.ITEM_TRIDENT_THUNDER.value(),
-                        SoundCategory.PLAYERS,
+                        target.blockPosition(),
+                        SoundEvents.TRIDENT_THUNDER.value(),
+                        SoundSource.PLAYERS,
                         2.0F,
                         1.2F
                 );
             }
 
-            assert serverWorld.getServer() != null;
             System.out.println("Total Damage: " + resultingDamage);
-            serverWorld.getServer().execute(() -> player.removeStatusEffect(ModEffects.CHARGED));
+            serverWorld.getServer().execute(() -> player.removeEffect(ModEffects.CHARGED));
 
             serverWorld.playSound(
                     null,
-                    target.getBlockPos(),
-                    SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER,
-                    SoundCategory.PLAYERS,
+                    target.blockPosition(),
+                    SoundEvents.LIGHTNING_BOLT_THUNDER,
+                    SoundSource.PLAYERS,
                     3.0F,
                     0.8F
             );
             serverWorld.playSound(
                     null,
-                    target.getBlockPos(),
-                    SoundEvents.ENTITY_GENERIC_EXPLODE.value(),
-                    SoundCategory.PLAYERS,
+                    target.blockPosition(),
+                    SoundEvents.GENERIC_EXPLODE.value(),
+                    SoundSource.PLAYERS,
                     2.5F,
                     1.0F
             );
 
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         });
     }
 }

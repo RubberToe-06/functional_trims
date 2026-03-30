@@ -4,16 +4,15 @@ import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,16 +20,16 @@ import java.util.Set;
 
 public class RedstoneTrimPowerTicker {
 
-    private static final Map<RegistryKey<World>, Set<BlockPos>> PREVIOUS_POWERED = new HashMap<>();
+    private static final Map<ResourceKey<Level>, Set<BlockPos>> PREVIOUS_POWERED = new HashMap<>();
 
     public static void register() {
         ServerTickEvents.END_WORLD_TICK.register(RedstoneTrimPowerTicker::onWorldTick);
     }
 
-    public static Set<BlockPos> getPoweredBlocksUnderPlayer(PlayerEntity player) {
+    public static Set<BlockPos> getPoweredBlocksUnderPlayer(Player player) {
         Set<BlockPos> positions = new HashSet<>();
 
-        if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) {
+        if (TrimHelper.countTrim(player, TrimMaterials.REDSTONE) < 4) {
             return positions;
         }
 
@@ -51,8 +50,8 @@ public class RedstoneTrimPowerTicker {
         return positions;
     }
 
-    public static boolean isPlayerPoweringPos(PlayerEntity player, BlockPos pos) {
-        if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) return false;
+    public static boolean isPlayerPoweringPos(Player player, BlockPos pos) {
+        if (TrimHelper.countTrim(player, TrimMaterials.REDSTONE) < 4) return false;
 
         var box = player.getBoundingBox();
         int y = (int) Math.floor(box.minY - 0.05);
@@ -68,18 +67,18 @@ public class RedstoneTrimPowerTicker {
                 && pos.getZ() >= minZ && pos.getZ() <= maxZ;
     }
 
-    private static void onWorldTick(ServerWorld world) {
+    private static void onWorldTick(ServerLevel world) {
         if (!FTConfig.isTrimEnabled("redstone")) return;
 
-        RegistryKey<World> worldKey = world.getRegistryKey();
+        ResourceKey<Level> worldKey = world.dimension();
         Set<BlockPos> currentPowered = new HashSet<>();
         Set<BlockPos> newlyPowered = new HashSet<>();
 
-        for (ServerPlayerEntity player : world.getPlayers()) {
-            if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) continue;
+        for (ServerPlayer player : world.players()) {
+            if (TrimHelper.countTrim(player, TrimMaterials.REDSTONE) < 4) continue;
 
             for (BlockPos pos : getPoweredBlocksUnderPlayer(player)) {
-                if (!world.getChunkManager().isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)) continue;
+                if (!world.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4)) continue;
 
                 boolean added = currentPowered.add(pos);
                 if (added) {
@@ -102,15 +101,15 @@ public class RedstoneTrimPowerTicker {
             }
         }
 
-        for (ServerPlayerEntity player : world.getPlayers()) {
-            if (TrimHelper.countTrim(player, ArmorTrimMaterials.REDSTONE) < 4) continue;
+        for (ServerPlayer player : world.players()) {
+            if (TrimHelper.countTrim(player, TrimMaterials.REDSTONE) < 4) continue;
 
             for (BlockPos pos : getPoweredBlocksUnderPlayer(player)) {
-                if (!world.getChunkManager().isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)) continue;
+                if (!world.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4)) continue;
 
                 if (newlyPowered.contains(pos)
                         && !previousPowered.contains(pos)
-                        && world.getBlockState(pos).isOf(Blocks.REDSTONE_LAMP)) {
+                        && world.getBlockState(pos).is(Blocks.REDSTONE_LAMP)) {
                     ModCriteria.TRIM_TRIGGER.trigger(player, "redstone", "activate_lamp");
                 }
             }
@@ -119,14 +118,14 @@ public class RedstoneTrimPowerTicker {
         PREVIOUS_POWERED.put(worldKey, currentPowered);
     }
 
-    private static void refreshNeighbors(ServerWorld world, BlockPos pos) {
+    private static void refreshNeighbors(ServerLevel world, BlockPos pos) {
         var block = world.getBlockState(pos).getBlock();
-        world.updateNeighborsAlways(pos, block, null);
+        world.updateNeighborsAt(pos, block, null);
 
         for (Direction dir : Direction.values()) {
-            BlockPos neighbor = pos.offset(dir);
-            if (world.getChunkManager().isChunkLoaded(neighbor.getX() >> 4, neighbor.getZ() >> 4)) {
-                world.updateNeighborsAlways(neighbor, block, null);
+            BlockPos neighbor = pos.relative(dir);
+            if (world.getChunkSource().hasChunk(neighbor.getX() >> 4, neighbor.getZ() >> 4)) {
+                world.updateNeighborsAt(neighbor, block, null);
             }
         }
     }

@@ -4,11 +4,11 @@ import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,29 +23,29 @@ public abstract class LivingEntityMixin {
      * Method exists in 1.21.8: addStatusEffect(StatusEffectInstance, Entity)
      */
     @ModifyVariable(
-            method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z",
+            method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z",
             at = @At("HEAD"),
             argsOnly = true
     )
-    private StatusEffectInstance functionalTrims$quartz_extendPositive(StatusEffectInstance original) {
+    private MobEffectInstance functionalTrims$quartz_extendPositive(MobEffectInstance original) {
         LivingEntity self = (LivingEntity)(Object)this;
 
-        if (!(self instanceof ServerPlayerEntity player)) return original;
-        if (!(TrimHelper.countTrim(  player, ArmorTrimMaterials.QUARTZ) == 4)) return original;
+        if (!(self instanceof ServerPlayer player)) return original;
+        if (!(TrimHelper.countTrim(  player, TrimMaterials.QUARTZ) == 4)) return original;
         if (!FTConfig.isTrimEnabled("quartz")) return original;
 
         // Only buff beneficial effects
-        if (original.getEffectType().value().getCategory() != StatusEffectCategory.BENEFICIAL) return original;
+        if (original.getEffect().value().getCategory() != MobEffectCategory.BENEFICIAL) return original;
 
         int boostedDur = Math.round(original.getDuration() * POTION_MULT);
         ModCriteria.TRIM_TRIGGER.trigger(player, "quartz", "drink_potion");
-        return new StatusEffectInstance(
-                original.getEffectType(),
+        return new MobEffectInstance(
+                original.getEffect(),
                 boostedDur,
                 original.getAmplifier(),
                 original.isAmbient(),
-                original.shouldShowParticles(),
-                original.shouldShowIcon()
+                original.isVisible(),
+                original.showIcon()
         );
 
     }
