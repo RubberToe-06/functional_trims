@@ -32,7 +32,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
 
         // --- Projectile & Falling Block Deflection (50% chance) ---
-        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, _) -> {
             if (!(entity instanceof ServerPlayer player)) return true;
             if (!TrimHelper.hasFullTrim(player, TrimMaterials.IRON)) return true;
             ServerLevel world = player.level();
@@ -79,7 +79,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         });
 
         // --- Critical hit negation ---
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, amount, originalAmount, blocked) -> {
+        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, amount, _, _) -> {
             if (!(entity instanceof ServerPlayer player)) return;
             if (!TrimHelper.hasFullTrim(player, TrimMaterials.IRON)) return;
             if (!FTConfig.isTrimEnabled("iron")) return;
@@ -105,7 +105,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         });
 
         // --- Knockback on block ---
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, amount, originalAmount, blocked) -> {
+        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, _, _, blocked) -> {
             if (!(entity instanceof ServerPlayer player)) return;
             if (!blocked) return;
             if (!player.isBlocking()) return;

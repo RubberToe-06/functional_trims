@@ -53,7 +53,7 @@ public class GoldTrimAdvancementTriggers {
      * Fires when a player with 4× GOLD trims attacks a Piglin Brute.
      */
     private static void registerPiglinBruteHitTrigger() {
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+        AttackEntityCallback.EVENT.register((player, world, _, entity, _) -> {
             if (world.isClientSide()) return InteractionResult.PASS;
 
             if (player instanceof ServerPlayer serverPlayer) {

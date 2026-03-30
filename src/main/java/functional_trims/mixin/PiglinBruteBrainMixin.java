@@ -36,7 +36,7 @@ public class PiglinBruteBrainMixin {
                 .getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER)
                 .filter(target -> target instanceof Player player &&
                         TrimHelper.countTrim(player, TrimMaterials.GOLD) > 0)
-                .ifPresent(target -> {
+                .ifPresent(_ -> {
                     // Clear anger memories, but let them keep moving/idle
                     body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);
                     body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET);

@@ -51,7 +51,7 @@ public class ResinTrimEffect {
     private static void apply(ServerPlayer player) {
         Level world = player.level();
         if (world.isClientSide()) return;
-        GripData gd = GRIP.computeIfAbsent(player.getUUID(), u -> new GripData());
+        GripData gd = GRIP.computeIfAbsent(player.getUUID(), _ -> new GripData());
 
         if (gd.releaseGrace > 0) {
             player.fallDistance = 0;

@@ -23,7 +23,7 @@ public class ChargedAttackHandler {
     }
 
     public static void register() {
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+        AttackEntityCallback.EVENT.register((player, world, _, entity, _) -> {
             if (world.isClientSide()) return InteractionResult.PASS;
             if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
             if (!(world instanceof ServerLevel serverWorld)) return InteractionResult.PASS;
