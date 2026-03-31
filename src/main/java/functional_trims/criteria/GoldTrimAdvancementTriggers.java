@@ -26,7 +26,7 @@ public class GoldTrimAdvancementTriggers {
      * Fires when a player with 4× GOLD trims is inside a Bastion.
      */
     private static void registerBastionEntryTrigger() {
-        ServerTickEvents.END_WORLD_TICK.register((ServerLevel world) -> {
+        ServerTickEvents.END_LEVEL_TICK.register((ServerLevel world) -> {
             for (ServerPlayer player : world.players()) {
                 if (TrimHelper.countTrim(player, TrimMaterials.GOLD) != 4) continue;
 
@@ -53,7 +53,7 @@ public class GoldTrimAdvancementTriggers {
      * Fires when a player with 4× GOLD trims attacks a Piglin Brute.
      */
     private static void registerPiglinBruteHitTrigger() {
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+        AttackEntityCallback.EVENT.register((player, world, _, entity, _) -> {
             if (world.isClientSide()) return InteractionResult.PASS;
 
             if (player instanceof ServerPlayer serverPlayer) {

@@ -29,7 +29,7 @@ public class DiamondTrimEffect {
     private DiamondTrimEffect() {}
 
     public static void register() {
-        ServerLivingEntityEvents.ALLOW_DEATH.register((LivingEntity living, net.minecraft.world.damagesource.DamageSource source, float amount) -> {
+        ServerLivingEntityEvents.ALLOW_DEATH.register((LivingEntity living, net.minecraft.world.damagesource.DamageSource _, float _) -> {
             if (!(living instanceof ServerPlayer player)) return true;
             if (!FTConfig.isTrimEnabled("diamond")) return true;
             if (TrimHelper.countTrim(player, TrimMaterials.DIAMOND) != 4) return true;

@@ -39,7 +39,7 @@ public class ResinTrimEffect {
     }
 
     public static void register() {
-        ServerTickEvents.START_WORLD_TICK.register((ServerLevel world) -> {
+        ServerTickEvents.START_LEVEL_TICK.register((ServerLevel world) -> {
             if (!FTConfig.isTrimEnabled("resin")) return;
 
             for (ServerPlayer player : world.players()) {
@@ -51,7 +51,7 @@ public class ResinTrimEffect {
     private static void apply(ServerPlayer player) {
         Level world = player.level();
         if (world.isClientSide()) return;
-        GripData gd = GRIP.computeIfAbsent(player.getUUID(), u -> new GripData());
+        GripData gd = GRIP.computeIfAbsent(player.getUUID(), _ -> new GripData());
 
         if (gd.releaseGrace > 0) {
             player.fallDistance = 0;

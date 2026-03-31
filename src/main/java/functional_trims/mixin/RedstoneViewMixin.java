@@ -44,14 +44,14 @@ public interface RedstoneViewMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void functionalTrims$addTrimStrongPower(BlockPos blockPos, CallbackInfoReturnable<Integer> cir) {
+    private void functionalTrims$addTrimStrongPower(BlockPos pos, CallbackInfoReturnable<Integer> cir) {
         if (!(this instanceof Level world)) return;
         if (!FTConfig.isTrimEnabled("redstone")) return;
 
         int extraPower = Math.min(15, ConfigManager.get().redstone.blockPowerLevelWhenSteppedOn);
 
         for (Player player : world.players()) {
-            if (RedstoneTrimPowerTicker.isPlayerPoweringPos(player, blockPos)) {
+            if (RedstoneTrimPowerTicker.isPlayerPoweringPos(player, pos)) {
                 cir.setReturnValue(Math.max(cir.getReturnValue(), extraPower));
                 return;
             }

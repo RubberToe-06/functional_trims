@@ -1,7 +1,7 @@
 package functional_trims.datagen;
 
 import functional_trims.criteria.ModCriteria;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -9,28 +9,20 @@ import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.alchemy.Potions;
 import functional_trims.FunctionalTrims;
 import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class TrimAdvancementProvider extends FabricAdvancementProvider {
-    public TrimAdvancementProvider(FabricDataOutput output,
+    public TrimAdvancementProvider(FabricPackOutput output,
                                    CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
-    private static ItemStack createPotionIcon() {
-        ItemStack potion = new ItemStack(Items.POTION);
-        potion.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.STRENGTH));
-        return potion;
-    }
+
     @Override
     public void generateAdvancement(
         @NotNull HolderLookup.Provider registries,
@@ -463,7 +455,7 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
         Advancement.Builder.advancement()
                 .parent(enrichedVitality)
                 .display(
-                        createPotionIcon(),
+                        Items.GLASS_BOTTLE,
                         Component.translatable("advancements.functional_trims.quartz.drink_potion.title"),
                         Component.translatable("advancements.functional_trims.quartz.drink_potion.description"),
                         null,

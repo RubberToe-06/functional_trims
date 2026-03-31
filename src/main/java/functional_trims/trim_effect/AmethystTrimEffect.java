@@ -42,7 +42,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
             }
             boolean hasFullSet = TrimHelper.countTrim(player, TrimMaterials.AMETHYST) == 4;
 
-            PlayerData data = PLAYER_DATA.computeIfAbsent(player.getUUID(), uuid -> new PlayerData());
+            PlayerData data = PLAYER_DATA.computeIfAbsent(player.getUUID(), _ -> new PlayerData());
             Vec3 currentPos = player.position();
             double distSq = currentPos.distanceToSqr(data.lastPos);
 

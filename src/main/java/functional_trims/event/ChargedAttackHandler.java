@@ -4,6 +4,7 @@ import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.effect.ModEffects;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,62 +17,78 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
-public class ChargedAttackHandler {
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-    private static float boostedAttackMultiplier() {
-        return ConfigManager.get().copper.chargedStrikeDamageMultiplier;
+public final class ChargedAttackHandler {
+    private static final Set<UUID> PENDING_CHARGED_MACE_STRIKES = ConcurrentHashMap.newKeySet();
+    private static final Set<UUID> APPLYING_BONUS_DAMAGE = ConcurrentHashMap.newKeySet();
+
+    private ChargedAttackHandler() {
+    }
+
+    private static boolean isCopperDisabled() {
+        return !FTConfig.isTrimEnabled("copper");
+    }
+
+    private static boolean isChargedMaceAttack(ServerPlayer player) {
+        return player.hasEffect(ModEffects.CHARGED) && player.getMainHandItem().is(Items.MACE);
+    }
+
+    private static float getExtraDamage(ServerPlayer player) {
+        double baseAttackDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        return (float) (baseAttackDamage * (ConfigManager.get().copper.chargedStrikeDamageMultiplier - 1.0F));
+    }
+
+    private static void playThunderRewardSound(ServerLevel level, LivingEntity target) {
+        level.playSound(
+                null,
+                target.blockPosition(),
+                SoundEvents.TRIDENT_THUNDER.value(),
+                SoundSource.PLAYERS,
+                2.0F,
+                1.2F
+        );
+    }
+
+    private static void triggerMaceAdvancement(ServerPlayer player, LivingEntity target) {
+        ModCriteria.TRIM_TRIGGER.trigger(player, "copper", "mace_strike");
+        playThunderRewardSound(player.level(), target);
     }
 
     public static void register() {
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+        AttackEntityCallback.EVENT.register((player, world, _, entity, _) -> {
             if (world.isClientSide()) return InteractionResult.PASS;
             if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
-            if (!(world instanceof ServerLevel serverWorld)) return InteractionResult.PASS;
+            if (!(world instanceof ServerLevel serverLevel)) return InteractionResult.PASS;
             if (!(entity instanceof LivingEntity target)) return InteractionResult.PASS;
             if (!player.hasEffect(ModEffects.CHARGED)) return InteractionResult.PASS;
-            if (!FTConfig.isTrimEnabled("copper")) return InteractionResult.PASS;
+            if (isCopperDisabled()) return InteractionResult.PASS;
 
-            double baseAttackDamage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
-            float extraDamage = (float) (baseAttackDamage * (boostedAttackMultiplier() - 1.0F));
-            float resultingDamage = (float) (baseAttackDamage * boostedAttackMultiplier());
+            if (serverPlayer.getMainHandItem().is(Items.MACE)) {
+                PENDING_CHARGED_MACE_STRIKES.add(serverPlayer.getUUID());
+            }
 
-            LightningBolt lightning = new LightningBolt(net.minecraft.world.entity.EntityType.LIGHTNING_BOLT, serverWorld);
+            LightningBolt lightning = new LightningBolt(net.minecraft.world.entity.EntityType.LIGHTNING_BOLT, serverLevel);
             lightning.snapTo(
                     target.getX() + (world.getRandom().nextDouble() - 0.5) * 0.5,
                     target.getY(),
                     target.getZ() + (world.getRandom().nextDouble() - 0.5) * 0.5
             );
             lightning.setVisualOnly(true);
-            serverWorld.addFreshEntity(lightning);
+            serverLevel.addFreshEntity(lightning);
 
-            Vec3 knockback = target.position().subtract(player.position()).normalize().scale(1.5);
-            target.push(knockback.x, 0.6, knockback.z);
-            target.needsSync = true;
-
-            target.hurtServer(
-                    serverWorld,
-                    serverWorld.damageSources().playerAttack(player),
-                    extraDamage
-            );
-            target.igniteForSeconds(4);
-
-            if (player.getMainHandItem().is(Items.MACE) && resultingDamage >= 20.0F) {
-                ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "copper", "mace_strike");
-
-                serverWorld.playSound(
-                        null,
-                        target.blockPosition(),
-                        SoundEvents.TRIDENT_THUNDER.value(),
-                        SoundSource.PLAYERS,
-                        2.0F,
-                        1.2F
-                );
+            Vec3 delta = target.position().subtract(player.position());
+            if (delta.lengthSqr() > 1.0E-6) {
+                Vec3 knockback = delta.normalize().scale(1.5);
+                target.push(knockback.x, 0.6, knockback.z);
+                target.hurtMarked = true;
             }
 
-            System.out.println("Total Damage: " + resultingDamage);
-            serverWorld.getServer().execute(() -> player.removeEffect(ModEffects.CHARGED));
+            target.igniteForSeconds(4);
 
-            serverWorld.playSound(
+            serverLevel.playSound(
                     null,
                     target.blockPosition(),
                     SoundEvents.LIGHTNING_BOLT_THUNDER,
@@ -79,7 +96,7 @@ public class ChargedAttackHandler {
                     3.0F,
                     0.8F
             );
-            serverWorld.playSound(
+            serverLevel.playSound(
                     null,
                     target.blockPosition(),
                     SoundEvents.GENERIC_EXPLODE.value(),
@@ -88,7 +105,41 @@ public class ChargedAttackHandler {
                     1.0F
             );
 
-            return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
+        });
+
+        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamageTaken, _, _) -> {
+            if (!(source.getEntity() instanceof ServerPlayer serverPlayer)) return;
+            if (isCopperDisabled()) return;
+            if (!serverPlayer.getMainHandItem().is(Items.MACE)) return;
+
+            UUID playerId = serverPlayer.getUUID();
+
+            if (APPLYING_BONUS_DAMAGE.remove(playerId)) return;
+            if (!PENDING_CHARGED_MACE_STRIKES.remove(playerId)) return;
+
+            if (baseDamageTaken >= 20.0F) {
+                triggerMaceAdvancement(serverPlayer, entity);
+            }
+
+            APPLYING_BONUS_DAMAGE.add(playerId);
+            entity.hurtServer(
+                    serverPlayer.level(),
+                    serverPlayer.level().damageSources().playerAttack(serverPlayer),
+                    getExtraDamage(serverPlayer)
+            );
+
+            serverPlayer.removeEffect(ModEffects.CHARGED);
+        });
+
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+            if (!(source.getEntity() instanceof ServerPlayer serverPlayer)) return;
+            if (isCopperDisabled()) return;
+            if (!isChargedMaceAttack(serverPlayer)) return;
+            if (!PENDING_CHARGED_MACE_STRIKES.remove(serverPlayer.getUUID())) return;
+
+            triggerMaceAdvancement(serverPlayer, entity);
+            serverPlayer.removeEffect(ModEffects.CHARGED);
         });
     }
 }
