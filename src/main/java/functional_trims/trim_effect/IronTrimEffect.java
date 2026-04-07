@@ -156,8 +156,8 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
     public void onEndTick(MinecraftServer server) {
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             if (!TrimHelper.hasFullTrim(player, TrimMaterials.IRON)) continue;
-            if (!FTConfig.isTrimEnabled("iron")) return;
-            if (!cooldownNegationEnabled()) return;
+            if (!FTConfig.isTrimEnabled("iron")) continue;
+            if (!cooldownNegationEnabled()) continue;
 
             var cooldowns = player.getCooldowns();
 

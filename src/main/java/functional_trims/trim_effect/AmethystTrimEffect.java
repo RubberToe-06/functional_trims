@@ -14,8 +14,14 @@ import java.util.UUID;
 
 public class AmethystTrimEffect implements ServerTickEvents.EndTick {
 
-    private static final int STAND_STILL_TICKS = (int)(ConfigManager.get().amethyst.motionlessSecondsBeforeEffectStanding * 20.0f); // 3 seconds
-    private static final int CROUCH_TICKS = (int)(ConfigManager.get().amethyst.motionlessSecondsBeforeEffectSneaking * 20.0f);      // 1.5 seconds
+    // Intentionally NOT static-final: reading from config at call time so runtime changes take effect.
+    private static int standStillTicks() {
+        return (int)(ConfigManager.get().amethyst.motionlessSecondsBeforeEffectStanding * 20.0f);
+    }
+    private static int crouchTicks() {
+        return (int)(ConfigManager.get().amethyst.motionlessSecondsBeforeEffectSneaking * 20.0f);
+    }
+
     private static final int EFFECT_DURATION = -1;   // infinite
     private static final double MOVEMENT_THRESHOLD_SQ = 0.0001;
     private static final Map<UUID, PlayerData> PLAYER_DATA = new HashMap<>();
@@ -64,7 +70,7 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
             else data.crouchTicks = 0;
 
             // Apply effect if stationary or crouching long enough
-            if ((data.stillTicks >= STAND_STILL_TICKS || data.crouchTicks >= CROUCH_TICKS)
+            if ((data.stillTicks >= standStillTicks() || data.crouchTicks >= crouchTicks())
                     && !player.hasEffect(ModEffects.AMETHYST_VISION)) {
 
                 player.addEffect(new MobEffectInstance(
@@ -91,5 +97,9 @@ public class AmethystTrimEffect implements ServerTickEvents.EndTick {
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(new AmethystTrimEffect());
+    }
+
+    public static void cleanupPlayer(UUID id) {
+        PLAYER_DATA.remove(id);
     }
 }

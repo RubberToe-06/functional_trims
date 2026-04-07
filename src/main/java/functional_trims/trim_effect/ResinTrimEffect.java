@@ -48,6 +48,10 @@ public class ResinTrimEffect {
         });
     }
 
+    public static void cleanupPlayer(UUID id) {
+        GRIP.remove(id);
+    }
+
     private static void apply(ServerPlayer player) {
         Level world = player.level();
         if (world.isClientSide()) return;

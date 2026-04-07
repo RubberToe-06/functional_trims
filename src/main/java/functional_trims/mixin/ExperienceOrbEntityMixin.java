@@ -15,8 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ExperienceOrb.class)
 public class ExperienceOrbEntityMixin {
-    @Inject(method = "playerTouch", at = @At("HEAD"))
+    @Inject(method = "playerTouch", at = @At("TAIL"))
     private void functional_trims$boostExp(Player player, CallbackInfo ci) {
+        ExperienceOrb orb = (ExperienceOrb) (Object) this;
+        // Only fire if the orb was actually collected (discard() was called)
+        if (!orb.isRemoved()) return;
         if (player.level().isClientSide()) return;
         if (!(player instanceof ServerPlayer serverPlayer)) return;
         if (!FTConfig.isTrimEnabled("lapis")) return;
@@ -24,7 +27,6 @@ public class ExperienceOrbEntityMixin {
         int trimCount = TrimHelper.countTrim(serverPlayer, TrimMaterials.LAPIS);
         if (trimCount < 4) return;
 
-        ExperienceOrb orb = (ExperienceOrb) (Object) this;
 
         float bonusMultiplier = ConfigManager.get().lapis.extraExpMultiplier;
         int bonus = Math.max(1, (int) (orb.getValue() * bonusMultiplier));

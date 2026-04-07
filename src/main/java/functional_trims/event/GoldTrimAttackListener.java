@@ -11,15 +11,14 @@ import net.minecraft.world.item.equipment.trim.TrimMaterials;
 
 public class GoldTrimAttackListener {
     public static void register() {
-        if (!FTConfig.isTrimEnabled("gold")) return;
         AttackEntityCallback.EVENT.register((player, world, _, entity, _) -> {
-            if (!world.isClientSide()
-                    && entity instanceof PiglinBrute
-                    && player instanceof ServerPlayer serverPlayer
-                    && TrimHelper.countTrim(player, TrimMaterials.GOLD) == 4) {
+            if (world.isClientSide()) return InteractionResult.PASS;
+            if (!FTConfig.isTrimEnabled("gold")) return InteractionResult.PASS;
+            if (!(entity instanceof PiglinBrute)) return InteractionResult.PASS;
+            if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
+            if (TrimHelper.countTrim(player, TrimMaterials.GOLD) != 4) return InteractionResult.PASS;
 
-                ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "gold", "attack_piglin_brute");
-            }
+            ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "gold", "attack_piglin_brute");
             return InteractionResult.PASS;
         });
     }

@@ -1,6 +1,5 @@
 package functional_trims.mixin;
 
-import functional_trims.FunctionalTrims;
 import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
@@ -52,9 +51,13 @@ public abstract class LootTableMixin {
                 ((LootTable) (Object) this).fill(container, params, optionalRandomSeed + i + 1);
             }
 
+            // Only trigger the advancement when a bonus roll actually happened
+            if (extraRolls > 0) {
+                ModCriteria.TRIM_TRIGGER.trigger(player, "emerald", "open_loot_chest");
+            }
+
         } finally {
             emeraldTrim$rerolling.set(false);
-            ModCriteria.TRIM_TRIGGER.trigger(player, "emerald", "open_loot_chest");
         }
     }
 }

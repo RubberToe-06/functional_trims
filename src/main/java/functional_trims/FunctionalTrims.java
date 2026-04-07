@@ -3,6 +3,7 @@ package functional_trims;
 import functional_trims.config.ConfigManager;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.event.ChargedAttackHandler;
+import functional_trims.event.GoldTrimAttackListener;
 import functional_trims.event.RedstoneTrimPowerTicker;
 import functional_trims.event.TrimAdvancementHandler;
 import functional_trims.trim_effect.*;
@@ -10,6 +11,7 @@ import functional_trims.effect.AmethystVisionEffect;
 import functional_trims.effect.ModEffects;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ public class FunctionalTrims implements ModInitializer {
         registerEffects();
         registerEventHandlers();
         registerTickHandlers();
+        registerDisconnectListeners();
 
         LOGGER.info("Functional Trims initialized.");
     }
@@ -46,10 +49,21 @@ public class FunctionalTrims implements ModInitializer {
         RedstoneTrimPowerTicker.register();
         TrimAdvancementHandler.register();
         ChargedAttackHandler.register();
+        GoldTrimAttackListener.register();
     }
 
     private static void registerTickHandlers() {
         ServerTickEvents.END_LEVEL_TICK.register(new CopperTrimEffect());
         ServerTickEvents.END_LEVEL_TICK.register(AmethystVisionEffect::tick);
+    }
+
+    private static void registerDisconnectListeners() {
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, _) -> {
+            var id = handler.player.getUUID();
+            AmethystTrimEffect.cleanupPlayer(id);
+            AmethystVisionEffect.cleanupPlayer(id);
+            ResinTrimEffect.cleanupPlayer(id);
+            CopperTrimEffect.cleanupPlayer(id);
+        });
     }
 }

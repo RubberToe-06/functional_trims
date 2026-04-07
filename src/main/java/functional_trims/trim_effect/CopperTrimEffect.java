@@ -21,7 +21,11 @@ public class CopperTrimEffect implements ServerTickEvents.EndLevelTick {
     private static final int LIGHTNING_COOLDOWN_TICKS = 200; // 10s between possible strikes
     private static final int CHARGED_DURATION_TICKS = 20 * 60; // 60s
 
-    private final Map<UUID, Integer> cooldowns = new HashMap<>();
+    private static final Map<UUID, Integer> cooldowns = new HashMap<>();
+
+    public static void cleanupPlayer(UUID id) {
+        cooldowns.remove(id);
+    }
 
     private static float lightningCooldownMultiplier() {
         return ConfigManager.get().copper.lightningStrikeChanceMultiplier;
