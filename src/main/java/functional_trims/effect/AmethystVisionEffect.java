@@ -17,8 +17,10 @@ import org.jspecify.annotations.NonNull;
 
 public class AmethystVisionEffect extends MobEffect {
     private static final byte GLOW_MASK = 0x40;
+    private static final int SCAN_INTERVAL_TICKS = 3;
     private static final Map<UUID, Set<Integer>> glowingByPlayer = new ConcurrentHashMap<>();
     private static final Map<UUID, Boolean> wasActive = new ConcurrentHashMap<>();
+    private static final Map<UUID, Long> lastScanTick = new ConcurrentHashMap<>();
 
     public AmethystVisionEffect() {
         super(MobEffectCategory.BENEFICIAL, 0xAA00FF);
@@ -41,9 +43,20 @@ public class AmethystVisionEffect extends MobEffect {
         glowingByPlayer.putIfAbsent(id, ConcurrentHashMap.newKeySet());
         Set<Integer> glowingIds = glowingByPlayer.get(id);
 
+        long gameTime = world.getGameTime();
+        Long lastScan = lastScanTick.get(id);
+        if (lastScan != null && gameTime - lastScan < SCAN_INTERVAL_TICKS) {
+            return true;
+        }
+        lastScanTick.put(id, gameTime);
+
         double radius = 25.0 * ConfigManager.get().amethyst.effectRangeMultiplier;
         var box = player.getBoundingBox().inflate(radius);
         var nearby = world.getEntitiesOfClass(LivingEntity.class, box, e -> e != player && e.isAlive());
+        Set<Integer> nearbyIds = new HashSet<>(nearby.size());
+        for (LivingEntity living : nearby) {
+            nearbyIds.add(living.getId());
+        }
 
         // Remove out-of-range entities (unglow them)
         glowingIds.removeIf(eid -> {
@@ -51,7 +64,7 @@ public class AmethystVisionEffect extends MobEffect {
             // Entity despawned or left the dimension — remove from tracking, no packet needed
             if (!(e instanceof LivingEntity le)) return true;
             // Entity moved out of range — unglow then remove
-            if (!nearby.contains(le)) {
+            if (!nearbyIds.contains(eid)) {
                 sendGlowPacket(player, le, false);
                 return true;
             }
@@ -101,6 +114,7 @@ public class AmethystVisionEffect extends MobEffect {
                     }
                 }
                 wasActive.put(id, false);
+                lastScanTick.remove(id);
             }
         }
     }
@@ -109,6 +123,7 @@ public class AmethystVisionEffect extends MobEffect {
     public static void cleanupPlayer(UUID id) {
         glowingByPlayer.remove(id);
         wasActive.remove(id);
+        lastScanTick.remove(id);
     }
 
     private static void sendGlowPacket(ServerPlayer player, LivingEntity target, boolean glow) {
