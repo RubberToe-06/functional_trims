@@ -18,7 +18,7 @@ import net.minecraft.world.item.equipment.trim.TrimMaterials;
 
 /**
  * Comprehensive piglin pacification:
- * - Any player wearing gold-trimmed armor is treated as friendly.
+ * - Players wearing a full gold-trimmed set are treated as friendly.
  * - Applies to all piglins.
  * - Also clears anger/pathfinding so they don't run at the player.
  * - Extends vanilla gold armor safety logic.
@@ -37,10 +37,12 @@ public class PiglinBrainMixin {
     )
     private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel level, Piglin body,
                                                                   CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
+        if (!FTConfig.isTrimEnabled("gold")) return;
+
         body.getBrain()
                 .getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER)
-                .filter(target -> target instanceof Player player &&
-                        TrimHelper.countTrim(player, TrimMaterials.GOLD) > 0)
+                .filter(target -> target instanceof Player player
+                        && TrimHelper.hasFullTrim(player, TrimMaterials.GOLD))
                 .ifPresent(_ -> {
                     // Clear anger memories, but don't freeze their AI
                     body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);

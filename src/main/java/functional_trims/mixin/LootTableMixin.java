@@ -23,8 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LootTable.class)
 public abstract class LootTableMixin {
     @Unique private static final ThreadLocal<Boolean> emeraldTrim$rerolling = ThreadLocal.withInitial(() -> false);
-    @Unique private static final float CHANCE_FOR_FIRST_REROLL = ConfigManager.get().emerald.percentChanceForExtraRoll1;
-    @Unique private static final float CHANCE_FOR_SECOND_REROLL = ConfigManager.get().emerald.percentChanceForExtraRoll2;
 
     @Inject(
             method = "fill(Lnet/minecraft/world/Container;Lnet/minecraft/world/level/storage/loot/LootParams;J)V",
@@ -44,8 +42,11 @@ public abstract class LootTableMixin {
         int extraRolls = 0;
         try {
             RandomSource random = params.getLevel().getRandom();
-            if (random.nextFloat() < CHANCE_FOR_FIRST_REROLL) extraRolls++;
-            if (random.nextFloat() < CHANCE_FOR_SECOND_REROLL) extraRolls++;
+            float chanceForFirstReroll = ConfigManager.get().emerald.percentChanceForExtraRoll1;
+            float chanceForSecondReroll = ConfigManager.get().emerald.percentChanceForExtraRoll2;
+
+            if (random.nextFloat() < chanceForFirstReroll) extraRolls++;
+            if (random.nextFloat() < chanceForSecondReroll) extraRolls++;
 
             for (int i = 0; i < extraRolls; i++) {
                 ((LootTable) (Object) this).fill(container, params, optionalRandomSeed + i + 1);
@@ -53,7 +54,6 @@ public abstract class LootTableMixin {
 
         } finally {
             emeraldTrim$rerolling.set(false);
-            FunctionalTrims.LOGGER.info("Player {} with {} emerald trims got {} extra loot rolls", player.getName().getString(), emeraldPieces, extraRolls);
             ModCriteria.TRIM_TRIGGER.trigger(player, "emerald", "open_loot_chest");
         }
     }

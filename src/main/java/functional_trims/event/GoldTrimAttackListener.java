@@ -11,7 +11,7 @@ import net.minecraft.world.item.equipment.trim.TrimMaterials;
 
 public class GoldTrimAttackListener {
     public static void register() {
-        if (FTConfig.isTrimEnabled("gold")) return;
+        if (!FTConfig.isTrimEnabled("gold")) return;
         AttackEntityCallback.EVENT.register((player, world, _, entity, _) -> {
             if (!world.isClientSide()
                     && entity instanceof PiglinBrute

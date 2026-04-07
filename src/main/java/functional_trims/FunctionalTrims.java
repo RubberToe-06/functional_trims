@@ -51,6 +51,5 @@ public class FunctionalTrims implements ModInitializer {
     private static void registerTickHandlers() {
         ServerTickEvents.END_LEVEL_TICK.register(new CopperTrimEffect());
         ServerTickEvents.END_LEVEL_TICK.register(AmethystVisionEffect::tick);
-        ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
     }
 }

@@ -1,5 +1,6 @@
 package functional_trims.mixin;
 
+import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
 import functional_trims.func.TrimHelper;
@@ -25,7 +26,7 @@ public class ExperienceOrbEntityMixin {
 
         ExperienceOrb orb = (ExperienceOrb) (Object) this;
 
-        float bonusMultiplier = 0.5f;
+        float bonusMultiplier = ConfigManager.get().lapis.extraExpMultiplier;
         int bonus = Math.max(1, (int) (orb.getValue() * bonusMultiplier));
         serverPlayer.giveExperiencePoints(bonus);
 

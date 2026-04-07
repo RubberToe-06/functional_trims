@@ -1,5 +1,6 @@
 package functional_trims.criteria;
 
+import functional_trims.config.FTConfig;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -27,6 +28,8 @@ public class GoldTrimAdvancementTriggers {
      */
     private static void registerBastionEntryTrigger() {
         ServerTickEvents.END_LEVEL_TICK.register((ServerLevel world) -> {
+            if (!FTConfig.isTrimEnabled("gold")) return;
+
             for (ServerPlayer player : world.players()) {
                 if (TrimHelper.countTrim(player, TrimMaterials.GOLD) != 4) continue;
 
@@ -55,11 +58,12 @@ public class GoldTrimAdvancementTriggers {
     private static void registerPiglinBruteHitTrigger() {
         AttackEntityCallback.EVENT.register((player, world, _, entity, _) -> {
             if (world.isClientSide()) return InteractionResult.PASS;
+            if (!FTConfig.isTrimEnabled("gold")) return InteractionResult.PASS;
 
             if (player instanceof ServerPlayer serverPlayer) {
                 if (TrimHelper.countTrim(serverPlayer, TrimMaterials.GOLD) == 4
                         && entity instanceof PiglinBrute) {
-                    ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "gold", "hit_piglin_brute");
+                    ModCriteria.TRIM_TRIGGER.trigger(serverPlayer, "gold", "attack_piglin_brute");
                 }
             }
             return InteractionResult.PASS;
