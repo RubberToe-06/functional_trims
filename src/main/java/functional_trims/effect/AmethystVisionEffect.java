@@ -19,7 +19,6 @@ public class AmethystVisionEffect extends MobEffect {
     private static final byte GLOW_MASK = 0x40;
     private static final Map<UUID, Set<Integer>> glowingByPlayer = new ConcurrentHashMap<>();
     private static final Map<UUID, Boolean> wasActive = new ConcurrentHashMap<>();
-    private static final float RANGE_MULTIPLIER = ConfigManager.get().amethyst.effectRangeMultiplier;
 
     public AmethystVisionEffect() {
         super(MobEffectCategory.BENEFICIAL, 0xAA00FF);
@@ -42,7 +41,7 @@ public class AmethystVisionEffect extends MobEffect {
         glowingByPlayer.putIfAbsent(id, ConcurrentHashMap.newKeySet());
         Set<Integer> glowingIds = glowingByPlayer.get(id);
 
-        double radius = 25.0 * RANGE_MULTIPLIER;
+        double radius = 25.0 * ConfigManager.get().amethyst.effectRangeMultiplier;
         var box = player.getBoundingBox().inflate(radius);
         var nearby = world.getEntitiesOfClass(LivingEntity.class, box, e -> e != player && e.isAlive());
 

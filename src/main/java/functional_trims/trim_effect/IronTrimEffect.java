@@ -22,11 +22,20 @@ import net.minecraft.world.phys.Vec3;
 
 public class IronTrimEffect implements ServerTickEvents.EndTick {
 
-    private static final double KB_STRENGTH = ConfigManager.get().iron.shieldKnockbackStrengthMultiplier;
-    private static final double CHANCE_TO_DEFLECT = ConfigManager.get().iron.projectileReflectChance;
     private static final double Y_BOOST = 0.15;
     private static final double MAX_RANGE = 4.0;
-    private static final boolean COOLDOWN_NEGATION_ENABLED = ConfigManager.get().iron.axeAttackResistanceEnabled;
+
+    private static double knockbackStrength() {
+        return ConfigManager.get().iron.shieldKnockbackStrengthMultiplier;
+    }
+
+    private static double chanceToDeflect() {
+        return ConfigManager.get().iron.projectileReflectChance;
+    }
+
+    private static boolean cooldownNegationEnabled() {
+        return ConfigManager.get().iron.axeAttackResistanceEnabled;
+    }
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(new IronTrimEffect());
@@ -46,7 +55,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             if (!isProjectile && !isFallingBlock) return true;
 
             // 50% chance to deflect
-            if (player.getRandom().nextFloat() < CHANCE_TO_DEFLECT) {
+            if (player.getRandom().nextFloat() < chanceToDeflect()) {
                 // Sound + particle
                 world.playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.ANVIL_PLACE, SoundSource.PLAYERS,
@@ -129,7 +138,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             double nx = dx / dist;
             double nz = dz / dist;
 
-            attacker.knockback(KB_STRENGTH, -nx, -nz);
+            attacker.knockback(knockbackStrength(), -nx, -nz);
             attacker.push(0.0, Y_BOOST, 0.0);
             attacker.needsSync = true;
 
@@ -148,7 +157,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             if (!TrimHelper.hasFullTrim(player, TrimMaterials.IRON)) continue;
             if (!FTConfig.isTrimEnabled("iron")) return;
-            if (!COOLDOWN_NEGATION_ENABLED) return;
+            if (!cooldownNegationEnabled()) return;
 
             var cooldowns = player.getCooldowns();
 

@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 
 /**
- * Makes Piglin Brutes fully docile toward players wearing gold-trimmed armor.
+ * Makes Piglin Brutes fully docile toward players wearing a full gold-trimmed set.
  * Clears all hostility memories and stops movement immediately.
  */
 @Mixin(PiglinBruteAi.class)
@@ -35,7 +35,7 @@ public class PiglinBruteBrainMixin {
         body.getBrain()
                 .getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER)
                 .filter(target -> target instanceof Player player &&
-                        TrimHelper.countTrim(player, TrimMaterials.GOLD) > 0)
+                        TrimHelper.hasFullTrim(player, TrimMaterials.GOLD))
                 .ifPresent(_ -> {
                     // Clear anger memories, but let them keep moving/idle
                     body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);

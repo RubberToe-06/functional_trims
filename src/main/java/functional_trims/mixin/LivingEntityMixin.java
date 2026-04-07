@@ -10,14 +10,11 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Unique private static final float POTION_MULT = ConfigManager.get().quartz.potionEffectDurationMultiplier;
-
     /**
      * Scale duration for beneficial effects as they're applied.
      * Method exists in 1.21.8: addStatusEffect(StatusEffectInstance, Entity)
@@ -37,7 +34,8 @@ public abstract class LivingEntityMixin {
         // Only buff beneficial effects
         if (newEffect.getEffect().value().getCategory() != MobEffectCategory.BENEFICIAL) return newEffect;
 
-        int boostedDur = Math.round(newEffect.getDuration() * POTION_MULT);
+        float potionMult = ConfigManager.get().quartz.potionEffectDurationMultiplier;
+        int boostedDur = Math.round(newEffect.getDuration() * potionMult);
         ModCriteria.TRIM_TRIGGER.trigger(player, "quartz", "drink_potion");
         return new MobEffectInstance(
                 newEffect.getEffect(),
