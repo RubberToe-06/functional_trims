@@ -10,9 +10,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import net.minecraft.world.level.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Handles explosion knockback for Netherite-trimmed players safely.
@@ -24,6 +29,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class NetheriteImmovableMixin {
 
+    // Tracks the last game tick feedback (sound + criteria) was sent per player,
+    // so a single explosion event (which calls ignoreExplosion many times) only fires once.
+    @Unique private static final Map<UUID, Long> lastResistTick = new HashMap<>();
+
     @Inject(method = "ignoreExplosion", at = @At("HEAD"), cancellable = true)
     private void functional_trims$netheriteTrimExplosionImmunity(Explosion explosion, CallbackInfoReturnable<Boolean> cir) {
         Entity self = (Entity) (Object) this;
@@ -32,19 +41,24 @@ public abstract class NetheriteImmovableMixin {
         if (TrimHelper.countTrim(player, TrimMaterials.NETHERITE) < 4) return;
         if (!FTConfig.isTrimEnabled("netherite")) return;
 
-        // Trigger advancement + feedback when an explosion tries to affect the player
-        ModCriteria.TRIM_TRIGGER.trigger(player, "netherite", "resist_explosion");
+        // Fire feedback only once per game tick per player
+        long currentTick = player.level().getGameTime();
+        if (lastResistTick.getOrDefault(player.getUUID(), -1L) != currentTick) {
+            lastResistTick.put(player.getUUID(), currentTick);
 
-        player.level().playSound(
-                null,
-                player.blockPosition(),
-                SoundEvents.NETHERITE_BLOCK_STEP,
-                SoundSource.PLAYERS,
-                0.7f,
-                0.5f
-        );
+            ModCriteria.TRIM_TRIGGER.trigger(player, "netherite", "resist_explosion");
 
-        // Immunity to explosion knockback (and damage)
+            player.level().playSound(
+                    null,
+                    player.blockPosition(),
+                    SoundEvents.NETHERITE_BLOCK_STEP,
+                    SoundSource.PLAYERS,
+                    0.7f,
+                    0.5f
+            );
+        }
+
+        // Immunity to explosion knockback (and damage) — always
         cir.setReturnValue(true);
     }
 }

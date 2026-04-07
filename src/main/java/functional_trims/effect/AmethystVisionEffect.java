@@ -48,9 +48,11 @@ public class AmethystVisionEffect extends MobEffect {
         // Remove out-of-range entities (unglow them)
         glowingIds.removeIf(eid -> {
             var e = world.getEntity(eid);
-            if (!(e instanceof LivingEntity le) || !nearby.contains(le)) {
-                assert e instanceof LivingEntity;
-                sendGlowPacket(player, (LivingEntity) e, false);
+            // Entity despawned or left the dimension — remove from tracking, no packet needed
+            if (!(e instanceof LivingEntity le)) return true;
+            // Entity moved out of range — unglow then remove
+            if (!nearby.contains(le)) {
+                sendGlowPacket(player, le, false);
                 return true;
             }
             return false;
@@ -101,6 +103,12 @@ public class AmethystVisionEffect extends MobEffect {
                 wasActive.put(id, false);
             }
         }
+    }
+
+    /** Called on player disconnect — removes all glow tracking state for that player. */
+    public static void cleanupPlayer(UUID id) {
+        glowingByPlayer.remove(id);
+        wasActive.remove(id);
     }
 
     private static void sendGlowPacket(ServerPlayer player, LivingEntity target, boolean glow) {
