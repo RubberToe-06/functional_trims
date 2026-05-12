@@ -3,13 +3,12 @@ package functional_trims.trim_effect;
 import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
-import functional_trims.effect.ModEffects;
+import functional_trims.effect.ChargedState;
 import functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import java.util.HashMap;
@@ -68,14 +67,7 @@ public class CopperTrimEffect implements ServerTickEvents.EndLevelTick {
         ModCriteria.TRIM_TRIGGER.trigger(player, "copper", "struck_by_lightning");
 
         world.getServer().execute(() -> {
-            player.addEffect(new MobEffectInstance(
-                    ModEffects.CHARGED,
-                    CHARGED_DURATION_TICKS,
-                    0,
-                    false,
-                    false,
-                    true
-            ));
+            ChargedState.setCharged(player, CHARGED_DURATION_TICKS);
             player.playSound(SoundEvents.LIGHTNING_BOLT_THUNDER, 2.0F, 1.0F);
         });
     }

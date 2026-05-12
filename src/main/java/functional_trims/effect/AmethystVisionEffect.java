@@ -8,109 +8,62 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import org.jspecify.annotations.NonNull;
 
-public class AmethystVisionEffect extends MobEffect {
+/**
+ * Manages the amethyst-trim glow / x-ray vision effect entirely server-side.
+ * No longer extends MobEffect — that caused unmodded clients to be kicked
+ * because Fabric syncs the mob_effect registry during login.
+ */
+public final class AmethystVisionEffect {
+
     private static final byte GLOW_MASK = 0x40;
     private static final int SCAN_INTERVAL_TICKS = 3;
+
+    // Players whose vision is currently active
+    private static final Set<UUID> VISION_ACTIVE = ConcurrentHashMap.newKeySet();
+
+    // Per-player glow tracking (for unglow cleanup)
     private static final Map<UUID, Set<Integer>> glowingByPlayer = new ConcurrentHashMap<>();
-    private static final Map<UUID, Boolean> wasActive = new ConcurrentHashMap<>();
-    private static final Map<UUID, Long> lastScanTick = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean>      wasActive       = new ConcurrentHashMap<>();
+    private static final Map<UUID, Long>          lastScanTick   = new ConcurrentHashMap<>();
 
-    public AmethystVisionEffect() {
-        super(MobEffectCategory.BENEFICIAL, 0xAA00FF);
-        this.withSoundOnAdded(SoundEvents.AMETHYST_BLOCK_CHIME);
+    private AmethystVisionEffect() {}
+
+    public static boolean isActive(UUID id) {
+        return VISION_ACTIVE.contains(id);
     }
 
-    @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
-        return true;
-    }
-
-    @Override
-    public boolean applyEffectTick(@NonNull ServerLevel world, @NonNull LivingEntity entity, int amplifier) {
-        if (!(entity instanceof ServerPlayer player)) return false;
-        UUID id = player.getUUID();
-
-        // mark as active this tick
+    /** Activate vision for a player (called from AmethystTrimEffect). */
+    public static void activate(UUID id) {
+        VISION_ACTIVE.add(id);
         wasActive.put(id, true);
-
-        glowingByPlayer.putIfAbsent(id, ConcurrentHashMap.newKeySet());
-        Set<Integer> glowingIds = glowingByPlayer.get(id);
-
-        long gameTime = world.getGameTime();
-        Long lastScan = lastScanTick.get(id);
-        if (lastScan != null && gameTime - lastScan < SCAN_INTERVAL_TICKS) {
-            return true;
-        }
-        lastScanTick.put(id, gameTime);
-
-        double radius = 25.0 * ConfigManager.get().amethyst.effectRangeMultiplier;
-        var box = player.getBoundingBox().inflate(radius);
-        var nearby = world.getEntitiesOfClass(LivingEntity.class, box, e -> e != player && e.isAlive());
-        Set<Integer> nearbyIds = new HashSet<>(nearby.size());
-        for (LivingEntity living : nearby) {
-            nearbyIds.add(living.getId());
-        }
-
-        // Remove out-of-range entities (unglow them)
-        glowingIds.removeIf(eid -> {
-            var e = world.getEntity(eid);
-            // Entity despawned or left the dimension — remove from tracking, no packet needed
-            if (!(e instanceof LivingEntity le)) return true;
-            // Entity moved out of range — unglow then remove
-            if (!nearbyIds.contains(eid)) {
-                sendGlowPacket(player, le, false);
-                return true;
-            }
-            return false;
-        });
-
-        // Add new in-range ones
-        for (var e : nearby) {
-            if (glowingIds.add(e.getId())) {
-                sendGlowPacket(player, e, true);
-
-                // --- Advancement trigger: "I See You" ---
-                if (e.isInvisible()) {
-                    // Detected invisible entity
-                    functional_trims.criteria.ModCriteria.TRIM_TRIGGER.trigger(player, "amethyst", "i_see_you");
-                } else {
-                    // First time seeing any entity via amethyst vision
-                    functional_trims.criteria.ModCriteria.TRIM_TRIGGER.trigger(player, "amethyst", "wallhacks_enabled");
-                }
-            }
-        }
-
-        return true;
     }
 
-    /** Runs when the effect is completely removed. */
-    @Override
-    public void removeAttributeModifiers(@NonNull AttributeMap attributes) {
-        // nothing: handled dynamically on tick below
+    /** Deactivate vision; the next tick() call will send unglow packets. */
+    public static void deactivate(UUID id) {
+        VISION_ACTIVE.remove(id);
     }
 
-    /** Extra cleanup every tick to clear stuck glows for players who lost the effect. */
+    /**
+     * Called every END_LEVEL_TICK.
+     * Scans for active players and handles unglow cleanup for players who just lost the effect.
+     */
     public static void tick(ServerLevel world) {
         for (ServerPlayer player : world.players()) {
             UUID id = player.getUUID();
-            boolean active = player.hasEffect(ModEffects.AMETHYST_VISION);
+            boolean active = VISION_ACTIVE.contains(id);
 
-            if (!active && wasActive.getOrDefault(id, false)) {
-                // just lost the effect → unglow everything
+            if (active) {
+                wasActive.put(id, true);
+                doScan(player, world);
+            } else if (wasActive.getOrDefault(id, false)) {
+                // Just went inactive — unglow everything this player sees
                 Set<Integer> ids = glowingByPlayer.remove(id);
                 if (ids != null) {
                     for (int eid : ids) {
                         var e = world.getEntity(eid);
-                        if (e instanceof LivingEntity le) {
-                            sendGlowPacket(player, le, false);
-                        }
+                        if (e instanceof LivingEntity le) sendGlowPacket(player, le, false);
                     }
                 }
                 wasActive.put(id, false);
@@ -121,20 +74,60 @@ public class AmethystVisionEffect extends MobEffect {
 
     /** Called on player disconnect — removes all glow tracking state for that player. */
     public static void cleanupPlayer(UUID id) {
+        VISION_ACTIVE.remove(id);
         glowingByPlayer.remove(id);
         wasActive.remove(id);
         lastScanTick.remove(id);
     }
 
+    // ------------------------------------------------------------------
+
+    private static void doScan(ServerPlayer player, ServerLevel world) {
+        UUID id = player.getUUID();
+        glowingByPlayer.putIfAbsent(id, ConcurrentHashMap.newKeySet());
+        Set<Integer> glowingIds = glowingByPlayer.get(id);
+
+        long gameTime = world.getGameTime();
+        Long lastScan = lastScanTick.get(id);
+        if (lastScan != null && gameTime - lastScan < SCAN_INTERVAL_TICKS) return;
+        lastScanTick.put(id, gameTime);
+
+        double radius = 25.0 * ConfigManager.get().amethyst.effectRangeMultiplier;
+        var box = player.getBoundingBox().inflate(radius);
+        var nearby = world.getEntitiesOfClass(LivingEntity.class, box, e -> e != player && e.isAlive());
+        Set<Integer> nearbyIds = new HashSet<>(nearby.size());
+        for (LivingEntity living : nearby) nearbyIds.add(living.getId());
+
+        // Remove out-of-range entities (unglow them)
+        glowingIds.removeIf(eid -> {
+            var e = world.getEntity(eid);
+            if (!(e instanceof LivingEntity le)) return true;
+            if (!nearbyIds.contains(eid)) {
+                sendGlowPacket(player, le, false);
+                return true;
+            }
+            return false;
+        });
+
+        // Add newly in-range entities
+        for (var e : nearby) {
+            if (glowingIds.add(e.getId())) {
+                sendGlowPacket(player, e, true);
+                if (e.isInvisible()) {
+                    functional_trims.criteria.ModCriteria.TRIM_TRIGGER.trigger(player, "amethyst", "i_see_you");
+                } else {
+                    functional_trims.criteria.ModCriteria.TRIM_TRIGGER.trigger(player, "amethyst", "wallhacks_enabled");
+                }
+            }
+        }
+    }
+
     private static void sendGlowPacket(ServerPlayer player, LivingEntity target, boolean glow) {
         if (target == null || !target.isAlive()) return;
-
         var FLAGS = EntityAccessor.getFlags();
         byte serverFlags = target.getEntityData().get(FLAGS);
         byte clientFlags = glow ? (byte) (serverFlags | GLOW_MASK) : serverFlags;
-
         SynchedEntityData.DataValue<Byte> entry = SynchedEntityData.DataValue.create(FLAGS, clientFlags);
-        player.connection.send(new ClientboundSetEntityDataPacket(target.getId(),
-                List.of(entry)));
+        player.connection.send(new ClientboundSetEntityDataPacket(target.getId(), List.of(entry)));
     }
 }
