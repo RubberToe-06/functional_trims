@@ -3,6 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
+import groovy.json.JsonOutput
+import java.security.MessageDigest
+
 group = project.maven_group
 version = project.mod_version
 
@@ -73,5 +76,62 @@ publishing {
             artifactId = project.archives_base_name
             from components.java
         }
+    }
+}
+
+def serverResourcePackStagingDir = layout.buildDirectory.dir("resourcepack/staging")
+
+tasks.register('prepareServerResourcePack') {
+    doLast {
+        def stagingDir = serverResourcePackStagingDir.get().asFile
+        def assetsSource = file('src/main/resources/assets/functional_trims')
+        def assetsTarget = new File(stagingDir, 'assets/functional_trims')
+
+        delete(stagingDir)
+
+        copy {
+            from(assetsSource)
+            into(assetsTarget)
+        }
+
+        def packMeta = [
+                pack: [
+                        pack_format: 84,
+                        description: "Functional Trims client assets for dedicated servers"
+                ]
+        ]
+        new File(stagingDir, 'pack.mcmeta').text = JsonOutput.prettyPrint(JsonOutput.toJson(packMeta)) + System.lineSeparator()
+
+        def modIcon = file('src/main/resources/assets/functional_trims/icon.png')
+        if (modIcon.exists()) {
+            copy {
+                from(modIcon)
+                into(stagingDir)
+                rename { 'pack.png' }
+            }
+        }
+    }
+}
+
+def buildServerResourcePack = tasks.register('buildServerResourcePack', Zip) {
+    dependsOn(tasks.named('prepareServerResourcePack'))
+
+    archiveBaseName.set('functional_trims_server_resource_pack')
+    archiveVersion.set(project.version.toString())
+    destinationDirectory.set(layout.buildDirectory.dir('resourcepacks'))
+
+    from(serverResourcePackStagingDir)
+}
+
+tasks.register('writeServerResourcePackSha1') {
+    dependsOn(buildServerResourcePack)
+
+    doLast {
+        def zipFile = buildServerResourcePack.get().archiveFile.get().asFile
+        def digest = MessageDigest.getInstance('SHA-1').digest(zipFile.bytes)
+        def sha1 = digest.collect { String.format('%02x', it) }.join()
+        def outFile = new File(zipFile.parentFile, zipFile.name + '.sha1')
+        outFile.text = sha1 + System.lineSeparator()
+        println("Wrote SHA1: ${outFile}")
     }
 }
