@@ -3,7 +3,7 @@ package functional_trims.event;
 import functional_trims.config.ConfigManager;
 import functional_trims.config.FTConfig;
 import functional_trims.criteria.ModCriteria;
-import functional_trims.effect.ModEffects;
+import functional_trims.effect.ChargedState;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.server.level.ServerLevel;
@@ -33,7 +33,7 @@ public final class ChargedAttackHandler {
     }
 
     private static boolean isChargedMaceAttack(ServerPlayer player) {
-        return player.hasEffect(ModEffects.CHARGED) && player.getMainHandItem().is(Items.MACE);
+        return ChargedState.isCharged(player) && player.getMainHandItem().is(Items.MACE);
     }
 
     private static float getExtraDamage(ServerPlayer player) {
@@ -63,7 +63,7 @@ public final class ChargedAttackHandler {
             if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
             if (!(world instanceof ServerLevel serverLevel)) return InteractionResult.PASS;
             if (!(entity instanceof LivingEntity target)) return InteractionResult.PASS;
-            if (!player.hasEffect(ModEffects.CHARGED)) return InteractionResult.PASS;
+            if (!ChargedState.isCharged(serverPlayer)) return InteractionResult.PASS;
             if (isCopperDisabled()) return InteractionResult.PASS;
 
             if (serverPlayer.getMainHandItem().is(Items.MACE)) {
@@ -129,7 +129,7 @@ public final class ChargedAttackHandler {
                     getExtraDamage(serverPlayer)
             );
 
-            serverPlayer.removeEffect(ModEffects.CHARGED);
+            ChargedState.removeCharged(serverPlayer);
         });
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
@@ -139,7 +139,7 @@ public final class ChargedAttackHandler {
             if (!PENDING_CHARGED_MACE_STRIKES.remove(serverPlayer.getUUID())) return;
 
             triggerMaceAdvancement(serverPlayer, entity);
-            serverPlayer.removeEffect(ModEffects.CHARGED);
+            ChargedState.removeCharged(serverPlayer);
         });
     }
 }

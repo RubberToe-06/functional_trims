@@ -8,6 +8,7 @@ import functional_trims.event.RedstoneTrimPowerTicker;
 import functional_trims.event.TrimAdvancementHandler;
 import functional_trims.trim_effect.*;
 import functional_trims.effect.AmethystVisionEffect;
+import functional_trims.effect.ChargedState;
 import functional_trims.effect.ModEffects;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -55,6 +56,7 @@ public class FunctionalTrims implements ModInitializer {
     private static void registerTickHandlers() {
         ServerTickEvents.END_LEVEL_TICK.register(new CopperTrimEffect());
         ServerTickEvents.END_LEVEL_TICK.register(AmethystVisionEffect::tick);
+        ServerTickEvents.END_SERVER_TICK.register(ChargedState::tick);
     }
 
     private static void registerDisconnectListeners() {
@@ -64,6 +66,7 @@ public class FunctionalTrims implements ModInitializer {
             AmethystVisionEffect.cleanupPlayer(id);
             ResinTrimEffect.cleanupPlayer(id);
             CopperTrimEffect.cleanupPlayer(id);
+            ChargedState.cleanup(id);
         });
     }
 }
