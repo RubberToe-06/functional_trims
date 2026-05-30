@@ -1,0 +1,113 @@
+name: Backport Main Pushes
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  backport-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Cherry-pick new main commits to release branches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          git fetch origin "+refs/heads/release/*:refs/remotes/origin/release/*"
+
+          zero_sha="0000000000000000000000000000000000000000"
+          if [ "${BEFORE_SHA}" = "${zero_sha}" ]; then
+            commits="$(git rev-list --reverse "${AFTER_SHA}^..${AFTER_SHA}")"
+          else
+            commits="$(git rev-list --reverse "${BEFORE_SHA}..${AFTER_SHA}")"
+          fi
+
+          if [ -z "${commits}" ]; then
+            echo "No commits to backport from this push."
+            exit 0
+          fi
+
+          mapfile -t release_remotes < <(git for-each-ref --format='%(refname:short)' refs/remotes/origin/release/*)
+          if [ "${#release_remotes[@]}" -eq 0 ]; then
+            echo "No release branches found."
+            exit 0
+          fi
+
+          for release_remote in "${release_remotes[@]}"; do
+            release_branch="${release_remote#origin/}"
+            safe_branch="${release_branch//\//-}"
+            work_branch="auto/backport-${AFTER_SHA:0:7}-to-${safe_branch}"
+
+            git checkout -B "${work_branch}" "${release_remote}"
+
+            picked_commits=()
+            failed_commits=()
+
+            while IFS= read -r commit; do
+              [ -z "${commit}" ] && continue
+
+              if git merge-base --is-ancestor "${commit}" "${release_remote}"; then
+                continue
+              fi
+
+              if git cherry-pick -x "${commit}"; then
+                picked_commits+=("${commit}")
+              else
+                failed_commits+=("${commit}")
+                git cherry-pick --abort || true
+              fi
+            done <<< "${commits}"
+
+            if [ "${#picked_commits[@]}" -eq 0 ]; then
+              echo "No backportable commits for ${release_branch}."
+              continue
+            fi
+
+            git push --force-with-lease origin "${work_branch}"
+
+            pr_title="Backport main commits to ${release_branch} (${AFTER_SHA:0:7})"
+            pr_body_file="$(mktemp)"
+            {
+              echo "Automated backport from \`main\` to \`${release_branch}\`."
+              echo
+              echo "Cherry-picked commits:"
+              for commit in "${picked_commits[@]}"; do
+                subject="$(git log -1 --pretty=format:%s "${commit}")"
+                echo "- \`${commit:0:7}\` ${subject}"
+              done
+
+              if [ "${#failed_commits[@]}" -gt 0 ]; then
+                echo
+                echo "Commits skipped due to conflicts:"
+                for commit in "${failed_commits[@]}"; do
+                  subject="$(git log -1 --pretty=format:%s "${commit}")"
+                  echo "- \`${commit:0:7}\` ${subject}"
+                done
+              fi
+            } > "${pr_body_file}"
+
+            existing_pr="$(gh pr list --base "${release_branch}" --head "${work_branch}" --state open --json number --jq '.[0].number')"
+            if [ -n "${existing_pr}" ]; then
+              gh pr edit "${existing_pr}" --title "${pr_title}" --body-file "${pr_body_file}"
+            else
+              gh pr create --base "${release_branch}" --head "${work_branch}" --title "${pr_title}" --body-file "${pr_body_file}"
+            fi
+          done

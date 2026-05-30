@@ -276,6 +276,16 @@ src/main/resources/assets/functional_trims/lang/
 All contributions are merged into `main` first.  
 Maintainers are encouraged backport compatible changes to older Minecraft versions.
 
+Automatic backports are configured through GitHub Actions:
+
+1. Every direct push to `main` checks all `release/*` branches and opens cherry-pick backport PRs for commits not already present.
+2. For merged PRs, you can also force targeted backports by adding labels in the format `backport <branch>`.
+3. Backports are opened as PRs for review before merge.
+
+Label example:
+- `backport release/26.1`
+
+
 ## Feedback & Support
 Report bugs on the **[GitHub Issues]([https://github.com/yourusername/FunctionalTrims/issues](https://github.com/RubberToe-06/functional_trims/issues))** page.
 
