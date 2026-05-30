@@ -20,7 +20,7 @@
 			"functional_trims.FunctionalTrims"
 		],
 		"fabric-datagen": [
-			"functional_trims.FunctionalTrimsDataGenerator"
+			"functional_trims.datagen.FunctionalTrimsDataGenerator"
 		],
 		"modmenu": ["functional_trims.config.FunctionalTrimsModMenuIntegration"]
 	},

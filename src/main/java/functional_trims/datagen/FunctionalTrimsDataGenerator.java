@@ -1,6 +1,5 @@
-package functional_trims;
+package functional_trims.datagen;
 
-import functional_trims.datagen.TrimAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
