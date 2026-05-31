@@ -14,7 +14,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Gold</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/8/8a/Gold_Ingot_JE4_BE2.png/revision/latest?cb=20200224211607" alt="Gold Ingot" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Lord of the Nether”</i></h3>
   </div>
@@ -32,7 +32,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Diamond</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/a/ab/Diamond_JE3_BE3.png/revision/latest?cb=20230924193138" alt="Diamond" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Shattering Resilience”</i></h3>
   </div>
@@ -50,7 +50,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Netherite</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/26/Netherite_Ingot_JE1_BE2.png/revision/latest?cb=20220318055311" alt="Netherite Ingot" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Immoveable Object”</i></h3>
   </div>
@@ -71,7 +71,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Iron</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/f/fc/Iron_Ingot_JE3_BE2.png/revision/latest?cb=20230613175240" alt="Iron Ingot" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Unyielding Defense”</i></h3>
   </div>
@@ -91,7 +91,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Copper</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/91/Copper_Ingot_JE2_BE1.png/revision/latest?cb=20201111183617" alt="Copper Ingot" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Supercharged Strike”</i></h3>
   </div>
@@ -111,7 +111,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Amethyst</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/6/61/Amethyst_Shard_JE2_BE1.png/revision/latest?cb=20201111173100" alt="Amethyst Shard" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Resonating Vision”</i></h3>
   </div>
@@ -131,7 +131,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Redstone</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e1/Redstone_Dust_JE2_BE2.png/revision/latest?cb=20210427032319" alt="Redstone Dust" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Fully Conductive”</i></h3>
   </div>
@@ -151,7 +151,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Emerald</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/26/Emerald_JE3_BE3.png/revision/latest?cb=20191229174220" alt="Emerald" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Explorer’s Fortune”</i></h3>
   </div>
@@ -171,7 +171,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Resin</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/b/b8/Resin_Brick_JE1_BE1.webp/revision/latest?cb=20251006025521" alt="Resin Brick" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Adhesive Grip”</i></h3>
   </div>
@@ -191,7 +191,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Quartz</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/6/64/Nether_Quartz_JE2_BE2.png/revision/latest?cb=20191230024333" alt="Nether Quartz" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Enriched Vitality”</i></h3>
   </div>
@@ -211,7 +211,7 @@ Click a material below to view its effect in detail.
 <details>
   <summary><b>Lapis Lazuli</b></summary>
 
-  <div align="center">
+  <div>
     <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/4/43/Lapis_Lazuli_JE2_BE2.png/revision/latest?cb=20190430045315" alt="Lapis Lazuli" width="200" style="border-radius:10px;">
     <h3>Effect: <i>“Scholar’s Insight”</i></h3>
   </div>
