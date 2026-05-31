@@ -25,7 +25,7 @@ jobs:
 
       - name: Cherry-pick new main commits to release branches
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.BACKPORT_TOKEN || secrets.GITHUB_TOKEN }}
           BEFORE_SHA: ${{ github.event.before }}
           AFTER_SHA: ${{ github.sha }}
         run: |
@@ -106,8 +106,12 @@ jobs:
 
             existing_pr="$(gh pr list --base "${release_branch}" --head "${work_branch}" --state open --json number --jq '.[0].number')"
             if [ -n "${existing_pr}" ]; then
-              gh pr edit "${existing_pr}" --title "${pr_title}" --body-file "${pr_body_file}"
+              if ! gh pr edit "${existing_pr}" --title "${pr_title}" --body-file "${pr_body_file}"; then
+                echo "::warning::Unable to update PR #${existing_pr} for ${release_branch}. Branch ${work_branch} was still pushed."
+              fi
             else
-              gh pr create --base "${release_branch}" --head "${work_branch}" --title "${pr_title}" --body-file "${pr_body_file}"
+              if ! gh pr create --base "${release_branch}" --head "${work_branch}" --title "${pr_title}" --body-file "${pr_body_file}"; then
+                echo "::warning::Unable to create PR for ${release_branch}. Enable 'Allow GitHub Actions to create and approve pull requests' or set BACKPORT_TOKEN secret. Branch pushed: ${work_branch}"
+              fi
             fi
           done

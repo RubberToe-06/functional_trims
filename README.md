@@ -281,6 +281,7 @@ Automatic backports are configured through GitHub Actions:
 1. Every direct push to `main` checks all `release/*` branches and opens cherry-pick backport PRs for commits not already present.
 2. For merged PRs, you can also force targeted backports by adding labels in the format `backport <branch>`.
 3. Backports are opened as PRs for review before merge.
+4. If PR creation is blocked, enable repository setting **Actions > General > Workflow permissions > Allow GitHub Actions to create and approve pull requests**, or add a `BACKPORT_TOKEN` secret (PAT with `repo` scope).
 
 Label example:
 - `backport release/26.1`
