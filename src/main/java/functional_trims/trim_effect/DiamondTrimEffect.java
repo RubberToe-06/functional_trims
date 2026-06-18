@@ -154,7 +154,7 @@ public class DiamondTrimEffect {
             double nz = dz / dist;
             double knockback = MAX_KNOCKBACK * (0.5 + 0.5 * falloff);
 
-            target.knockback(knockback, -nx, -nz);
+            target.knockback(knockback, -nx, -nz, sources.playerAttack(player), damage);
             target.push(0.0, Y_BOOST * falloff, 0.0);
             target.needsSync = true;
         }
