@@ -138,7 +138,7 @@ public class IronTrimEffect implements ServerTickEvents.EndTick {
             double nx = dx / dist;
             double nz = dz / dist;
 
-            attacker.knockback(knockbackStrength(), -nx, -nz);
+            attacker.knockback(knockbackStrength(), -nx, -nz, source, 0.0F);
             attacker.push(0.0, Y_BOOST, 0.0);
             attacker.needsSync = true;
 

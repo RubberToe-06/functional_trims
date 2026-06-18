@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public class CopperTrimEffect implements ServerTickEvents.EndLevelTick {
     private void summonLightning(ServerLevel world, ServerPlayer player) {
         if (!FTConfig.isTrimEnabled("copper")) return;
 
-        LightningBolt lightning = new LightningBolt(net.minecraft.world.entity.EntityType.LIGHTNING_BOLT, world);
+        LightningBolt lightning = new LightningBolt(EntityTypes.LIGHTNING_BOLT, world);
         lightning.snapTo(player.getX(), player.getY(), player.getZ());
         lightning.setVisualOnly(true);
         world.addFreshEntity(lightning);

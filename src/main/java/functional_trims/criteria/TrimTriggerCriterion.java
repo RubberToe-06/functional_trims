@@ -2,14 +2,13 @@ package functional_trims.criteria;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import functional_trims.FunctionalTrims;
+
 import java.util.Optional;
 import java.util.function.Predicate;
-import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
-import net.minecraft.resources.Identifier;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import org.jspecify.annotations.NonNull;
 
@@ -22,11 +21,6 @@ import org.jspecify.annotations.NonNull;
  * Then we call trigger(player, "redstone", "activate_mechanism") in gameplay code.
  */
 public class TrimTriggerCriterion extends SimpleCriterionTrigger<TrimTriggerCriterion.Conditions> {
-    public static final Identifier ID = Identifier.fromNamespaceAndPath(FunctionalTrims.MOD_ID, "trim_trigger");
-
-    public Identifier getId() {
-        return ID;
-    }
 
     @Override
     public @NonNull Codec<Conditions> codec() {

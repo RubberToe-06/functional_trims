@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.criterion.ImpossibleTrigger;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -308,7 +308,7 @@ public class TrimAdvancementProvider extends FabricAdvancementProvider {
         Advancement.Builder.advancement()
                 .parent(superchargedStrike)
                 .display(
-                        Items.LIGHTNING_ROD,
+                        Items.LIGHTNING_ROD.weathering().unaffected(),
                         Component.translatable("advancements.functional_trims.copper.struck_by_lightning.title"),
                         Component.translatable("advancements.functional_trims.copper.struck_by_lightning.description"),
                         null,

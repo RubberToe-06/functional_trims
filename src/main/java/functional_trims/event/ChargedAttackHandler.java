@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -70,7 +71,7 @@ public final class ChargedAttackHandler {
                 PENDING_CHARGED_MACE_STRIKES.add(serverPlayer.getUUID());
             }
 
-            LightningBolt lightning = new LightningBolt(net.minecraft.world.entity.EntityType.LIGHTNING_BOLT, serverLevel);
+            LightningBolt lightning = new LightningBolt(EntityTypes.LIGHTNING_BOLT, serverLevel);
             lightning.snapTo(
                     target.getX() + (world.getRandom().nextDouble() - 0.5) * 0.5,
                     target.getY(),
