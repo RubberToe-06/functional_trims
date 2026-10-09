@@ -1,0 +1,44 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/RubberToe-06/functional_trims/issues"
+
+[[mods]]
+modId = "functional_trims"
+version = "${version}"
+displayName = "Functional Trims"
+description = "Makes the armor trims have fun but balanced bonus effects."
+authors = "RubberToe"
+displayURL = "https://github.com/RubberToe-06/functional_trims"
+iconFile = "assets/functional_trims/icon.png"
+
+[[dependencies.functional_trims]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[${neoforge_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.functional_trims]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "[${minecraft_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.functional_trims]]
+    modId = "fabric_api"
+    type = "required"
+    versionRange = "[0.161.0,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.functional_trims]]
+    modId = "cloth_config"
+    type = "optional"
+    versionRange = "[26.2.0,)"
+    ordering = "AFTER"
+    side = "CLIENT"
+
+[[mixins]]
+config = "functional_trims.mixins.json"

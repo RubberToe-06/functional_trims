@@ -229,14 +229,16 @@ Click a material below to view its effect in detail.
 </details>
 
 ## Compatibility
-- **Minecraft 26.2** (Fabric). Older versions are frozen on `legacy/*` branches; see [CONTRIBUTING.md](CONTRIBUTING.md#supported-versions).
-- Requires **Fabric API** and **Cloth Config API**; **Mod Menu** is optional
+- **Minecraft 26.2**, on **Fabric** or **NeoForge**. Older versions are frozen on `legacy/*` branches; see [CONTRIBUTING.md](CONTRIBUTING.md#supported-versions).
+- **Server-side:** install the mod on the server only; players don't need it and can join with a vanilla client (the server resource pack on the Files tab supplies translations/icons).
+- Fabric: requires **Fabric API**; **Cloth Config API** (in-game config screen) and **Mod Menu** are optional
+- NeoForge: requires **Forgified Fabric API**; **Cloth Config API** (in-game config screen) is optional
 - Java 25+
 
 ## Installation
-1. Download the latest `.jar` from the **Files** tab  
-2. Place it in your `mods` folder  
-3. Launch Minecraft with Fabric
+1. Download the latest `.jar` for your loader from the **Files** tab (`functional_trims-fabric-...` or `functional_trims-neoforge-...`)
+2. Place it in your `mods` folder
+3. Launch Minecraft with Fabric or NeoForge
 
 ## Contributing
 Contributions and translations are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the branch policy, translation steps, and dev setup.

@@ -1,9 +1,19 @@
 # AGENTS.md
 
 ## What this project is
-- `functional_trims` is a Fabric mod that turns full armor trim sets into gameplay effects; entrypoint is `src/main/java/rubbertoe/functional_trims/FunctionalTrims.java`.
-- Core flow: load config -> register effects/criteria/events -> tick handlers evaluate full-set trim state and apply behavior.
-- Shared trim check logic lives in `src/main/java/rubbertoe/functional_trims/func/TrimHelper.java` (`countTrim` / `hasFullTrim`), and most gameplay code assumes `count == 4` for activation.
+- `functional_trims` is a mod that turns full armor trim sets into gameplay effects, built for **both Fabric and NeoForge** from one shared codebase.
+- `common/src` holds almost all gameplay code (config, criteria, effects, events, mixins) and is loader-neutral; it is not a Gradle subproject, it's compiled as an extra source directory by both `fabric/` and `neoforge/` (see "Multi-loader layout" below for why).
+- Entrypoints are thin: `common/.../FunctionalTrimsCommon.init()` does the real bootstrap (register effects/criteria/events -> tick handlers evaluate full-set trim state and apply behavior); `fabric/.../FunctionalTrimsFabric` and `neoforge/.../FunctionalTrimsNeoForge` just call into it.
+- Shared trim check logic lives in `common/src/main/java/rubbertoe/functional_trims/func/TrimHelper.java` (`countTrim` / `hasFullTrim`), and most gameplay code assumes `count == 4` for activation.
+
+## Multi-loader layout (Fabric + NeoForge via Forgified Fabric API)
+- The NeoForge build depends on **Forgified Fabric API (FFAPI)** instead of hand-porting every Fabric API hook. FFAPI reimplements `net.fabricmc.fabric.api.*` on top of NeoForge, so almost all of `common`'s code (which only uses `ServerTickEvents`, `AttackEntityCallback`, `ServerLivingEntityEvents`, `ServerPlayConnectionEvents`) runs unchanged on both loaders. Cloth Config's `me.shedaniel.clothconfig2.api.*` package is likewise identical across its `cloth-config-fabric`/`cloth-config-neoforge` artifacts, so `FunctionalTrimsConfigScreen` is shared too.
+- **`common/` is not a Gradle subproject.** Fabric Loom (1.17.0-alpha.19) cannot be applied to more than one project in the same build without corrupting its shared extension state (`ClassCastException` on `LoomGradleExtensionImpl_Decorated`, reproduced empirically) — so instead of a compiled `common` artifact, `fabric/build.gradle` and `neoforge/build.gradle` each add `common/src/main/java` and `common/src/main/resources` as extra `sourceSets.main` directories and compile it twice. Keep this in mind: a change under `common/` affects both loaders automatically, but there is no separately-built `common.jar` to depend on.
+- Only two things in `common` are genuinely loader-specific, both handled via a tiny `ServiceLoader`-based `rubbertoe.functional_trims.platform.Platform` interface (config dir path) plus loader-specific entrypoint/config-screen glue in `fabric/` and `neoforge/`:
+  1. Config directory path (`ConfigManager` uses `Services.PLATFORM.getConfigDir()`).
+  2. Mod entrypoint + config-screen registration (ModMenu entrypoint on Fabric; a `RegisterEvent`-based NeoForge `IConfigScreenFactory` on NeoForge).
+- **`BuiltInRegistries.TRIGGER_TYPES` registration is platform-sensitive**: Fabric tolerates registering into it eagerly during `ModInitializer.onInitialize()` (`ModCriteria.register()`, called from `FunctionalTrimsFabric`), but NeoForge freezes that registry *before* mod construction runs. NeoForge must register via a `RegisterEvent` listener on the mod event bus instead (see `FunctionalTrimsNeoForge`). If you add another built-in-registry entry outside the moddable registries (blocks/items/etc.), expect the same split.
+- Datagen (`FunctionalTrimsDataGenerator`, `TrimAdvancementProvider`) is Fabric-only dev tooling — it's not shipped at runtime, so it lives in `fabric/`, but its output (`common/src/main/generated/`) is shared by both loaders' resources.
 
 ## Minecraft versioning and mapping system
 
@@ -32,24 +42,26 @@ Starting with this version era, **Mojang publishes fully human-readable ("mojmap
 
 ## Branches and versions
 - `main` is the only actively developed branch and always targets the latest supported Minecraft version.
-- `legacy/<mc-version>` branches are frozen snapshots of older versions. Do not port features to them; community backports are accepted as PRs against them.
-- Jar versions are `<mod_version>+<minecraft_version>` (set in `build.gradle`); bump `mod_version` in `gradle.properties` only.
-- Java package root is `rubbertoe.functional_trims`; the mod ID / resource namespace is `functional_trims`.
+- `legacy/<mc-version>` branches are frozen snapshots of older versions (pre-dating the Fabric+NeoForge split — they are still Fabric-only single-module builds). Do not port features to them; community backports are accepted as PRs against them.
+- Jar versions are `<mod_version>+<minecraft_version>` (set per-module in `fabric/build.gradle` / `neoforge/build.gradle`); bump `mod_version` in the root `gradle.properties` only. Jar file names are `functional_trims-fabric-<version>.jar` / `functional_trims-neoforge-<version>.jar`.
+- Java package root is `rubbertoe.functional_trims`; the mod ID / resource namespace is `functional_trims` on both loaders.
 
 ## Architecture map (read these first)
-- `src/main/java/rubbertoe/functional_trims/FunctionalTrims.java`: bootstrap and registration order.
-- `src/main/java/rubbertoe/functional_trims/config/`: JSON config model + Cloth Config screen + Mod Menu hook.
-- `src/main/java/rubbertoe/functional_trims/trim_effect/`: standalone trim behaviors (often event/tick registration per effect).
-- `src/main/java/rubbertoe/functional_trims/event/`: global listeners and tickers (advancement grants, charged attacks, redstone powering).
-- `src/main/java/rubbertoe/functional_trims/mixin/`: vanilla behavior patches for effects that cannot be done through API events.
-- `src/main/java/rubbertoe/functional_trims/criteria/` + `src/main/java/rubbertoe/functional_trims/datagen/TrimAdvancementProvider.java`: custom advancement trigger plumbing + generated advancement graph.
+- `common/src/main/java/rubbertoe/functional_trims/FunctionalTrimsCommon.java`: bootstrap and registration order, called from both loader entrypoints.
+- `common/src/main/java/rubbertoe/functional_trims/platform/`: the `Platform` interface + `ServiceLoader` lookup (`Services`) that's the only generic loader abstraction; see "Multi-loader layout" above.
+- `common/src/main/java/rubbertoe/functional_trims/config/`: JSON config model + Cloth Config screen (shared). `FunctionalTrimsModMenuIntegration` (Fabric-only) lives in `fabric/`; `FunctionalTrimsNeoForgeConfigIntegration` (NeoForge-only) lives in `neoforge/`.
+- `common/src/main/java/rubbertoe/functional_trims/trim_effect/`: standalone trim behaviors (often event/tick registration per effect).
+- `common/src/main/java/rubbertoe/functional_trims/event/`: global listeners and tickers (advancement grants, charged attacks, redstone powering).
+- `common/src/main/java/rubbertoe/functional_trims/mixin/`: vanilla behavior patches for effects that cannot be done through API events. Pure vanilla, zero Fabric imports, shared unchanged by both loaders via one `functional_trims.mixins.json`.
+- `common/src/main/java/rubbertoe/functional_trims/criteria/`: custom advancement trigger plumbing. `fabric/src/main/java/rubbertoe/functional_trims/datagen/TrimAdvancementProvider.java` (Fabric-only dev tool) generates the advancement graph into `common/src/main/generated/`.
+- `fabric/src/main/java/rubbertoe/functional_trims/FunctionalTrimsFabric.java` / `neoforge/src/main/java/rubbertoe/functional_trims/FunctionalTrimsNeoForge.java`: the actual `@ModInitializer`/`@Mod` entrypoints.
 
 ## Build and dev workflows (verified from Gradle tasks)
-- Run client: `./gradlew runClient`
-- Run dedicated server: `./gradlew runServer`
-- Regenerate advancements/datagen output: `./gradlew runDatagen` (writes to `src/main/generated`, included as resources in `build.gradle`). **This folder is committed** — always commit regenerated output; CI fails without it.
-- Build jars: `./gradlew build` (includes remapped mod jar + sources jar via Loom setup).
-- Useful for MC source lookup while changing mixins: `./gradlew genSources`.
+- Run Fabric client: `./gradlew :fabric:runClient` / server: `./gradlew :fabric:runServer`
+- Run NeoForge client: `./gradlew :neoforge:runClient` / server: `./gradlew :neoforge:runServer`
+- Regenerate advancements/datagen output: `./gradlew :fabric:runDatagen` (writes to `common/src/main/generated`, included as a resource dir by both loader modules). **This folder is committed** — always commit regenerated output; CI fails without it.
+- Build both jars: `./gradlew build` (builds `:fabric:build` and `:neoforge:build`; output in `fabric/build/libs/` and `neoforge/build/libs/`).
+- Useful for MC source lookup while changing mixins (Fabric side): `./gradlew :fabric:genSources`. NeoForge decompiles its own Minecraft sources automatically into its Gradle cache the first time any `:neoforge:*` task runs (look for `neoforge-*-sources.jar` / `minecraft-patched-*-sources.jar` under `~/.gradle/caches/modules-2` and `neoforge/build/moddev/artifacts`) — there's no separate `genSources` task to run for it.
 
 ## Project-specific conventions to preserve
 - Config gate pattern is mandatory for gameplay logic: check `FTConfig.isTrimEnabled("<material>")` before applying effects.
@@ -62,16 +74,18 @@ Starting with this version era, **Mojang publishes fully human-readable ("mojmap
 - Several mixins cache config values in `static final` fields (for example `IronTrimEffect`, `LootTableMixin`), which means runtime config edits may not refresh until restart.
 
 ## Integration points and dependencies
-- Loader/API stack: Fabric Loader + Fabric API (`build.gradle`, `fabric.mod.json`).
-- Optional UI integration: Mod Menu entrypoint `rubbertoe.functional_trims.config.FunctionalTrimsModMenuIntegration`.
+- Fabric stack: Fabric Loader + Fabric API (`fabric/build.gradle`, `fabric/src/main/resources/fabric.mod.json`).
+- NeoForge stack: NeoForge + Forgified Fabric API (`neoforge/build.gradle`, `neoforge/src/main/resources/META-INF/neoforge.mods.toml`).
+- Optional Fabric UI integration: Mod Menu entrypoint `rubbertoe.functional_trims.config.FunctionalTrimsModMenuIntegration`.
 - Config UI dependency: Cloth Config (`me.shedaniel.cloth`).
-- Mixin config: `src/main/resources/functional_trims.mixins.json`; keep new mixins registered here.
+- Mixin config: `common/src/main/resources/functional_trims.mixins.json`; keep new mixins registered here.
+- **Dedicated-server safety:** `common/` and anything the NeoForge `@Mod` constructor loads unconditionally must not touch client-only classes (e.g. `Screen`); the NeoForge config-screen hookup is guarded by `FMLEnvironment.getDist() == Dist.CLIENT`. Smoke-test with `./gradlew :neoforge:runServer` after touching entrypoints.
 
 ## When adding a new trim effect
-- Mirror existing pattern from `CopperTrimEffect` or `ResinTrimEffect`: implement behavior, register in `FunctionalTrims`, gate via `FTConfig`, and trigger criteria events.
+- Mirror existing pattern from `CopperTrimEffect` or `ResinTrimEffect`: implement behavior, register in `FunctionalTrimsCommon`, gate via `FTConfig`, and trigger criteria events.
 - Add config section + screen controls + `FTConfig.isTrimEnabled` case.
-- Add advancement nodes in `TrimAdvancementProvider`, then run datagen and review JSON changes under `src/main/generated/data/functional_trims/advancement/`.
-- Add/extend localization entries in `src/main/resources/assets/functional_trims/lang/en_us.json` (and other locales if maintained).
+- Add advancement nodes in `TrimAdvancementProvider`, then run datagen and review JSON changes under `common/src/main/generated/data/functional_trims/advancement/`.
+- Add/extend localization entries in `common/src/main/resources/assets/functional_trims/lang/en_us.json` (and other locales if maintained).
 
 ## minecraft-dev MCP server (AI tooling)
 

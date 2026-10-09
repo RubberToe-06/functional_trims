@@ -1,0 +1,119 @@
+plugins {
+    id 'net.neoforged.moddev' version "${moddevgradle_version}"
+    id 'me.modmuss50.mod-publish-plugin'
+}
+
+evaluationDependsOn(':fabric')
+
+// e.g. 2.2.1+26.2 -> functional_trims-neoforge-2.2.1+26.2.jar
+version = "${project.mod_version}+${project.minecraft_version}"
+
+base {
+    archivesName = "${project.archives_base_name}-neoforge"
+}
+
+// "common" (shared code for both loaders) is a plain source directory, not a Gradle
+// subproject - see the note in settings.gradle for why.
+sourceSets {
+    main {
+        java {
+            srcDir rootProject.file('common/src/main/java')
+        }
+        resources {
+            srcDir rootProject.file('common/src/main/resources')
+            srcDir rootProject.file('common/src/main/generated')
+        }
+    }
+}
+
+neoForge {
+    version = project.neoforge_version
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+
+    mods {
+        functional_trims {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+repositories {
+    maven { url = "https://maven.fabricmc.net/" }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content { includeGroup "maven.modrinth" }
+    }
+}
+
+dependencies {
+    // compileOnly: the shared "common" sources call net.fabricmc.fabric.api.* directly.
+    // Those classes are binary-identical between real fabric-api and Forgified Fabric API,
+    // so we compile against the real artifact and let FFAPI supply the runtime
+    // implementation on NeoForge (added below via jarJar/implementation).
+    compileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    implementation "maven.modrinth:forgified-fabric-api:${forgified_fabric_api_version}"
+
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
+}
+
+processResources {
+    def props = [
+            version          : project.version,
+            minecraft_version: project.minecraft_version,
+            neoforge_version : project.neoforge_version
+    ]
+    inputs.properties props
+
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand props
+    }
+}
+
+apply from: rootProject.file('gradle/publishing.gradle')
+
+publishMods {
+    file = jar.archiveFile
+    changelog = releaseNotes
+    displayName = "${project.mod_version} for ${project.minecraft_version} (NeoForge)"
+    modLoaders.add('neoforge')
+
+    def modVersion = project.mod_version as String
+    type = modVersion.contains('alpha') ? ALPHA : (modVersion.contains('beta') || modVersion.contains('rc')) ? BETA : STABLE
+
+    dryRun = publishDryRun
+
+    def gameVersions = (project.publish_minecraft_versions as String).split(',')*.trim()
+
+    modrinth {
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN')
+        projectId = project.modrinth_id
+        minecraftVersions.addAll(gameVersions)
+        requires('forgified-fabric-api')
+        optional('cloth-config')
+    }
+
+    curseforge {
+        accessToken = providers.environmentVariable('CURSEFORGE_API_KEY')
+        projectId = project.curseforge_id
+        minecraftVersions.addAll(gameVersions)
+        client = true
+        server = true
+        requires('forgified-fabric-api')
+        optional('cloth-config')
+    }
+
+    // Fabric's github publish creates the release and attaches the loader-neutral server
+    // resource pack; this one only adds the NeoForge jar to that same release.
+    github {
+        parent project(':fabric').tasks.named('publishGithub')
+    }
+}
