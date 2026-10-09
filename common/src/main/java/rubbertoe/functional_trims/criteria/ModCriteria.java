@@ -1,6 +1,5 @@
 package rubbertoe.functional_trims.criteria;
 
-import rubbertoe.functional_trims.event.GoldTrimAttackListener;
 import rubbertoe.functional_trims.FunctionalTrimsCommon;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,6 +22,7 @@ public class ModCriteria {
 
     public static void init() {
         GoldTrimAdvancementTriggers.register();
-        GoldTrimAttackListener.register();
+        // GoldTrimAttackListener is registered in FunctionalTrimsCommon.registerEventHandlers();
+        // registering it here too made the attack handler run twice per hit.
     }
 }

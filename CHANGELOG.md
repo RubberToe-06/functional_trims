@@ -9,7 +9,6 @@ is missing. Older history is on [Modrinth](https://modrinth.com/mod/functional_t
 - Added NeoForge support. Fabric and NeoForge jars are now built from one shared codebase (NeoForge requires Forgified Fabric API)
 - The mod remains fully server-side on both loaders: players don't need it installed and can join with a vanilla client
 - Cloth Config is now optional. It is only needed for the in-game config screen, so servers no longer require it
-- Fixed the NeoForge build crashing on dedicated servers
 
 ## 2.2.1
 

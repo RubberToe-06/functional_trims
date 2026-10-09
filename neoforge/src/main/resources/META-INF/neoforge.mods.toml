@@ -22,7 +22,7 @@ iconFile = "assets/functional_trims/icon.png"
 [[dependencies.functional_trims]]
     modId = "minecraft"
     type = "required"
-    versionRange = "[${minecraft_version},)"
+    versionRange = "[${minecraft_version},26.3)"
     ordering = "NONE"
     side = "BOTH"
 

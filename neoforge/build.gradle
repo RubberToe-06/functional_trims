@@ -57,8 +57,9 @@ repositories {
 dependencies {
     // compileOnly: the shared "common" sources call net.fabricmc.fabric.api.* directly.
     // Those classes are binary-identical between real fabric-api and Forgified Fabric API,
-    // so we compile against the real artifact and let FFAPI supply the runtime
-    // implementation on NeoForge (added below via jarJar/implementation).
+    // so we compile against the real artifact. FFAPI is NOT bundled into our jar: players
+    // install it separately (it is a required dependency in neoforge.mods.toml and on
+    // Modrinth/CurseForge); `implementation` here only puts it on the dev runtime classpath.
     compileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
     implementation "maven.modrinth:forgified-fabric-api:${forgified_fabric_api_version}"
 
