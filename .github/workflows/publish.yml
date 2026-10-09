@@ -1,0 +1,84 @@
+# Publishes a release to Modrinth, CurseForge and GitHub Releases.
+#
+# Release:  bump mod_version, add a "## <mod_version>" section to CHANGELOG.md,
+#           merge to main, then push a tag:  git tag v2.3.0+26.2 && git push origin v2.3.0+26.2
+#           The tag must equal "v" + the Gradle version (<mod_version>+<minecraft_version>).
+# Dry run:  Actions -> publish -> Run workflow. Nothing is uploaded; the files that
+#           would be published are attached to the run as an artifact.
+#
+# Needs repository secrets MODRINTH_TOKEN and CURSEFORGE_API_KEY.
+
+name: publish
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Check generated data is committed
+        run: |
+          if [ ! -d src/main/generated ]; then
+            echo "::error::src/main/generated is missing. Run ./gradlew runDatagen locally and commit the output."
+            exit 1
+          fi
+
+      - name: Check tag matches version
+        if: github.event_name == 'push'
+        run: |
+          version="$(./gradlew -q properties --property version | awk '/^version:/ {print $2}')"
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match the build version v${version}. Fix gradle.properties or re-tag."
+            exit 1
+          fi
+
+      - name: Check publishing secrets
+        if: github.event_name == 'push'
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: |
+          missing=""
+          [ -z "$MODRINTH_TOKEN" ] && missing="$missing MODRINTH_TOKEN"
+          [ -z "$CURSEFORGE_API_KEY" ] && missing="$missing CURSEFORGE_API_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing (Settings -> Secrets and variables -> Actions)."
+            exit 1
+          fi
+
+      - name: Build and publish
+        env:
+          PUBLISH_DRY_RUN: ${{ github.event_name == 'push' && 'false' || 'true' }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew build publishMods
+
+      - name: Upload dry-run output
+        if: github.event_name != 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-dry-run
+          path: build/publishMods/
