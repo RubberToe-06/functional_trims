@@ -229,66 +229,20 @@ Click a material below to view its effect in detail.
 </details>
 
 ## Compatibility
-- Built for **Minecraft 1.21.8+**
-- Requires **Fabric API** and **Cloth Config API**
-- Tested with most common modpacks
-- Loosely tested with **Quilt Loader**. Use at your own risk
+- **Minecraft 26.2** (Fabric). Older versions are frozen on `legacy/*` branches; see [CONTRIBUTING.md](CONTRIBUTING.md#supported-versions).
+- Requires **Fabric API** and **Cloth Config API**; **Mod Menu** is optional
+- Java 25+
 
 ## Installation
 1. Download the latest `.jar` from the **Files** tab  
 2. Place it in your `mods` folder  
-3. Launch Minecraft with either Fabric or Quilt
+3. Launch Minecraft with Fabric
 
 ## Contributing
-Contributions are welcome! Whether it's bug fixes, translations, balance tweaks, or new trim ideas, feel free to open a pull request.
-
-### Guidelines
-- **Base all pull requests on the `main` branch.** (except for backports)
-- Keep changes focused and minimal when possible.
-- If adding gameplay changes, please include a short explanation of the design intent.
-
-### Translations
-If you'd like to add a new language:
-
-1. Copy `en_us.json`
-2. Rename it to your language code
-3. Translate the values while keeping the keys unchanged
-4. Submit a pull request
-
-Language files are located in:
-```
-src/main/resources/assets/functional_trims/lang/
-```
-
-### Development Setup
-1. Clone the repository
-2. Import the project into **IntelliJ IDEA**
-3. Run the mod using the `runClient` Gradle task
-```batch
-./gradlew runClient
-```
-
-### Code Style
-- Follow the existing formatting and structure used in the project
-- Avoid unnecessary refactors in PRs unrelated to the feature
-
-### Backporting
-All contributions are merged into `main` first.  
-Maintainers are encouraged backport compatible changes to older Minecraft versions.
-
-Automatic backports are configured through GitHub Actions:
-
-1. Every direct push to `main` checks all `release/*` branches and opens cherry-pick backport PRs for commits not already present.
-2. For merged PRs, you can also force targeted backports by adding labels in the format `backport <branch>`.
-3. Backports are opened as PRs for review before merge.
-4. If PR creation is blocked, enable repository setting **Actions > General > Workflow permissions > Allow GitHub Actions to create and approve pull requests**, or add a `BACKPORT_TOKEN` secret (PAT with `repo` scope).
-
-Label example:
-- `backport release/26.1`
-
+Contributions and translations are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the branch policy, translation steps, and dev setup.
 
 ## Feedback & Support
-Report bugs on the **[GitHub Issues]([https://github.com/yourusername/FunctionalTrims/issues](https://github.com/RubberToe-06/functional_trims/issues))** page.
+Report bugs on the **[GitHub Issues](https://github.com/RubberToe-06/functional_trims/issues)** page.
 
 ## Credits
 Created by **RubberToe**  
