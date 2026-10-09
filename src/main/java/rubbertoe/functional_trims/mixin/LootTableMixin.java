@@ -2,7 +2,7 @@ package rubbertoe.functional_trims.mixin;
 
 import rubbertoe.functional_trims.config.ConfigManager;
 import rubbertoe.functional_trims.config.FTConfig;
-import rubbertoe.rubbertoe.functional_trims.criteria.ModCriteria;
+import rubbertoe.functional_trims.criteria.ModCriteria;
 import rubbertoe.functional_trims.func.TrimHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;

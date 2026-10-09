@@ -2,7 +2,7 @@ package rubbertoe.functional_trims.trim_effect;
 
 import rubbertoe.functional_trims.config.FTConfig;
 import rubbertoe.functional_trims.config.ConfigManager;
-import rubbertoe.rubbertoe.functional_trims.criteria.ModCriteria;
+import rubbertoe.functional_trims.criteria.ModCriteria;
 import rubbertoe.functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Direction;
