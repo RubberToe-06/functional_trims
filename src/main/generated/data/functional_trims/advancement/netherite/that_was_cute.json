@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_netherite_trim",
+  "criteria": {
+    "resist_explosion": {
+      "conditions": {
+        "material": "netherite",
+        "trigger_type": "resist_explosion"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.netherite.that_was_cute.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:tnt"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.netherite.that_was_cute.title"
+    }
+  },
+  "requirements": [
+    [
+      "resist_explosion"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

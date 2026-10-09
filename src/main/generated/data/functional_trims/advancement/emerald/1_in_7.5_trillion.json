@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_emerald_trim",
+  "criteria": {
+    "open_chest": {
+      "conditions": {
+        "material": "emerald",
+        "trigger_type": "open_loot_chest"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.emerald.1_in_7_5_trillion.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:chest"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.emerald.1_in_7_5_trillion.title"
+    }
+  },
+  "requirements": [
+    [
+      "open_chest"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

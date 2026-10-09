@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_iron_trim",
+  "criteria": {
+    "reflect_projectile": {
+      "conditions": {
+        "material": "iron",
+        "trigger_type": "reflect_projectile"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.iron.reflect_projectile.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:arrow"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.iron.reflect_projectile.title"
+    }
+  },
+  "requirements": [
+    [
+      "reflect_projectile"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

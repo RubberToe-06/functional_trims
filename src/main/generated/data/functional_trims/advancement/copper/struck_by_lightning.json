@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_copper_trim",
+  "criteria": {
+    "struck_by_lightning": {
+      "conditions": {
+        "material": "copper",
+        "trigger_type": "struck_by_lightning"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.copper.struck_by_lightning.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:lightning_rod"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.copper.struck_by_lightning.title"
+    }
+  },
+  "requirements": [
+    [
+      "struck_by_lightning"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

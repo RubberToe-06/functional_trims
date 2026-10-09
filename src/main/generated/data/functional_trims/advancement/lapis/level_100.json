@@ -1,0 +1,31 @@
+{
+  "parent": "functional_trims:full_lapis_trim",
+  "criteria": {
+    "reach_level_100": {
+      "conditions": {
+        "material": "lapis",
+        "trigger_type": "reach_level_100"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.lapis.level_100.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "minecraft:ender_eye"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.lapis.level_100.title"
+    }
+  },
+  "requirements": [
+    [
+      "reach_level_100"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

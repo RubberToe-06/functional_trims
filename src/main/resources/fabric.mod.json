@@ -8,7 +8,7 @@
 		"RubberToe"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
+		"homepage": "https://github.com/RubberToe-06/functional_trims",
 		"sources": "https://github.com/RubberToe-06/functional_trims",
 		"issues": "https://github.com/RubberToe-06/functional_trims/issues"
 	},
@@ -17,19 +17,21 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"functional_trims.FunctionalTrims"
+			"rubbertoe.functional_trims.FunctionalTrims"
 		],
 		"fabric-datagen": [
-			"functional_trims.datagen.FunctionalTrimsDataGenerator"
+			"rubbertoe.functional_trims.datagen.FunctionalTrimsDataGenerator"
 		],
-		"modmenu": ["functional_trims.config.FunctionalTrimsModMenuIntegration"]
+		"modmenu": [
+			"rubbertoe.functional_trims.config.FunctionalTrimsModMenuIntegration"
+		]
 	},
 	"mixins": [
 		"functional_trims.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.19.3",
-		"minecraft": "~26.2",
+		"fabricloader": ">=${loader_version}",
+		"minecraft": "~${minecraft_version}",
 		"java": ">=25",
 		"fabric-api": "*",
 		"cloth-config": "*"
@@ -37,8 +39,7 @@
 	"suggests": {
 		"modmenu": "*"
 	},
-  "custom": {
-    "loom:refmap_name": "functional_trims-refmap.json"
-  },
-  "accessWidener": "functional_trims.accesswidener"
+	"custom": {
+		"loom:refmap_name": "functional_trims-refmap.json"
+	}
 }

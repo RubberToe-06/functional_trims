@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "functional_trims.mixin",
+  "package": "rubbertoe.functional_trims.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ExperienceOrbEntityMixin",

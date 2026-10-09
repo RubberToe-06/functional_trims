@@ -1,0 +1,48 @@
+package rubbertoe.functional_trims.mixin;
+
+import rubbertoe.functional_trims.config.ConfigManager;
+import rubbertoe.functional_trims.config.FTConfig;
+import rubbertoe.functional_trims.func.TrimHelper;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import java.util.Optional;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.monster.piglin.PiglinBruteAi;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+
+/**
+ * Makes Piglin Brutes fully docile toward players wearing a full gold-trimmed set.
+ * Clears all hostility memories and stops movement immediately.
+ */
+@Mixin(PiglinBruteAi.class)
+public class PiglinBruteBrainMixin {
+
+    @Inject(
+            method = "findNearestValidAttackTarget(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/monster/piglin/AbstractPiglin;)Ljava/util/Optional;",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private static void functional_trims$pacifyGoldTrimmedPlayers(ServerLevel level, AbstractPiglin body,
+                                                                  CallbackInfoReturnable<Optional<? extends LivingEntity>> cir) {
+        boolean PIGLINS_DISTRACTIBLE = ConfigManager.get().gold.distractPiglinBrutesEnabled;
+        if (!FTConfig.isTrimEnabled("gold")) return;
+        if (!PIGLINS_DISTRACTIBLE) return;
+        body.getBrain()
+                .getMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER)
+                .filter(target -> target instanceof Player player &&
+                        TrimHelper.hasFullTrim(player, TrimMaterials.GOLD))
+                .ifPresent(_ -> {
+                    // Clear anger memories, but let them keep moving/idle
+                    body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ANGRY_AT);
+                    body.getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.ATTACK_TARGET);
+                    body.setAggressive(false);
+
+                    cir.setReturnValue(Optional.empty());
+                });
+    }
+}
