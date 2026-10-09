@@ -31,7 +31,7 @@ public abstract class LootTableMixin {
     private void emeraldTrimLuckyLoot(Inventory inventory, LootContextParameterSet params, long seed, CallbackInfo ci) {
         if (emeraldTrim$rerolling.get()) return;
 
-        Entity opener = params.get(LootContextParameters.THIS_ENTITY);
+        Entity opener = params.getOptional(LootContextParameters.THIS_ENTITY); // absent when e.g. an explosion breaks a pot
         if (!(opener instanceof ServerPlayerEntity player)) return;
         if (!FTConfig.isTrimEnabled("emerald")) return;
         if (TrimHelper.countTrim(player, ArmorTrimMaterials.EMERALD) != 4) return;
