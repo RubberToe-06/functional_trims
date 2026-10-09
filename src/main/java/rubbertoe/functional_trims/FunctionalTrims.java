@@ -1,7 +1,7 @@
 package rubbertoe.functional_trims;
 
 import rubbertoe.functional_trims.config.ConfigManager;
-import rubbertoe.rubbertoe.functional_trims.criteria.ModCriteria;
+import rubbertoe.functional_trims.criteria.ModCriteria;
 import rubbertoe.functional_trims.event.ChargedAttackHandler;
 import rubbertoe.functional_trims.event.GoldTrimAttackListener;
 import rubbertoe.functional_trims.event.RedstoneTrimPowerTicker;

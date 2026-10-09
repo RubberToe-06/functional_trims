@@ -1,7 +1,7 @@
 package rubbertoe.functional_trims.event;
 
 import rubbertoe.functional_trims.config.FTConfig;
-import rubbertoe.rubbertoe.functional_trims.criteria.ModCriteria;
+import rubbertoe.functional_trims.criteria.ModCriteria;
 import rubbertoe.functional_trims.func.TrimHelper;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.server.level.ServerPlayer;

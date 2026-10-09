@@ -2,7 +2,7 @@ package rubbertoe.functional_trims.event;
 
 import rubbertoe.functional_trims.config.ConfigManager;
 import rubbertoe.functional_trims.config.FTConfig;
-import rubbertoe.rubbertoe.functional_trims.criteria.ModCriteria;
+import rubbertoe.functional_trims.criteria.ModCriteria;
 import rubbertoe.functional_trims.effect.ChargedState;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
