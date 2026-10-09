@@ -1,0 +1,29 @@
+{
+  "parent": "functional_trims:full_gold_trim",
+  "criteria": {
+    "attack_piglin_brute": {
+      "conditions": {
+        "material": "gold",
+        "trigger_type": "attack_piglin_brute"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.gold.attack_piglin_brute.description"
+    },
+    "icon": {
+      "id": "minecraft:golden_sword"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.gold.attack_piglin_brute.title"
+    }
+  },
+  "requirements": [
+    [
+      "attack_piglin_brute"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

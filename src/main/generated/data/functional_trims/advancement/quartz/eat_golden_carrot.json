@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_quartz_trim",
+  "criteria": {
+    "eat_golden_carrot": {
+      "conditions": {
+        "material": "quartz",
+        "trigger_type": "eat_golden_carrot"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.quartz.eat_golden_carrot.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:golden_carrot"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.quartz.eat_golden_carrot.title"
+    }
+  },
+  "requirements": [
+    [
+      "eat_golden_carrot"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

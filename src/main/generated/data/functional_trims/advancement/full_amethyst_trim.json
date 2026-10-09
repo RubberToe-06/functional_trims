@@ -1,0 +1,25 @@
+{
+  "parent": "functional_trims:root",
+  "criteria": {
+    "auto": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.full_amethyst_trim.description"
+    },
+    "icon": {
+      "id": "minecraft:amethyst_shard"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.full_amethyst_trim.title"
+    }
+  },
+  "requirements": [
+    [
+      "auto"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

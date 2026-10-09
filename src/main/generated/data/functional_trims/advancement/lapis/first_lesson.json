@@ -1,0 +1,29 @@
+{
+  "parent": "functional_trims:full_lapis_trim",
+  "criteria": {
+    "absorb_xp_orb": {
+      "conditions": {
+        "material": "lapis",
+        "trigger_type": "absorb_xp_orb"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.lapis.first_lesson.description"
+    },
+    "icon": {
+      "id": "minecraft:experience_bottle"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.lapis.first_lesson.title"
+    }
+  },
+  "requirements": [
+    [
+      "absorb_xp_orb"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

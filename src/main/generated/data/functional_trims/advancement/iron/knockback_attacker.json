@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_iron_trim",
+  "criteria": {
+    "knockback_attacker": {
+      "conditions": {
+        "material": "iron",
+        "trigger_type": "knockback_attacker"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.iron.knockback_attacker.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:shield"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.iron.knockback_attacker.title"
+    }
+  },
+  "requirements": [
+    [
+      "knockback_attacker"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
