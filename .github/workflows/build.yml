@@ -32,8 +32,8 @@ jobs:
 
       - name: Check generated data is committed
         run: |
-          if [ ! -d src/main/generated ]; then
-            echo "::error::src/main/generated is missing. Run ./gradlew runDatagen locally and commit the output."
+          if [ ! -d common/src/main/generated ]; then
+            echo "::error::common/src/main/generated is missing. Run ./gradlew :fabric:runDatagen locally and commit the output."
             exit 1
           fi
 
@@ -42,11 +42,13 @@ jobs:
 
       - name: Read version
         id: meta
-        run: echo "version=$(./gradlew -q properties --property version | awk '/^version:/ {print $2}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(./gradlew -q :fabric:properties --property version | awk '/^version:/ {print $2}')" >> "$GITHUB_OUTPUT"
 
       - name: Upload jars
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ steps.meta.outputs.version }}
-          path: build/libs/*.jar
+          path: |
+            fabric/build/libs/*.jar
+            neoforge/build/libs/*.jar
           if-no-files-found: error

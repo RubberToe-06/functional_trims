@@ -40,15 +40,15 @@ jobs:
 
       - name: Check generated data is committed
         run: |
-          if [ ! -d src/main/generated ]; then
-            echo "::error::src/main/generated is missing. Run ./gradlew runDatagen locally and commit the output."
+          if [ ! -d common/src/main/generated ]; then
+            echo "::error::common/src/main/generated is missing. Run ./gradlew :fabric:runDatagen locally and commit the output."
             exit 1
           fi
 
       - name: Check tag matches version
         if: github.event_name == 'push'
         run: |
-          version="$(./gradlew -q properties --property version | awk '/^version:/ {print $2}')"
+          version="$(./gradlew -q :fabric:properties --property version | awk '/^version:/ {print $2}')"
           if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
             echo "::error::Tag ${GITHUB_REF_NAME} does not match the build version v${version}. Fix gradle.properties or re-tag."
             exit 1
@@ -74,11 +74,13 @@ jobs:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build publishMods
+        run: ./gradlew build :fabric:publishMods :neoforge:publishMods
 
       - name: Upload dry-run output
         if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
         with:
           name: publish-dry-run
-          path: build/publishMods/
+          path: |
+            fabric/build/publishMods/
+            neoforge/build/publishMods/

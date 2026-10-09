@@ -1,0 +1,85 @@
+// Shared changelog/dry-run/server-resourcepack helpers for the fabric and neoforge leaf
+// modules' publishMods configuration. Applied via:
+//   apply from: rootProject.file('gradle/publishing.gradle')
+// Keeps the two loader modules' release behavior (changelog parsing, dry-run gating,
+// server resource pack packaging) from drifting apart.
+
+import groovy.json.JsonOutput
+import java.security.MessageDigest
+
+ext.releaseNotes = providers.provider {
+    def changelogFile = rootProject.file('CHANGELOG.md')
+    if (!changelogFile.exists()) {
+        throw new GradleException('CHANGELOG.md is missing')
+    }
+    def version = java.util.regex.Pattern.quote(rootProject.mod_version as String)
+    def matcher = (changelogFile.text =~ /(?ms)^## ${version}(?:[ \t][^\n]*)?\n(.*?)(?=^## |\z)/)
+    if (!matcher.find() || matcher.group(1).trim().isEmpty()) {
+        throw new GradleException("CHANGELOG.md has no '## ${rootProject.mod_version}' section with release notes")
+    }
+    matcher.group(1).trim()
+}
+
+ext.publishDryRun = providers.provider {
+    providers.environmentVariable('PUBLISH_DRY_RUN').getOrElse('false') == 'true' ||
+            !providers.environmentVariable('MODRINTH_TOKEN').isPresent() ||
+            !providers.environmentVariable('CURSEFORGE_API_KEY').isPresent()
+}
+
+def serverResourcePackStagingDir = layout.buildDirectory.dir("resourcepack/staging")
+
+tasks.register('prepareServerResourcePack') {
+    doLast {
+        def stagingDir = serverResourcePackStagingDir.get().asFile
+        def assetsSource = rootProject.file('common/src/main/resources/assets/functional_trims')
+        def assetsTarget = new File(stagingDir, 'assets/functional_trims')
+
+        delete(stagingDir)
+
+        copy {
+            from(assetsSource)
+            into(assetsTarget)
+        }
+
+        def packMeta = [
+                pack: [
+                        pack_format: rootProject.resource_pack_format as int,
+                        description: "Functional Trims client assets for dedicated servers"
+                ]
+        ]
+        new File(stagingDir, 'pack.mcmeta').text = JsonOutput.prettyPrint(JsonOutput.toJson(packMeta)) + System.lineSeparator()
+
+        def modIcon = new File(assetsSource, 'icon.png')
+        if (modIcon.exists()) {
+            copy {
+                from(modIcon)
+                into(stagingDir)
+                rename { 'pack.png' }
+            }
+        }
+    }
+}
+
+def serverResourcePackTask = tasks.register('buildServerResourcePack', Zip) {
+    dependsOn(tasks.named('prepareServerResourcePack'))
+
+    archiveBaseName.set('functional_trims_server_resource_pack')
+    archiveVersion.set(project.version.toString())
+    destinationDirectory.set(layout.buildDirectory.dir('resourcepacks'))
+
+    from(serverResourcePackStagingDir)
+}
+ext.buildServerResourcePack = serverResourcePackTask
+
+tasks.register('writeServerResourcePackSha1') {
+    dependsOn(serverResourcePackTask)
+
+    doLast {
+        def zipFile = serverResourcePackTask.get().archiveFile.get().asFile
+        def digest = MessageDigest.getInstance('SHA-1').digest(zipFile.bytes)
+        def sha1 = digest.collect { String.format('%02x', it) }.join()
+        def outFile = new File(zipFile.parentFile, zipFile.name + '.sha1')
+        outFile.text = sha1 + System.lineSeparator()
+        println("Wrote SHA1: ${outFile}")
+    }
+}
