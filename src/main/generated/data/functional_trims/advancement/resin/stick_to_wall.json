@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_resin_trim",
+  "criteria": {
+    "stick_to_wall": {
+      "conditions": {
+        "material": "resin",
+        "trigger_type": "stick_to_wall"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.resin.stick_to_wall.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:slime_ball"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.resin.stick_to_wall.title"
+    }
+  },
+  "requirements": [
+    [
+      "stick_to_wall"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

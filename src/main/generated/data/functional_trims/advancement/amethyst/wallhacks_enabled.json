@@ -1,0 +1,29 @@
+{
+  "parent": "functional_trims:full_amethyst_trim",
+  "criteria": {
+    "wallhacks_enabled": {
+      "conditions": {
+        "material": "amethyst",
+        "trigger_type": "wallhacks_enabled"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.amethyst.wallhacks_enabled.description"
+    },
+    "icon": {
+      "id": "minecraft:spyglass"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.amethyst.wallhacks_enabled.title"
+    }
+  },
+  "requirements": [
+    [
+      "wallhacks_enabled"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

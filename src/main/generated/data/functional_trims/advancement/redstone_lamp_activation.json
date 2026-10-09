@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_redstone_trim",
+  "criteria": {
+    "activate_lamp": {
+      "conditions": {
+        "material": "redstone",
+        "trigger_type": "activate_lamp"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.redstone.redstone_lamp_activation.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:redstone_lamp"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.redstone.redstone_lamp_activation.title"
+    }
+  },
+  "requirements": [
+    [
+      "activate_lamp"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

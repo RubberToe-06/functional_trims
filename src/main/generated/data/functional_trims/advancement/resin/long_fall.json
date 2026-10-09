@@ -1,0 +1,31 @@
+{
+  "parent": "functional_trims:full_resin_trim",
+  "criteria": {
+    "long_fall": {
+      "conditions": {
+        "material": "resin",
+        "trigger_type": "long_fall"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.resin.long_fall.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "minecraft:feather"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.resin.long_fall.title"
+    }
+  },
+  "requirements": [
+    [
+      "long_fall"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

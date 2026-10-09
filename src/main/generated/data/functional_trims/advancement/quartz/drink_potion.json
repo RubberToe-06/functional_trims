@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_quartz_trim",
+  "criteria": {
+    "drink_potion": {
+      "conditions": {
+        "material": "quartz",
+        "trigger_type": "drink_potion"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.quartz.drink_potion.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:glass_bottle"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.quartz.drink_potion.title"
+    }
+  },
+  "requirements": [
+    [
+      "drink_potion"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

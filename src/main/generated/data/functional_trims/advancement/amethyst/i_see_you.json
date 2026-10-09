@@ -1,0 +1,31 @@
+{
+  "parent": "functional_trims:full_amethyst_trim",
+  "criteria": {
+    "i_see_you": {
+      "conditions": {
+        "material": "amethyst",
+        "trigger_type": "i_see_you"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.amethyst.i_see_you.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "minecraft:ender_pearl"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.amethyst.i_see_you.title"
+    }
+  },
+  "requirements": [
+    [
+      "i_see_you"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
