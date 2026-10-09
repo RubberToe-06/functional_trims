@@ -1,0 +1,29 @@
+{
+  "parent": "functional_trims:full_diamond_trim",
+  "criteria": {
+    "attack_piglin_brute": {
+      "conditions": {
+        "material": "diamond",
+        "trigger_type": "armor_shatter"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.diamond.armor_shatter.description"
+    },
+    "icon": {
+      "id": "minecraft:nether_star"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.diamond.armor_shatter.title"
+    }
+  },
+  "requirements": [
+    [
+      "attack_piglin_brute"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

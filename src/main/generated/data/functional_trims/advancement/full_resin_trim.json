@@ -1,0 +1,25 @@
+{
+  "parent": "functional_trims:root",
+  "criteria": {
+    "auto": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.full_resin_trim.description"
+    },
+    "icon": {
+      "id": "minecraft:resin_brick"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.full_resin_trim.title"
+    }
+  },
+  "requirements": [
+    [
+      "auto"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

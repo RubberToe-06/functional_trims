@@ -1,0 +1,30 @@
+{
+  "parent": "functional_trims:full_copper_trim",
+  "criteria": {
+    "mace_strike": {
+      "conditions": {
+        "material": "copper",
+        "trigger_type": "mace_strike"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.copper.mace_strike.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "minecraft:mace"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.copper.mace_strike.title"
+    }
+  },
+  "requirements": [
+    [
+      "mace_strike"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

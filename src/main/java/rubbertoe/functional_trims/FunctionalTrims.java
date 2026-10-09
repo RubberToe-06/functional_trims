@@ -1,0 +1,72 @@
+package rubbertoe.functional_trims;
+
+import rubbertoe.functional_trims.config.ConfigManager;
+import rubbertoe.functional_trims.criteria.ModCriteria;
+import rubbertoe.functional_trims.event.ChargedAttackHandler;
+import rubbertoe.functional_trims.event.GoldTrimAttackListener;
+import rubbertoe.functional_trims.event.RedstoneTrimPowerTicker;
+import rubbertoe.functional_trims.event.TrimAdvancementHandler;
+import rubbertoe.functional_trims.trim_effect.*;
+import rubbertoe.functional_trims.effect.AmethystVisionEffect;
+import rubbertoe.functional_trims.effect.ChargedState;
+import rubbertoe.functional_trims.effect.ModEffects;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class FunctionalTrims implements ModInitializer {
+
+    public static final String MOD_ID = "functional_trims";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+    @Override
+    public void onInitialize() {
+        ConfigManager.load();
+
+        registerContent();
+        registerEffects();
+        registerEventHandlers();
+        registerTickHandlers();
+        registerDisconnectListeners();
+
+        LOGGER.info("Functional Trims initialized.");
+    }
+
+    private static void registerContent() {
+        ModEffects.register();
+        ModCriteria.init();
+    }
+
+    private static void registerEffects() {
+        ResinTrimEffect.register();
+        AmethystTrimEffect.register();
+        IronTrimEffect.register();
+        DiamondTrimEffect.register();
+    }
+
+    private static void registerEventHandlers() {
+        RedstoneTrimPowerTicker.register();
+        TrimAdvancementHandler.register();
+        ChargedAttackHandler.register();
+        GoldTrimAttackListener.register();
+    }
+
+    private static void registerTickHandlers() {
+        ServerTickEvents.END_LEVEL_TICK.register(new CopperTrimEffect());
+        ServerTickEvents.END_LEVEL_TICK.register(AmethystVisionEffect::tick);
+        ServerTickEvents.END_SERVER_TICK.register(ChargedState::tick);
+    }
+
+    private static void registerDisconnectListeners() {
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, _) -> {
+            var id = handler.player.getUUID();
+            AmethystTrimEffect.cleanupPlayer(id);
+            AmethystVisionEffect.cleanupPlayer(id);
+            ResinTrimEffect.cleanupPlayer(id);
+            CopperTrimEffect.cleanupPlayer(id);
+            ChargedState.cleanup(id);
+        });
+    }
+}
