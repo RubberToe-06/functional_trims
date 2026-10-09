@@ -17,12 +17,12 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"functional_trims.FunctionalTrims"
+			"rubbertoe.functional_trims.FunctionalTrims"
 		],
 		"fabric-datagen": [
-			"functional_trims.datagen.FunctionalTrimsDataGenerator"
+			"rubbertoe.functional_trims.datagen.FunctionalTrimsDataGenerator"
 		],
-		"modmenu": ["functional_trims.config.FunctionalTrimsModMenuIntegration"]
+		"modmenu": ["rubbertoe.functional_trims.config.FunctionalTrimsModMenuIntegration"]
 	},
 	"mixins": [
 		"functional_trims.mixins.json"
