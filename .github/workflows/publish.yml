@@ -74,7 +74,9 @@ jobs:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build :fabric:publishMods :neoforge:publishMods
+        # --continue: if one upload fails, the others still run; a single failure no longer
+        # stops the rest of the uploads from running.
+        run: ./gradlew build :fabric:publishMods :neoforge:publishMods --continue
 
       - name: Upload dry-run output
         if: github.event_name != 'push'

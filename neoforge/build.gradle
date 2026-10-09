@@ -97,6 +97,8 @@ publishMods {
     modrinth {
         accessToken = providers.environmentVariable('MODRINTH_TOKEN')
         projectId = project.modrinth_id
+        // Loader suffix keeps the Fabric and NeoForge entries distinct on Modrinth
+        version = "${project.version}-neoforge"
         minecraftVersions.addAll(gameVersions)
         requires('forgified-fabric-api')
         optional('cloth-config')
@@ -115,6 +117,9 @@ publishMods {
     // Fabric's github publish creates the release and attaches the loader-neutral server
     // resource pack; this one only adds the NeoForge jar to that same release.
     github {
+        // With `parent`, everything except the token and files is inherited from the
+        // Fabric task, but the token itself still has to be set here.
+        accessToken = providers.environmentVariable('GITHUB_TOKEN')
         parent project(':fabric').tasks.named('publishGithub')
     }
 }
