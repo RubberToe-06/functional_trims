@@ -1,0 +1,26 @@
+{
+  "criteria": {
+    "auto": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "background": "minecraft:block/polished_blackstone_bricks",
+    "description": {
+      "translate": "advancements.functional_trims.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:smithing_table"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "auto"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

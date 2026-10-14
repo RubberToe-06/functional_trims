@@ -1,0 +1,31 @@
+{
+  "parent": "functional_trims:full_gold_trim",
+  "criteria": {
+    "enter_bastion": {
+      "conditions": {
+        "material": "gold",
+        "trigger_type": "enter_bastion"
+      },
+      "trigger": "functional_trims:trim_trigger"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.functional_trims.gold.enter_bastion.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:gilded_blackstone"
+    },
+    "title": {
+      "translate": "advancements.functional_trims.gold.enter_bastion.title"
+    }
+  },
+  "requirements": [
+    [
+      "enter_bastion"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

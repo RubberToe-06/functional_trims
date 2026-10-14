@@ -1,0 +1,24 @@
+{
+  "advancements.functional_trims.root.description": "Harness the power of armour trims!",
+
+  "advancements.functional_trims.full_redstone_trim.description": "Equip a full set of Redstone-trimmed armour",
+  "advancements.functional_trims.full_emerald_trim.description": "Equip a full set of Emerald-trimmed armour",
+  "advancements.functional_trims.full_lapis_trim.description": "Equip a full set of Lapis-trimmed armour",
+  "advancements.functional_trims.full_gold_trim.description": "Equip a full set of Gold-trimmed armour",
+  "advancements.functional_trims.full_diamond_trim.description": "Equip a full set of Diamond-trimmed armour",
+  "advancements.functional_trims.full_netherite_trim.description": "Equip a full set of Netherite-trimmed armour",
+  "advancements.functional_trims.full_iron_trim.description": "Equip a full set of Iron-trimmed armour",
+  "advancements.functional_trims.full_copper_trim.description": "Equip a full set of Copper-trimmed armour",
+  "advancements.functional_trims.full_amethyst_trim.description": "Equip a full set of Amethyst-trimmed armour",
+  "advancements.functional_trims.full_resin_trim.description": "Equip a full set of Resin-trimmed armour",
+  "advancements.functional_trims.full_quartz_trim.description": "Equip a full set of Quartz-trimmed armour",
+
+  "advancements.functional_trims.full_iron_trim.title": "Unyielding Defence",
+
+  "config.functional_trims.iron.tooltip": "Full Set Effect: \"Unyielding Defence\"\nShield has no cooldown and knocks enemies back.\nIncoming projectiles may be deflected.\nCritical hits deal reduced damage.",
+
+  "config.functional_trims.diamond.armor_loss": "Armour Durability Lost after Burst",
+  "config.functional_trims.diamond.tooltip": "Full Set Effect: \"Shattering Resilience\"\nArmour shatters to prevent fatal damage.",
+
+  "modmenu.descriptionTranslation.functional_trims": "Makes the armour trims have fun but balanced bonus effects."
+}

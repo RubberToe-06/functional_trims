@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "functional_trims.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EntityAccessor",
+    "PiglinBrainMixin",
+    "PiglinBruteBrainMixin",
+    "HungerManagerMixin",
+    "LivingEntityMixin",
+    "LootTableMixin",
+    "RedstoneViewMixin",
+    "compat.AlternateCurrentNodeAccessor",
+    "compat.AlternateCurrentWireHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

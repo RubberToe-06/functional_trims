@@ -1,0 +1,49 @@
+license="${mod_license}"
+
+[[mixins]]
+config="${mod_id}.mixins.json"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+
+displayURL="https://github.com/RubberToe-06/functional_trims"
+
+logoFile="assets/functional_trims/icon.png"
+logoBlur=false
+
+authors="RubberToe"
+
+description='''
+Makes the armor trims have fun but balanced bonus effects.
+'''
+
+[[dependencies."${mod_id}"]]
+modId="neoforge"
+type="required"
+versionRange="[${neo_version},)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies."${mod_id}"]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies."${mod_id}"]]
+modId="cloth_config"
+type="required"
+reason="Required for the in-game configuration screen."
+versionRange="[21.11.153,)"
+ordering="NONE"
+side="CLIENT"
+
+# Functional Trims provides dynamic strong redstone power from Redstone armor
+# trims. Lithium's redstone-wire optimization bypasses the vanilla signal
+# query used for this behavior, so disable only that optimization when both
+# mods are installed by setting to false.
+["lithium:options"]
+"mixin.block.redstone_wire" = false

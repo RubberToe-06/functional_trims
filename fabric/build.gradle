@@ -1,0 +1,97 @@
+plugins {
+    id 'fabric-loom' version '1.14.1'
+    id 'maven-publish'
+}
+
+group = project.maven_group
+version = project.mod_version
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    maven { url = "https://maven.shedaniel.me/" }
+    maven { url = "https://maven.terraformersmc.com/releases/" }
+    maven { url = "https://api.modrinth.com/maven" }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
+    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+    modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}")
+}
+
+/* ------------------------------
+   Java
+   ------------------------------ */
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+/* ------------------------------
+   Resources
+   ------------------------------ */
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+/* ------------------------------
+   Datagen (EXPLICIT — REQUIRED)
+   ------------------------------ */
+
+loom {
+    runs {
+        datagen {
+            inherit client
+            name "Fabric Data Generation"
+
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=functional_trims"
+
+            runDir "build/datagen"
+        }
+    }
+}
+
+/* ------------------------------
+   Generated resources
+   ------------------------------ */
+
+sourceSets {
+    main {
+        resources {
+            srcDir "src/main/generated"
+        }
+    }
+}
+
+/* ------------------------------
+   Publishing (optional)
+   ------------------------------ */
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            artifactId = project.archives_base_name
+            from components.java
+        }
+    }
+}
